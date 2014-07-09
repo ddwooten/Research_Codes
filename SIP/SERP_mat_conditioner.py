@@ -85,12 +85,20 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
             Floatsinput[ i ][ 5 ] / ( 100 * 100 )
         FloatsInput[ i ].append( FloatsInput[ 0 ][ 1 ] )
       if FloatsInput[ i ][ 2 ] == 2:
+        SaltTotal = 0
         for j in range( 1 , floatrows ):
           molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
               FloatsInput[ i ][ 5 ] / ( 100 * 100 )
+          SaltTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ]
+        FloatsInput[ i ].append( SaltTotal * FloatsInput[ i ][ 5 ] )
       if FloatsInput[ i ][ 2 ] == 1:
         molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
             FloatsInput[ i ][ 7 ] / ( 100 * 100 )
+    for i in range( 1 , floatrows ):
+      FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] / molsTotal )
+
+for i in range( floatrows ):
+  print FloatsInput[ i ]
 
 print "The SERPENT material conditioner has finished running"
 exit()
