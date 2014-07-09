@@ -4,7 +4,7 @@
 import csv as csvreader
 import numpy as np
 
-""" SERP_mat_conditioner is a simple python script that takes in a tab delimited input
+""" SERP_mat_conditioner is a simple python script that takes in a comma delimited input
     file which contains parameters and options and outputs the appropriate fuel
     composition in atomic percent inside of a SERPENT file that is also specified in the
     input file. A sample input file is given below
@@ -12,10 +12,10 @@ import numpy as np
     < Combined/Seperate >
     < Free/Preserved >
     < Path_to_SERPENT_input_file.txt >
-    < A of isotope n , Z of n , < C , A , F , H >, BNC , BNH , Abudance >
+    < A of isotope n , Z of n , < 1 , 2, 3, 4 >, BNC , BNH , Abudance, < 1 , -1  >
     >>
-    The < CAFH > flag determines how the < Abundance > value is handled. This will be
-    made more clear in the body of the code through comments and doc strings """
+    The < 1234 > flag determines how the < Abundance > value is handled. This will be
+    made more clear in the body of the code through comments and doc strings The < 1-1> fl    ag determines if the Abudnace is given in weight percent for its < 1234 > flag or atom    ic """
 
 print "Fuel Material Conditioner beginning"
 
@@ -58,26 +58,39 @@ for i in range( floatrows ):
 
 if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     or csvinput[ 0 ][ 0 ] == "FREE":
-    print "Running under the \"Free\" assumption"
+      print "Running under the \"Free\" assumption"
     molcar = 1.0 - FloatsInput[ 0 ][ 0 ]/100 - FloatsInput[ 0 ][ 1 ]/100
     for row in range( 1 , floatrows ):
-     if FloatsInput[ row ][ 7 ] < 0:
+      if FloatsInput[ row ][ 7 ] < 0:
         componentType = FloatsInput[ row ][ 2 ]
         masstotal = 0
         for i in range( 1 , floatrows ):
           if FloatsInput[ i ][ 2 ] == componentType:
-            masstotal += FloatsInput[ i ][ 6 ] / FloatsInput[ i ][ 1 ]
+            masstotal += FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ]
         for i in range( 1, floatrows ):
           if FloatsInput[ i ][ 2 ] == componentType:
-            FloatsInput[ i ][ 6 ] = 100 * FloatsInput[ i ][ 6 ] / FloatsInput[ i ][ 2 ] \
+            FloatsInput[ i ][ 5 ] = 100 * FloatsInput[ i ][ 6 ] / FloatsInput[ i ][ 2 ] \
                 / masstotal
             FlaotsInput[ i ][ 7 ] = 1
       if FloatsInput[ row ][ 2 ] == 1:
-        FloatsInput[ row ][ 6 ] *= molcar
-      molstotal = 0
-      for i in
-
-
+        FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
+    molsTotal = 0
+    for i in range( 1 , floatrows ):
+      if FloatsInput[ i ][ 2 ] == 3:
+        molsTotal += FloatsInput[ 0 ][ 0 ] * FloatsInput[ i ][ 3 ] * \
+            FloatsInput[ i ][ 5 ] / ( 100 * 100 )
+        FloatsInput[ i ].append( FloatsInput[ 0 ][ 0 ] )
+      if FloatsInput[ i ][ 2 ] == 4:
+        molsTotal += FloatsInput[ 0 ][ 1 ] * FloatsInput[ i ][ 3 ] * \
+            Floatsinput[ i ][ 5 ] / ( 100 * 100 )
+        FloatsInput[ i ].append( FloatsInput[ 0 ][ 1 ] )
+      if FloatsInput[ i ][ 2 ] == 2:
+        for j in range( 1 , floatrows ):
+          molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
+              FloatsInput[ i ][ 5 ] / ( 100 * 100 )
+      if FloatsInput[ i ][ 2 ] == 1:
+        molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
+            FloatsInput[ i ][ 7 ] / ( 100 * 100 )
 
 print "The SERPENT material conditioner has finished running"
 exit()
