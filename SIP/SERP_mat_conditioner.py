@@ -38,7 +38,7 @@ for row in reader:
 for row in range( len ( csvinput ) ):
   print csvinput[ row ]
 
-# initilizing FloatsInput array, the next 11 lines of code simply copy the csvinput
+# initilizing FloatsInput array, the next 13 lines of code simply copy the csvinput
 # array into another array as float values as opposed to strings
 
 FloatsInput=[]
@@ -59,9 +59,26 @@ for i in range( floatrows ):
 if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     or csvinput[ 0 ][ 0 ] == "FREE":
     print "Running under the \"Free\" assumption"
-    molcar = 1.0 -float( csvinput[ 2 ][ 0 ] ) -float( csvinput[ 2 ][ 1 ] )
-    saltarray = []
+    molcar = 1.0 - FloatsInput[ 0 ][ 0 ]/100 - FloatsInput[ 0 ][ 1 ]/100
+    for row in range( 1 , floatrows ):
+     if FloatsInput[ row ][ 7 ] < 0:
+        componentType = FloatsInput[ row ][ 2 ]
+        masstotal = 0
+        for i in range( 1 , floatrows ):
+          if FloatsInput[ i ][ 2 ] == componentType:
+            masstotal += FloatsInput[ i ][ 6 ] / FloatsInput[ i ][ 1 ]
+        for i in range( 1, floatrows ):
+          if FloatsInput[ i ][ 2 ] == componentType:
+            FloatsInput[ i ][ 6 ] = 100 * FloatsInput[ i ][ 6 ] / FloatsInput[ i ][ 2 ] \
+                / masstotal
+            FlaotsInput[ i ][ 7 ] = 1
+      if FloatsInput[ row ][ 2 ] == 1:
+        FloatsInput[ row ][ 6 ] *= molcar
+      molstotal = 0
+      for i in
 
-print "The SERPENT material conditioner had finished running"
+
+
+print "The SERPENT material conditioner has finished running"
 exit()
 
