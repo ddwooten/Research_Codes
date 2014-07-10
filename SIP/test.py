@@ -20,11 +20,11 @@ import scipy as sp
 
 print "Fuel Material Conditioner beginning"
 
-inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
+#inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
 
 print "Opening csv file now"
 
-csvfile = open( inputfile, "r" )
+csvfile = open( "test.csv", "r" )
 
 print "Reading file now"
 
@@ -85,27 +85,56 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
   for i in range( floatrows ):
     print FloatsInput[ i ]
   for i in range( 1 , floatrows ):
+    print " Entering "+ str(i)+ "th loop."
+    print " FloatsInput has value "+ str(FloatsInput[ i ])
     if FloatsInput[ i ][ 2 ] == 3:
+      print "We have triggerd component type 3 if statement"
+      print " FloatsInput of the "+ str(i)+ "th row and 2 column has value "+ str(FloatsInput[ i ][ 2 ])
+      print "Currently molsTotal has value "+ str(molsTotal)
+      print "Performing molsTotal adjustment"
       molsTotal += FloatsInput[ 0 ][ 0 ] * FloatsInput[ i ][ 3 ] * \
           FloatsInput[ i ][ 5 ] / ( 100 )
+      print "Currently molsTotal has value "+ str(molsTotal)
     if FloatsInput[ i ][ 2 ] == 4:
+      print "We have triggerd component type 4 if statement"
+      print " FloatsInput of the "+ str(i)+ "th row and 2 column has value "+ str(FloatsInput[ i ][ 2 ])
+      print "Currently molsTotal has value "+ str(molsTotal)
+      print "Performing molsTotal adjustment"
       molsTotal += FloatsInput[ 0 ][ 1 ] * FloatsInput[ i ][ 3 ] * \
           FloatsInput[ i ][ 5 ] / ( 100 )
+      print "Currently molsTotal has value "+ str(molsTotal)
     if FloatsInput[ i ][ 2 ] == 2:
+      print "We have triggerd component type 2 if statement"
+      print " FloatsInput of the "+ str(i)+ "th row and 2 column has value "+ str(FloatsInput[ i ][ 2 ])
       SaltTotal = 0
+      print "Currently SaltTotal has value "+ str(SaltTotal)
       for j in range( 1 , floatrows ):
         if FloatsInput[ j ][ 4 ] != 0:
+          print "Currently molsTotal has value "+ str(molsTotal)
+          print "Performing molsTotal adjustment"
           molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
-              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
+              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / ( 100 * 100 )
+          print "Currently molsTotal has value "+ str(molsTotal)
+          print "Currently SaltTotal has value "+ str(SaltTotal)
+          print "Performing SaltTotal adjustment"
           SaltTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
-              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
+              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / ( 100 * 100 )
+          print "Currently SaltTotal has value "+ str(SaltTotal)
       FloatsInput[ i ].append( SaltTotal )
     if FloatsInput[ i ][ 2 ] == 1:
+      print "We have triggerd component type 1 if statement"
+      print " FloatsInput of the "+ str(i)+ "th row and 2 column has value "+ str(FloatsInput[ i ][ 2 ])
+      print "Currently molsTotal has value "+ str(molsTotal)
+      print "Performing molsTotal adjustment"
       molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
           FloatsInput[ i ][ 7 ] / ( 100 )
+      print "Currently molsTotal has value "+ str(molsTotal)
   for i in range( 1 , floatrows ):
+    print "Currently appending FloatsInput row "+ str(i)
+    print " Currenlty FloatsInput has row "+ str(FloatsInput[ i ])
     FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] \
         / ( molsTotal ) )
+    print " FloatsInput of row "+ str(i) + " now has value "+ str(FloatsInput[ i ])
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
