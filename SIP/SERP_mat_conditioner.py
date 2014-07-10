@@ -3,6 +3,7 @@
 
 import csv as csvreader
 import numpy as np
+import pdb as pdb
 
 """ SERP_mat_conditioner is a simple python script that takes in a comma delimited input
     file which contains parameters and options and outputs the appropriate fuel
@@ -58,44 +59,46 @@ for i in range( floatrows ):
 
 if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     or csvinput[ 0 ][ 0 ] == "FREE":
-      print "Running under the \"Free\" assumption"
-    molcar = 1.0 - FloatsInput[ 0 ][ 0 ]/100 - FloatsInput[ 0 ][ 1 ]/100
-    for row in range( 1 , floatrows ):
-      if FloatsInput[ row ][ 7 ] < 0:
-        componentType = FloatsInput[ row ][ 2 ]
-        masstotal = 0
-        for i in range( 1 , floatrows ):
-          if FloatsInput[ i ][ 2 ] == componentType:
-            masstotal += FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ]
-        for i in range( 1, floatrows ):
-          if FloatsInput[ i ][ 2 ] == componentType:
-            FloatsInput[ i ][ 5 ] = 100 * FloatsInput[ i ][ 6 ] / FloatsInput[ i ][ 2 ] \
-                / masstotal
-            FlaotsInput[ i ][ 7 ] = 1
-      if FloatsInput[ row ][ 2 ] == 1:
-        FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
-    molsTotal = 0
-    for i in range( 1 , floatrows ):
-      if FloatsInput[ i ][ 2 ] == 3:
-        molsTotal += FloatsInput[ 0 ][ 0 ] * FloatsInput[ i ][ 3 ] * \
+  print "Running under the \"Free\" assumption"
+  molcar = 1.0 - FloatsInput[ 0 ][ 0 ]/100 - FloatsInput[ 0 ][ 1 ] / 100
+  for row in range( 1 , floatrows ):
+    if FloatsInput[ row ][ 6] < 0:
+      componentType = FloatsInput[ row ][ 2 ]
+      masstotal = 0
+      for i in range( 1 , floatrows ):
+        if FloatsInput[ i ][ 2 ] == componentType:
+          masstotal += FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ]
+      for i in range( 1, floatrows ):
+        if FloatsInput[ i ][ 2 ] == componentType:
+          FloatsInput[ i ][ 5 ] = 100 * FloatsInput[ i ][ 6 ] / FloatsInput[ i ][ 2 ] \
+              / masstotal
+          FloatsInput[ i ][ 6 ] = 1
+    if FloatsInput[ row ][ 2 ] == 1:
+      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
+    if FloatsInput[ row ][ 2 ] == 3:
+      FloatsInput[ i ].append( FloatsInput[ 0 ][ 0 ] )
+    if FloatsInput[ row ][ 2 ] == 4:
+      FloatsInput[ i ].append( FloatsInput[ 0 ][ 1 ] )
+  molsTotal = 0
+  for i in range( 1 , floatrows ):
+    if FloatsInput[ i ][ 2 ] == 3:
+      molsTotal += FloatsInput[ 0 ][ 0 ] * FloatsInput[ i ][ 3 ] * \
+          FloatsInput[ i ][ 5 ] / ( 100 * 100 )
+    if FloatsInput[ i ][ 2 ] == 4:
+      molsTotal += FloatsInput[ 0 ][ 1 ] * FloatsInput[ i ][ 3 ] * \
+          Floatsinput[ i ][ 5 ] / ( 100 * 100 )
+    if FloatsInput[ i ][ 2 ] == 2:
+      SaltTotal = 0
+      for j in range( 1 , floatrows ):
+        molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
             FloatsInput[ i ][ 5 ] / ( 100 * 100 )
-        FloatsInput[ i ].append( FloatsInput[ 0 ][ 0 ] )
-      if FloatsInput[ i ][ 2 ] == 4:
-        molsTotal += FloatsInput[ 0 ][ 1 ] * FloatsInput[ i ][ 3 ] * \
-            Floatsinput[ i ][ 5 ] / ( 100 * 100 )
-        FloatsInput[ i ].append( FloatsInput[ 0 ][ 1 ] )
-      if FloatsInput[ i ][ 2 ] == 2:
-        SaltTotal = 0
-        for j in range( 1 , floatrows ):
-          molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
-              FloatsInput[ i ][ 5 ] / ( 100 * 100 )
-          SaltTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ]
-        FloatsInput[ i ].append( SaltTotal * FloatsInput[ i ][ 5 ] )
-      if FloatsInput[ i ][ 2 ] == 1:
-        molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
-            FloatsInput[ i ][ 7 ] / ( 100 * 100 )
-    for i in range( 1 , floatrows ):
-      FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] / molsTotal )
+        SaltTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ]
+      FloatsInput[ i ].append( SaltTotal * FloatsInput[ i ][ 5 ] )
+    if FloatsInput[ i ][ 2 ] == 1:
+      molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
+          FloatsInput[ i ][ 7 ] / ( 100 * 100 )
+  for i in range( 1 , floatrows ):
+    FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] / molsTotal )
 
 for i in range( floatrows ):
   print FloatsInput[ i ]
