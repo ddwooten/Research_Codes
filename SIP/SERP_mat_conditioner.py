@@ -20,8 +20,8 @@ import scipy as sp
 
 print "Fuel Material Conditioner beginning"
 
-inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
-
+#inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
+inputfile = "test.csv"
 print "Opening csv file now"
 
 csvfile = open( inputfile, "r" )
@@ -77,19 +77,14 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
           FloatsInput[ i ][ 6 ] = 1
     if FloatsInput[ row ][ 2 ] == 1:
       FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
-    if FloatsInput[ row ][ 2 ] == 3:
-      FloatsInput[ row ].append( FloatsInput[ 0 ][ 0 ] )
-    if FloatsInput[ row ][ 2 ] == 4:
-      FloatsInput[ row ].append( FloatsInput[ 0 ][ 1 ] )
+    if FloatsInput[ row ][ 2 ] > 2:
+      FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
   molsTotal = 0
   for i in range( floatrows ):
     print FloatsInput[ i ]
   for i in range( 1 , floatrows ):
-    if FloatsInput[ i ][ 2 ] == 3:
-      molsTotal += FloatsInput[ 0 ][ 0 ] * FloatsInput[ i ][ 3 ] * \
-          FloatsInput[ i ][ 5 ] / ( 100 )
-    if FloatsInput[ i ][ 2 ] == 4:
-      molsTotal += FloatsInput[ 0 ][ 1 ] * FloatsInput[ i ][ 3 ] * \
+    if FloatsInput[ i ][ 2 ] > 2:
+      molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ 2 ] ) - 3 ] * FloatsInput[ i ][ 3 ] * \
           FloatsInput[ i ][ 5 ] / ( 100 )
     if FloatsInput[ i ][ 2 ] == 2:
       SaltTotal = 0
