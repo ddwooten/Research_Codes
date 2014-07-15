@@ -4,6 +4,7 @@
 import csv as csvreader
 import pdb as pdb
 import scipy as sp
+import pulp as pulp
 
 """ SERP_mat_conditioner is a simple python script that takes in a comma delimited input
     file which contains parameters and options and outputs the appropriate fuel
@@ -21,7 +22,7 @@ import scipy as sp
 print "Fuel Material Conditioner beginning"
 
 #inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
-inputfile = "test.csv"
+inputfile = "test2.csv"
 print "Opening csv file now"
 
 csvfile = open( inputfile, "r" )
@@ -56,6 +57,9 @@ for row in range( 3 , csvinputrows ):
   FloatsInput[ row - 3 ] = tmpArray
 for i in range( floatrows ):
   print FloatsInput[ i ]
+
+# This is the Free section. Ratio of componenets not given, simply
+# max solubilities which are used.
 
 if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     or csvinput[ 0 ][ 0 ] == "FREE":
@@ -101,6 +105,64 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
   for i in range( 1 , floatrows ):
     FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] \
         / ( molsTotal ) )
+
+# This is the preserved seperate solver. I.E. the ratios of the different
+# groups to one another are given, as are their max solubilities. A solution
+# must be found that maximizes the groups in the salt but preserves their ratio.
+
+if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
+    or csvinput[ 0 ][ 0 ] == "PRESERVED":
+  print "Running under the \"Preserved\" assumption"
+  # initilize ratios array
+  ratio = []
+  for column in range( len( csvinput[ 1 ] ) ):
+    ratio.append( float( csvinput[ 1 ][ column ] ) )
+  # initilize multiplier array
+  mult = []
+  for column in range( len( ratio ) ):
+    mult.append( FloatsInput[ 0 ][ column ] / ratio[ column ] )
+  multiplier = max( ratio )
+  solubility = ratio * multiplier
+  molcar = 1
+  for column in range( len( solubility ):
+    molcar -= solublitiy[ column ]
+  for row in range( 1 , floatrows ):
+    if FloatsInput[ row ][ 6 ] < 0:
+      componentType = FloatsInput[ row ][ 2 ]
+      masstotal = 0
+      for i in range( 1 , floatrows ):
+        if FloatsInput[ i ][ 2 ] == componentType:
+          masstotal += FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ]
+      for i in range( 1, floatrows ):
+        if FloatsInput[ i ][ 2 ] == componentType:
+          FloatsInput[ i ][ 5 ] = 100 * FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ] \
+              / masstotal
+          FloatsInput[ i ][ 6 ] = 1
+    if FloatsInput[ row ][ 2 ] == 1:
+      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
+    if FloatsInput[ row ][ 2 ] > 2:
+      FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
+  molsTotal = 0
+  for i in range( floatrows ):
+    print FloatsInput[ i ]
+  for i in range( 1 , floatrows ):
+    if FloatsInput[ i ][ 2 ] > 2:
+      molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ 2 ] ) - 3 ] * FloatsInput[ i ][ 3 ] * \
+          FloatsInput[ i ][ 5 ] / ( 100 )
+    if FloatsInput[ i ][ 2 ] == 2:
+      SaltTotal = 0
+      for j in range( 1 , floatrows ):
+        if FloatsInput[ j ][ 4 ] != 0:
+          molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
+              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
+          SaltTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
+              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
+      FloatsInput[ i ].append( SaltTotal )
+    if FloatsInput[ i ][ 2 ] == 1:
+      molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
+          FloatsInput[ i ][ 7 ] / ( 100 )
+  for i in range( 1 , floatrows ):
+    FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] \
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
