@@ -118,14 +118,22 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
   for column in range( len( csvinput[ 1 ] ) ):
     ratio.append( float( csvinput[ 1 ][ column ] ) )
   # initilize multiplier array
+  print " Displaying ratio array"
+  print ratio
   mult = []
   for column in range( len( ratio ) ):
     mult.append( FloatsInput[ 0 ][ column ] / ratio[ column ] )
+  print " Displaying multiplier array"
+  print mult
   multiplier = max( ratio )
-  solubility = ratio * multiplier
+  print " Displaying multiplier"
+  print multiplier
+  print "Adusting FloatsInput 0th row "
+  FloatsInput[ 0 ] = ratio * multiplier
+  print FloatsInput[ 0 ]
   molcar = 1
-  for column in range( len( solubility ):
-    molcar -= solublitiy[ column ]
+  for column in range( len( FloatsInput[ 0 ] ) ):
+    molcar -= FloatsInput[ 0 ][ column ]
   for row in range( 1 , floatrows ):
     if FloatsInput[ row ][ 6 ] < 0:
       componentType = FloatsInput[ row ][ 2 ]
@@ -163,6 +171,7 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
           FloatsInput[ i ][ 7 ] / ( 100 )
   for i in range( 1 , floatrows ):
     FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] \
+        / ( molstotal ) )
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
