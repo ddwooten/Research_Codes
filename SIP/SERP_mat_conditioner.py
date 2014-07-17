@@ -59,7 +59,8 @@ StartRow = int( csvinput[ 0 ][ 1 ] )
 
 CarrierComp = {}
 for i in range( 1 , int( csvinput[ 3 ][ 0 ] ) * 2 , 2 ):
-  CarrierComp[ int( csvinput[ 3 ][ i ] ) ] = int( csvinput[ 3 ][ i + 1 ] )
+  CarrierComp[ int( csvinput[ 3 ][ i ] ) ] = float( csvinput[ 3 ][ i + 1 ] ) * \
+      ( 1.0 / 100 )
 print CarrierComp
 
 # initilizing FloatsInput array, the next 13 lines of code simply copy the csvinput
@@ -114,7 +115,8 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # adjusted to the molar percentage. This is where the use of the
 # dictionary should occur
     if FloatsInput[ row ][ 2 ] == 1:
-      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
+      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] * \
+          CarrierComp[ int( FloatsInput[ row ][ 0 ] ) ] )
 # This is where the mol fraction of the fuel group constituent is
 # inserted into the floats array for each group appropriately
     if FloatsInput[ row ][ 2 ] > 2:
@@ -200,7 +202,8 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
               / masstotal
           FloatsInput[ i ][ 6 ] = 1
     if FloatsInput[ row ][ 2 ] == 1:
-      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
+      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] * \
+          CarrierComp[ int( FloatsInput[ row ][ 0 ] ) ] )
     if FloatsInput[ row ][ 2 ] > 2:
       FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
   molsTotal = 0
