@@ -19,6 +19,11 @@ import pulp as pulp
     The < 1234 > flag determines how the < Abundance > value is handled. This will be
     made more clear in the body of the code through comments and doc strings The < 1-1> fl    ag determines if the Abudnace is given in weight percent for its < 1234 > flag or atom    ic """
 
+def trunc( f , n ):
+  ''' Truncates/pads a float f to n decimal places no rounding '''
+  slen = len( '%.*f' % ( n , f ) )
+  return str( f )[:slen]
+
 print "Fuel Material Conditioner beginning"
 
 #inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
@@ -34,27 +39,47 @@ reader = csvreader.reader( csvfile )
 # initilizing array
 csvinput = []
 
+# This creates an array of strings from the csv file
 for row in reader:
   csvinput.append( row )
 
+# This prints out the read in csv file, it should be commented out for
+# real runs
 for row in range( len ( csvinput ) ):
   print csvinput[ row ]
+
+# This extracts the row in cvs input where the actual info begins and
+# not header stuff.
+
+StartRow = int( csvinput[ 0 ][ 1 ] )
+
+# This creates the dictionary of lookup values for the salt constituents.
+# This is a patch for the original inability to have a mutliple species
+# carrier salt.
+
+CarrierComp = {}
+for i in range( 1 , int( csvinput[ 3 ][ 0 ] ) * 2 , 2 ):
+  CarrierComp[ int( csvinput[ 3 ][ i ] ) ] = int( csvinput[ 3 ][ i + 1 ] )
+print CarrierComp
 
 # initilizing FloatsInput array, the next 13 lines of code simply copy the csvinput
 # array into another array as float values as opposed to strings
 
 FloatsInput=[]
 csvinputrows = len( csvinput )
-floatrows = csvinputrows - 3
+# Total rows in FloatsInput
+floatrows = csvinputrows - StartRow
 print " Creating floats array"
 for i in range( floatrows ):
   FloatsInput.append( 0 )
-for row in range( 3 , csvinputrows ):
+# This is a clumsy way to turn csvinputs into floats, tmp array isn't
+# really needed
+for row in range( StartRow , csvinputrows ):
   tmpArray=[]
   for column in range( len( csvinput[ row ] ) ):
     if len( csvinput[ row ][ column ] ) > 0:
       tmpArray.append( float( csvinput[ row ][ column ] ) )
-  FloatsInput[ row - 3 ] = tmpArray
+  FloatsInput[ row - StartRow ] = tmpArray
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
@@ -64,9 +89,14 @@ for i in range( floatrows ):
 if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     or csvinput[ 0 ][ 0 ] == "FREE":
   print "Running under the \"Free\" assumption"
+# molcar is the molar percentage of base salt after additions of fuel salt
   molcar = 1
+# This simply calculates the molar percentage of base salt
   for column in range( len( FloatsInput[ 0 ] ) ):
     molcar -= FloatsInput[ 0 ][ column ] / 100
+# This converts all weight percentages to atomic percentages by
+# looping over a catagory given in weight and doing the appropriate
+# math
   for row in range( 1 , floatrows ):
     if FloatsInput[ row ][ 6 ] < 0:
       componentType = FloatsInput[ row ][ 2 ]
@@ -79,10 +109,24 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
           FloatsInput[ i ][ 5 ] = 100 * FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ] \
               / masstotal
           FloatsInput[ i ][ 6 ] = 1
+# This ends the weight to atom percent converter
+# Right below is where the atomic percentage of a carrier componenet is
+# adjusted to the molar percentage. This is where the use of the
+# dictionary should occur
     if FloatsInput[ row ][ 2 ] == 1:
       FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] )
+# This is where the mol fraction of the fuel group constituent is
+# inserted into the floats array for each group appropriately
     if FloatsInput[ row ][ 2 ] > 2:
       FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
+# molsTotal is a way of summing up all the contributions of the molar
+# constituents. For example, if U is 24 mol percent of the fuel, and Li
+# is 100 percent of the carrier and the carrier is 76 mol percent and
+# the other const is F, molsTotal = 24 + 76 (Li) + 76 (F). The trick we
+# get into is for the host, say F. We don't have a mols for F, we simply
+# calculate them (in the if == 2 section) by the mols of everything
+# that uses fluoride. Then we get atomic percentage, in the salt, of
+# all components
   molsTotal = 0
   for i in range( floatrows ):
     print FloatsInput[ i ]
@@ -109,6 +153,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # This is the preserved seperate solver. I.E. the ratios of the different
 # groups to one another are given, as are their max solubilities. A solution
 # must be found that maximizes the groups in the salt but preserves their ratio.
+# For comments on how sections work, see the above Free solver.
 
 if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     or csvinput[ 0 ][ 0 ] == "PRESERVED":
@@ -122,6 +167,11 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
   print " Displaying ratio array"
   print ratio
   mult = []
+# The only thing I will explain is this. What this does,
+# is because the total mol fraction of a perserved ratio of
+# fuel components is limited by the componenet with the least
+# solubility, this finds the minimum multiplier of the ratio
+# that will determine the mol percents.
   for column in range( len( ratio ) ):
     mult.append( FloatsInput[ 0 ][ column ] / ratio[ column ] )
   print " Displaying multiplier array"
@@ -175,6 +225,10 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
   for i in range( 1 , floatrows ):
     FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] \
         / ( molsTotal ) )
+# This here truncates the floating atomic percentages to 6 decimal palces,
+# or 1/10,000 of a percent accuracy
+for row in range( 1 , floatrows ):
+  FloatsInput[ row ][ 8 ] = trunc( ( FloatsInput[ row ][ 8 ] / 100.0 ) , 6 )
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
