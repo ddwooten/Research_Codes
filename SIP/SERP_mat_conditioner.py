@@ -235,7 +235,7 @@ for row in range( 1 , floatrows ):
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
-HostFileName = csvinput[ 2 ][ 0 ]
+HostFileName = csvinput[ 2 ][ 0 ][ 1 : len( csvinput[ 2 ][ 0 ] ) - 1 ]
 
 print HostFileName
 
