@@ -26,6 +26,11 @@ def trunc( f , n ):
 
 print "Fuel Material Conditioner beginning"
 
+# Here we define two stirngs we will use later to format the input for the serpent file
+
+dzeros = "00"
+tzeros = "000"
+
 #inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
 inputfile = "test2.csv"
 print "Opening csv file now"
@@ -52,6 +57,20 @@ for row in range( len ( csvinput ) ):
 # not header stuff.
 
 StartRow = int( csvinput[ 0 ][ 1 ] )
+
+# This extracts the temperature of the region being written and
+# converts it to useful string for input
+
+Temperature = csvinput[ 2 ][ 2 ]
+if len( Temperature ) > 3:
+  Temp = Temperature[ 0 : 2 ]
+else:
+  Temp = "0" + Temperature[ 0 : 1 ]
+print "This is the temperature " + str(Temp)
+
+# This extracts the name of the material being written
+
+material = csvinput[ 0 ][ 2 ]
 
 # This creates the dictionary of lookup values for the salt constituents.
 # This is a patch for the original inability to have a mutliple species
@@ -243,7 +262,7 @@ HostFile = open( HostFileName , "r" )
 
 # This is going to be the index where to grab the file name
 
-NameStartIndex = HostFileName.rfind("/")
+NameStartIndex = HostFileName.rfind("/") + 1
 
 # This is going to be the index where to chop off the extension
 
@@ -259,6 +278,27 @@ NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" )
 print NewFileName
 
 NewFile = open( str( NewFileName ) , "w" )
+
+NewFile.write( "% ------ Created on " + time.strftime( "%d %m %Y") + " at " + \
+    time.strftime( "%H:%M" ) + "\n" )
+
+# This loops through the host file writting out its contents to the new file. It contains an if
+# statement to catch the fuel material section and insert the new data
+
+for line in HostFile:
+  if line.find( "mat " + material ) > 0:
+    NewFile.write( line )
+    for row in range( 1, floatrows - 1 ):
+      Z = str( FloatsInput[ row ][ 0 ] )
+      A = str( FloatsInput[ row ][ 1 ] )
+      Isotope = Z + A + "." + Temp + "c"
+      NewFile.write( "{:<10}{}".format( Isotope , FloatsInput[ row ][ 9 ] ) + "\n" )
+  else:
+    NewFile.write( line )
+
+HostFile.close()
+
+NewFile.close()
 
 print "The SERPENT material conditioner has finished running"
 exit()
