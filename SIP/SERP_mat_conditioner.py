@@ -70,8 +70,8 @@ print "This is the temperature " + str(Temp)
 
 # This extracts the name of the material being written
 
-material = csvinput[ 0 ][ 2 ]
-
+material = csvinput[ 0 ][ 2 ][ 1 : len( csvinput[ 0 ][ 2 ] ) - 1 ]
+mat = "mat\t" + material
 # This creates the dictionary of lookup values for the salt constituents.
 # This is a patch for the original inability to have a mutliple species
 # carrier salt.
@@ -279,20 +279,25 @@ print NewFileName
 
 NewFile = open( str( NewFileName ) , "w" )
 
-NewFile.write( "% ------ Created on " + time.strftime( "%d %m %Y") + " at " + \
+NewFile.write( "% ------ Created on " + time.strftime( "%d-%m-%Y") + " at " + \
     time.strftime( "%H:%M" ) + "\n" )
 
 # This loops through the host file writting out its contents to the new file. It contains an if
 # statement to catch the fuel material section and insert the new data
 
 for line in HostFile:
-  if line.find( "mat " + material ) > 0:
+  if line.find( mat ) > -1:
+    NewFile.write( "poop")
     NewFile.write( line )
     for row in range( 1, floatrows - 1 ):
-      Z = str( FloatsInput[ row ][ 0 ] )
-      A = str( FloatsInput[ row ][ 1 ] )
-      Isotope = Z + A + "." + Temp + "c"
-      NewFile.write( "{:<10}{}".format( Isotope , FloatsInput[ row ][ 9 ] ) + "\n" )
+      Z = str( int( FloatsInput[ row ][ 0 ] ) )
+      print Z
+      A = str( int( FloatsInput[ row ][ 1 ] ) )
+      print A
+      ModA = tzeros[ 0 : ( 3 - len ( A ) ) ] + A
+      Isotope = Z + ModA + "." + Temp + "c"
+      print Isotope
+      NewFile.write( "{:<10}{}".format( Isotope , FloatsInput[ row ][ 8 ] ) + "\n" )
   else:
     NewFile.write( line )
 
