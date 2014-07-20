@@ -4,7 +4,7 @@
 import csv as csvreader
 import pdb as pdb
 import scipy as sp
-import pulp as pulp
+import time as time
 
 """ SERP_mat_conditioner is a simple python script that takes in a comma delimited input
     file which contains parameters and options and outputs the appropriate fuel
@@ -234,6 +234,31 @@ for row in range( 1 , floatrows ):
   FloatsInput[ row ][ 8 ] = trunc( ( FloatsInput[ row ][ 8 ] / 100.0 ) , 6 )
 for i in range( floatrows ):
   print FloatsInput[ i ]
+
+HostFileName = csvinput[ 2 ][ 0 ]
+
+print HostFileName
+
+HostFile = open( HostFileName , "r" )
+
+# This is going to be the index where to grab the file name
+
+NameStartIndex = HostFileName.rfind("/")
+
+# This is going to be the index where to chop off the extension
+
+NameEndIndex = HostFileName.rfind(".")
+
+BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
+
+NameExtension = csvinput[ 2 ][ 1 ][ 1 : len( csvinput[ 2 ][ 1 ] ) - 1 ]
+
+NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
+    + ".txt"
+
+print NewFileName
+
+NewFile = open( str( NewFileName ) , "w" )
 
 print "The SERPENT material conditioner has finished running"
 exit()
