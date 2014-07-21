@@ -49,6 +49,19 @@ csvinput = []
 for row in reader:
   csvinput.append( row )
 
+# This reads in values of the locations in the array where information
+# can be found and assings it to its identifiers
+
+ele = int( csvinput[ 5 ][ 0 ] )
+iso = int( csvinput[ 5 ][ 1 ] )
+grp = int( csvinput[ 5 ][ 2 ] )
+cth = int( csvinput[ 5 ][ 3 ] )
+htc = int( csvinput[ 5 ][ 4 ] )
+pct = int( csvinput[ 5 ][ 5 ] )
+ptt = int( csvinput[ 5 ][ 6 ] )
+mof = int( csvinput[ 5 ][ 7 ] )
+atf = int( csvinput[ 5 ][ 8 ] )
+
 # This prints out the read in csv file, it should be commented out for
 # real runs
 for row in range( len ( csvinput ) ):
@@ -119,20 +132,20 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # looping over a catagory given in weight and doing the appropriate
 # math
   for row in range( 1 , floatrows ):
-    if FloatsInput[ row ][ 6 ] < 0:
-      if FloatsInput[ row ][ 2 ] == 1:
+    if FloatsInput[ row ][ ptt ] < 0:
+      if FloatsInput[ row ][ grp ] == 1:
         sys.exit("ERROR!!: Carrier constituent fractions are not allowed as \
             weight percents! Please correct to atomic percents as percentages \
             of element type! Yes we know this is buggy but is a result of \
             development occuring in stages")
-      componentType = FloatsInput[ row ][ 2 ]
+      componentType = FloatsInput[ row ][ grp ]
       masstotal = 0
       for i in range( 1 , floatrows ):
-        if FloatsInput[ i ][ 2 ] == componentType:
-          masstotal += FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ]
+        if FloatsInput[ i ][ grp ] == componentType:
+          masstotal += FloatsInput[ i ][ pct ] / FloatsInput[ i ][ iso ]
       for i in range( 1, floatrows ):
-        if FloatsInput[ i ][ 2 ] == componentType:
-          FloatsInput[ i ][ 5 ] = 100 * FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ] \
+        if FloatsInput[ i ][ grp ] == componentType:
+          FloatsInput[ i ][  ] = 100 * FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ] \
               / masstotal
           FloatsInput[ i ][ 6 ] = 1
 # This ends the weight to atom percent converter
