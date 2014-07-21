@@ -61,7 +61,7 @@ StartRow = int( csvinput[ 0 ][ 1 ] )
 # This extracts the temperature of the region being written and
 # converts it to useful string for input
 
-Temperature = csvinput[ 2 ][ 2 ]
+Temperature = csvinput[ 0 ][ 4 ]
 if len( Temperature ) > 3:
   Temp = Temperature[ 0 : 2 ]
 else:
@@ -181,9 +181,9 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
   print "Running under the \"Preserved\" assumption"
   # initilize ratios array
   ratio = []
-  for column in range( len( csvinput[ 1 ] ) ):
-    if len ( csvinput[ 1 ][ column ] ) > 0:
-      ratio.append( float( csvinput[ 1 ][ column ] ) )
+  for column in range( len( csvinput[ 2 ] ) ):
+    if len ( csvinput[ 2 ][ column ] ) > 0:
+      ratio.append( float( csvinput[ 2 ][ column ] ) )
   # initilize multiplier array
   print " Displaying ratio array"
   print ratio
@@ -254,7 +254,7 @@ for row in range( 1 , floatrows ):
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
-HostFileName = csvinput[ 2 ][ 0 ][ 1 : len( csvinput[ 2 ][ 0 ] ) - 1 ]
+HostFileName = csvinput[ 1 ][ 0 ][ 1 : len( csvinput[ 1 ][ 0 ] ) - 1 ]
 
 print HostFileName
 
@@ -270,7 +270,7 @@ NameEndIndex = HostFileName.rfind(".")
 
 BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
 
-NameExtension = csvinput[ 2 ][ 1 ][ 1 : len( csvinput[ 2 ][ 1 ] ) - 1 ]
+NameExtension = csvinput[ 1 ][ 1 ][ 1 : len( csvinput[ 1 ][ 1 ] ) - 1 ]
 
 NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
     + ".txt"
