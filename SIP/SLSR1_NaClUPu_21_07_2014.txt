@@ -1,4 +1,4 @@
-% ------ Created on 21-07-2014 at 17:07
+% ------ Created on 21-07-2014 at 18:37
 set title "Simplified Liquid Sphere Reactor"
 
 % --- Surfaces (i.e. the rx)
@@ -31,14 +31,7 @@ mat HastelloyNMod	-8.86	tmp	973 rgb 192 192 192
 22000.09c	-0.01
 
 % ------ Fuel Salt
-poopmat	FuelSalt	-3.35	tmp	875 rgb 225 0 0
-11000.06c 0.087962
-12000.06c 0.058641
-17000.06c 0.632716
-92023.06c 0.126571
-92238.06c 0.003057
-94239.06c 0.019444
-94241.06c 0.009722
+mat	FuelSalt	-3.35	tmp	875 rgb 225 0 0
 % ------ End Fuel Salt
 
 % --- Cross section library file path

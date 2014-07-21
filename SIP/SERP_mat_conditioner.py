@@ -145,20 +145,20 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
           masstotal += FloatsInput[ i ][ pct ] / FloatsInput[ i ][ iso ]
       for i in range( 1, floatrows ):
         if FloatsInput[ i ][ grp ] == componentType:
-          FloatsInput[ i ][  ] = 100 * FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ] \
+          FloatsInput[ i ][ pct ] = 100 * FloatsInput[ i ][ pct ] / FloatsInput[ i ][ iso ] \
               / masstotal
-          FloatsInput[ i ][ 6 ] = 1
+          FloatsInput[ i ][ ptt ] = 1
 # This ends the weight to atom percent converter
 # Right below is where the atomic percentage of a carrier componenet is
 # adjusted to the molar percentage. This is where the use of the
 # dictionary should occur
-    if FloatsInput[ row ][ 2 ] == 1:
-      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] * \
-          CarrierComp[ int( FloatsInput[ row ][ 0 ] ) ] )
+    if FloatsInput[ row ][ grp ] == 1:
+      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ pct ] * \
+          CarrierComp[ int( FloatsInput[ row ][ ele ] ) ] )
 # This is where the mol fraction of the fuel group constituent is
 # inserted into the floats array for each group appropriately
-    if FloatsInput[ row ][ 2 ] > 2:
-      FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
+    if FloatsInput[ row ][ grp ] > 2:
+      FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ grp ] ) - 3 ] )
 # molsTotal is a way of summing up all the contributions of the molar
 # constituents. For example, if U is 24 mol percent of the fuel, and Li
 # is 100 percent of the carrier and the carrier is 76 mol percent and
@@ -175,9 +175,9 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
       DensityArray[ int( csvinput[ 4 ][ i ] ) ] = float( csvinput[ 4 ][ i + 1 ] )
     for i in range( 1 , floatrows ):
-      if FloatsInput[ i ][ 2 ] != 2:
-        density += DensityArray[ int( FloatsInput[ i ][ 0 ] ) ] * \
-            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 10000.0 )
+      if FloatsInput[ i ][ grp ] != 2:
+        density += DensityArray[ int( FloatsInput[ i ][ ele ] ) ] * \
+            FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] * ( 1.0 / 10000.0 )
   else:
     density = cscinput[ 0 ][ 3 ]
   print "The density is " + str( density )
@@ -185,23 +185,23 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
   for i in range( floatrows ):
     print FloatsInput[ i ]
   for i in range( 1 , floatrows ):
-    if FloatsInput[ i ][ 2 ] > 2:
-      molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ 2 ] ) - 3 ] * FloatsInput[ i ][ 3 ] * \
-          FloatsInput[ i ][ 5 ] / ( 100 )
-    if FloatsInput[ i ][ 2 ] == 2:
+    if FloatsInput[ i ][ grp ] > 2:
+      molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ grp ] ) - 3 ] * FloatsInput[ i ][ cth ] * \
+          FloatsInput[ i ][ pct ] / ( 100 )
+    if FloatsInput[ i ][ grp ] == 2:
       SaltTotal = 0
       for j in range( 1 , floatrows ):
-        if FloatsInput[ j ][ 4 ] != 0:
-          molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
-              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
-          SaltTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
-              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
+        if FloatsInput[ j ][ htc ] != 0:
+          molsTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mof ] * \
+              FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
+          SaltTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mot ] * \
+              FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
       FloatsInput[ i ].append( SaltTotal )
-    if FloatsInput[ i ][ 2 ] == 1:
-      molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
-          FloatsInput[ i ][ 7 ] / ( 100 )
+    if FloatsInput[ i ][ grp ] == 1:
+      molsTotal += FloatsInput[ i ][ cth ] * FloatsInput[ i ][ pct ] * \
+          FloatsInput[ i ][ mof ] / ( 100 )
   for i in range( 1 , floatrows ):
-    FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] \
+    FloatsInput[ i ].append( FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] \
         / ( molsTotal ) )
 
 # This is the preserved seperate solver. I.E. the ratios of the different
@@ -242,27 +242,27 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     molcar -= FloatsInput[ 0 ][ column ] / 100
   print "The value of molcar is " + str(molcar)
   for row in range( 1 , floatrows ):
-    if FloatsInput[ row ][ 6 ] < 0:
-      if FloatsInput[ row ][ 2 ] == 1:
+    if FloatsInput[ row ][ ptt ] < 0:
+      if FloatsInput[ row ][ grp ] == 1:
         sys.exit("ERROR!!: Carrier constituent fractions are not allowed as \
             weight percents! Please correct to atomic percents as percentages \
             of element type! Yes we know this is buggy but is a result of \
             development occuring in stages")
-      componentType = FloatsInput[ row ][ 2 ]
+      componentType = FloatsInput[ row ][ grp ]
       masstotal = 0
       for i in range( 1 , floatrows ):
-        if FloatsInput[ i ][ 2 ] == componentType:
-          masstotal += FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ]
+        if FloatsInput[ i ][ grp ] == componentType:
+          masstotal += FloatsInput[ i ][ pct ] / FloatsInput[ i ][ iso ]
       for i in range( 1, floatrows ):
-        if FloatsInput[ i ][ 2 ] == componentType:
-          FloatsInput[ i ][ 5 ] = 100 * FloatsInput[ i ][ 5 ] / FloatsInput[ i ][ 1 ] \
+        if FloatsInput[ i ][ grp ] == componentType:
+          FloatsInput[ i ][ pct ] = 100 * FloatsInput[ i ][ pct ] / FloatsInput[ i ][ iso ] \
               / masstotal
-          FloatsInput[ i ][ 6 ] = 1
-    if FloatsInput[ row ][ 2 ] == 1:
-      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ 5 ] * \
-          CarrierComp[ int( FloatsInput[ row ][ 0 ] ) ] )
-    if FloatsInput[ row ][ 2 ] > 2:
-      FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
+          FloatsInput[ i ][ ptt ] = 1
+    if FloatsInput[ row ][ grp ] == 1:
+      FloatsInput[ row ].append( molcar * FloatsInput[ row ][ pct ] * \
+          CarrierComp[ int( FloatsInput[ row ][ ele ] ) ] )
+    if FloatsInput[ row ][ grp ] > 2:
+      FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ grp ] ) - 3 ] )
 # This determines if a density calculation is desired and if so
 # the caluclation is performed
   if int( csvinput[ 0 ][ 3 ] ) < 0:
@@ -271,9 +271,9 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
       DensityArray[ int( csvinput[ 4 ][ i ] ) ] = float( csvinput[ 4 ][ i + 1 ] )
     for i in range( 1 , floatrows ):
-      if FloatsInput[ i ][ 2 ] != 2:
-        density += DensityArray[ int( FloatsInput[ i ][ 0 ] ) ] * \
-            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 10000.0 )
+      if FloatsInput[ i ][ grp ] != 2:
+        density += DensityArray[ int( FloatsInput[ i ][ ele ] ) ] * \
+            FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] * ( 1.0 / 10000.0 )
     else:
       density = csvinput[ 0 ][ 3 ]
   print "The density is " + str( density )
@@ -281,28 +281,28 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
   for i in range( floatrows ):
     print FloatsInput[ i ]
   for i in range( 1 , floatrows ):
-    if FloatsInput[ i ][ 2 ] > 2:
-      molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ 2 ] ) - 3 ] * FloatsInput[ i ][ 3 ] * \
-          FloatsInput[ i ][ 5 ] / ( 100 )
-    if FloatsInput[ i ][ 2 ] == 2:
+    if FloatsInput[ i ][ grp ] > 2:
+      molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ grp ] ) - 3 ] * FloatsInput[ i ][ cth ] * \
+          FloatsInput[ i ][ pct ] / ( 100 )
+    if FloatsInput[ i ][ grp ] == 2:
       SaltTotal = 0
       for j in range( 1 , floatrows ):
-        if FloatsInput[ j ][ 4 ] != 0:
-          molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
-              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
-          SaltTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ 7 ] * \
-              FloatsInput[ i ][ 5 ] * FloatsInput[ j ][ 5 ] / (100 * 100 )
+        if FloatsInput[ j ][ htc ] != 0:
+          molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ mof ] * \
+              FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
+          SaltTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mof ] * \
+              FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
       FloatsInput[ i ].append( SaltTotal )
-    if FloatsInput[ i ][ 2 ] == 1:
-      molsTotal += FloatsInput[ i ][ 3 ] * FloatsInput[ i ][ 5 ] * \
-          FloatsInput[ i ][ 7 ] / ( 100 )
+    if FloatsInput[ i ][ grp ] == 1:
+      molsTotal += FloatsInput[ i ][ cth ] * FloatsInput[ i ][ pct ] * \
+          FloatsInput[ i ][ mof ] / ( 100 )
   for i in range( 1 , floatrows ):
-    FloatsInput[ i ].append( FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] \
+    FloatsInput[ i ].append( FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] \
         / ( molsTotal ) )
 # This here truncates the floating atomic percentages to 6 decimal palces,
 # or 1/10,000 of a percent accuracy
 for row in range( 1 , floatrows ):
-  FloatsInput[ row ][ 8 ] = trunc( ( FloatsInput[ row ][ 8 ] / 100.0 ) , 6 )
+  FloatsInput[ row ][ atf ] = trunc( ( FloatsInput[ row ][ atf ] / 100.0 ) , 6 )
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
@@ -342,14 +342,14 @@ for line in HostFile:
     NewFile.write( "poop")
     NewFile.write( line )
     for row in range( 1, floatrows - 1 ):
-      Z = str( int( FloatsInput[ row ][ 0 ] ) )
+      Z = str( int( FloatsInput[ row ][ ele ] ) )
       print Z
-      A = str( int( FloatsInput[ row ][ 1 ] ) )
+      A = str( int( FloatsInput[ row ][ iso ] ) )
       print A
       ModA = tzeros[ 0 : ( 3 - len ( A ) ) ] + A
       Isotope = Z + ModA + "." + Temp + "c"
       print Isotope
-      NewFile.write( "{:<10}{}".format( Isotope , FloatsInput[ row ][ 8 ] ) + "\n" )
+      NewFile.write( "{:<10}{}".format( Isotope , FloatsInput[ row ][ atf ] ) + "\n" )
   else:
     NewFile.write( line )
 
