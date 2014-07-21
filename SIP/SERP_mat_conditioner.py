@@ -5,6 +5,7 @@ import csv as csvreader
 import pdb as pdb
 import scipy as sp
 import time as time
+import sys as sys
 
 """ SERP_mat_conditioner is a simple python script that takes in a comma delimited input
     file which contains parameters and options and outputs the appropriate fuel
@@ -119,6 +120,11 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # math
   for row in range( 1 , floatrows ):
     if FloatsInput[ row ][ 6 ] < 0:
+      if FloatsInput[ row ][ 2 ] == 1:
+        sys.exit("ERROR!!: Carrier constituent fractions are not allowed as \
+            weight percents! Please correct to atomic percents as percentages \
+            of element type! Yes we know this is buggy but is a result of \
+            development occuring in stages")
       componentType = FloatsInput[ row ][ 2 ]
       masstotal = 0
       for i in range( 1 , floatrows ):
@@ -148,6 +154,18 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # calculate them (in the if == 2 section) by the mols of everything
 # that uses fluoride. Then we get atomic percentage, in the salt, of
 # all components
+# Also, right below, is a density calculator is denstity calculation
+# is desired
+  if int( csvinput[ 0 ][ 3 ] ) > 0:
+    density = 0.0
+    DensityArray = {}
+    for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
+      DensityArray[ int( csvinput[ 4 ][ i ] ) ] = float( csvinput[ 4 ][ i + 1 ] )
+    for i in range( 1 , floatrows ):
+      if FloatsInput[ i ][ 2 ] != 2:
+        density += DensityArray[ int( FloatsInput[ i ][ 0 ] ) ] * \
+            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 100.0 )
+  print "The density is " + str( density )
   molsTotal = 0
   for i in range( floatrows ):
     print FloatsInput[ i ]
@@ -210,6 +228,11 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
   print "The value of molcar is " + str(molcar)
   for row in range( 1 , floatrows ):
     if FloatsInput[ row ][ 6 ] < 0:
+      if FloatsInput[ row ][ 2 ] == 1:
+        sys.exit("ERROR!!: Carrier constituent fractions are not allowed as \
+            weight percents! Please correct to atomic percents as percentages \
+            of element type! Yes we know this is buggy but is a result of \
+            development occuring in stages")
       componentType = FloatsInput[ row ][ 2 ]
       masstotal = 0
       for i in range( 1 , floatrows ):
@@ -225,6 +248,18 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
           CarrierComp[ int( FloatsInput[ row ][ 0 ] ) ] )
     if FloatsInput[ row ][ 2 ] > 2:
       FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
+# This determines if a density calculation is desired and if so
+# the caluclation is performed
+  if int( csvinput[ 0 ][ 3 ] ) > 0:
+    density = 0.0
+    DensityArray = {}
+    for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
+      DensityArray[ int( csvinput[ 4 ][ i ] ) ] = float( csvinput[ 4 ][ i + 1 ] )
+    for i in range( 1 , floatrows ):
+      if FloatsInput[ i ][ 2 ] != 2:
+        density += DensityArray[ int( FloatsInput[ i ][ 0 ] ) ] * \
+            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 100.0 )
+  print "The density is " + str( density )
   molsTotal = 0
   for i in range( floatrows ):
     print FloatsInput[ i ]
