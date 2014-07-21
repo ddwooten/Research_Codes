@@ -178,6 +178,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
       if FloatsInput[ i ][ grp ] != 2:
         density += DensityArray[ int( FloatsInput[ i ][ ele ] ) ] * \
             FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] * ( 1.0 / 10000.0 )
+    density = str( density )
   else:
     density = cscinput[ 0 ][ 3 ]
   print "The density is " + str( density )
@@ -274,6 +275,7 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
       if FloatsInput[ i ][ grp ] != 2:
         density += DensityArray[ int( FloatsInput[ i ][ ele ] ) ] * \
             FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] * ( 1.0 / 10000.0 )
+    density = str( density )
     else:
       density = csvinput[ 0 ][ 3 ]
   print "The density is " + str( density )
@@ -339,8 +341,13 @@ NewFile.write( "% ------ Created on " + time.strftime( "%d-%m-%Y") + " at " + \
 
 for line in HostFile:
   if line.find( mat ) > -1:
-    NewFile.write( "poop")
-    NewFile.write( line )
+    OldString = line
+    Anchor = OldString.find( "tmp" )
+    NewString1 = OldString[ 0 : Anchor - 9 ]
+    NewString2 = OldString[ Anchor + 6 + len( csvinput[ 0 ][ 4 ] ) : ]
+    NewString = NewString1 + "-" + density + "    tmp    " + csvinput[ 0 ][ 4 ] + "    " + \
+        NewString2
+    NewFile.write( NewString )
     for row in range( 1, floatrows - 1 ):
       Z = str( int( FloatsInput[ row ][ ele ] ) )
       print Z
