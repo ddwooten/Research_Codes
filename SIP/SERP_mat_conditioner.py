@@ -72,7 +72,7 @@ print "This is the temperature " + str(Temp)
 # This extracts the name of the material being written
 
 material = csvinput[ 0 ][ 2 ][ 1 : len( csvinput[ 0 ][ 2 ] ) - 1 ]
-mat = "mat\t" + material
+mat = "mat    " + material
 # This creates the dictionary of lookup values for the salt constituents.
 # This is a patch for the original inability to have a mutliple species
 # carrier salt.
@@ -156,7 +156,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # all components
 # Also, right below, is a density calculator is denstity calculation
 # is desired
-  if int( csvinput[ 0 ][ 3 ] ) > 0:
+  if int( csvinput[ 0 ][ 3 ] ) < 0:
     density = 0.0
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
@@ -164,7 +164,9 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     for i in range( 1 , floatrows ):
       if FloatsInput[ i ][ 2 ] != 2:
         density += DensityArray[ int( FloatsInput[ i ][ 0 ] ) ] * \
-            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 100.0 )
+            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 10000.0 )
+  else:
+    density = cscinput[ 0 ][ 3 ]
   print "The density is " + str( density )
   molsTotal = 0
   for i in range( floatrows ):
@@ -250,7 +252,7 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
       FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ 2 ] ) - 3 ] )
 # This determines if a density calculation is desired and if so
 # the caluclation is performed
-  if int( csvinput[ 0 ][ 3 ] ) > 0:
+  if int( csvinput[ 0 ][ 3 ] ) < 0:
     density = 0.0
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
@@ -258,7 +260,9 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     for i in range( 1 , floatrows ):
       if FloatsInput[ i ][ 2 ] != 2:
         density += DensityArray[ int( FloatsInput[ i ][ 0 ] ) ] * \
-            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 100.0 )
+            FloatsInput[ i ][ 7 ] * FloatsInput[ i ][ 5 ] * ( 1.0 / 10000.0 )
+    else:
+      density = csvinput[ 0 ][ 3 ]
   print "The density is " + str( density )
   molsTotal = 0
   for i in range( floatrows ):
