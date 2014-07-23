@@ -12,14 +12,34 @@ import sys as sys
     composition in atomic percent inside of a SERPENT file that is also specified in the
     input file. A sample input file is given below
     <<
-    < Combined/Seperate >
-    < Free/Preserved >
-    < Path_to_SERPENT_input_file.txt >
-    < A of isotope n , Z of n , < 1 , 2, 3, 4 >, BNC , BNH , Abudance, < 1 , -1  >
+    < Free/Preserved , [number of header lines] , [Material Name] , [Density Option] , [Temperature in K] >
+    < [Path_to_SERPENT_input_file.txt] , [Mid Part of New File Name] >
+    < [ Ratio of group n] , [Ratio of group n + 1] , [ ....N] >
+    < [ Number of carrier salt species ] , [ Z of n species ] , [Ratio of n species ] ,  [ Z of N ] , [ R of N] >
+    < [ Num of salt species ] , [ Z of non host ] , [ Density of species with Z and host ] .... [ Nth species ] >
+    < [ele],[iso],[grp],[cth],[htc],[pct],[ptt],[mof],[atf] #These are the columns in the input files below which
+      #correspond to the above catagories >
+    <  [ Comments ] >
+    < [ele] , [iso] , [grp], [htc] ,[cth] , [pct],[ptt]
     >>
-    The < 1234 > flag determines how the < Abundance > value is handled. This will be
-    made more clear in the body of the code through comments and doc strings The < 1-1> fl    ag determines if the Abudnace is given in weight percent for its < 1234 > flag or atom    ic """
-
+    [Material Name] is the exact material name used in SERPENT
+    [ Density Option] -1 indicates a desire to calculate density using the density array (row 4) a
+      positive number will be taken as the input density
+    [ Ratio of group n] in the 2nd row is for the preserved option where a spent fuel ratio is
+      desired to be preserved
+    [ele] is the Z number of each isotope
+    [iso] is the A number of each isotope
+    [grp] is the salt calculation group (detemrines how it is handled)
+      1 = Salt Constituent, think Na in NaCl
+      2 = Salt Primary Carrier, think Cl in NaCl
+      3...N = all other groups, generally assumed to be fuel
+    [htc] is the number of group 2 atoms per that element in the salt
+    [cth] is the number of that element atoms per group 2 atom
+    [pct] is the input atomic or weight percentage within the group. Unless it is group 1
+      in which case it is the atomic percentage of that element's isotope within that element
+    [ptt] where -1 indicates a weight percentage and 1 indicates an atomic percentage for input
+      option [pct]
+    """
 def trunc( f , n ):
   ''' Truncates/pads a float f to n decimal places no rounding '''
   slen = len( '%.*f' % ( n , f ) )
@@ -32,8 +52,7 @@ print "Fuel Material Conditioner beginning"
 dzeros = "00"
 tzeros = "000"
 
-#inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
-inputfile = "test2.csv"
+inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
 print "Opening csv file now"
 
 csvfile = open( inputfile, "r" )
@@ -64,8 +83,8 @@ atf = int( csvinput[ 5 ][ 8 ] )
 
 # This prints out the read in csv file, it should be commented out for
 # real runs
-for row in range( len ( csvinput ) ):
-  print csvinput[ row ]
+#for row in range( len ( csvinput ) ):
+#  print csvinput[ row ]
 
 # This extracts the row in cvs input where the actual info begins and
 # not header stuff.
@@ -80,7 +99,7 @@ if len( Temperature ) > 3:
   Temp = Temperature[ 0 : 2 ]
 else:
   Temp = "0" + Temperature[ 0 : 1 ]
-print "This is the temperature " + str(Temp)
+#print "This is the temperature " + str(Temp)
 
 # This extracts the name of the material being written
 
@@ -94,7 +113,7 @@ CarrierComp = {}
 for i in range( 1 , int( csvinput[ 3 ][ 0 ] ) * 2 , 2 ):
   CarrierComp[ int( csvinput[ 3 ][ i ] ) ] = float( csvinput[ 3 ][ i + 1 ] ) * \
       ( 1.0 / 100 )
-print CarrierComp
+#print CarrierComp
 
 # initilizing FloatsInput array, the next 13 lines of code simply copy the csvinput
 # array into another array as float values as opposed to strings
@@ -114,8 +133,8 @@ for row in range( StartRow , csvinputrows ):
     if len( csvinput[ row ][ column ] ) > 0:
       tmpArray.append( float( csvinput[ row ][ column ] ) )
   FloatsInput[ row - StartRow ] = tmpArray
-for i in range( floatrows ):
-  print FloatsInput[ i ]
+#for i in range( floatrows ):
+#  print FloatsInput[ i ]
 
 # This is the Free section. Ratio of componenets not given, simply
 # max solubilities which are used.
@@ -181,7 +200,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     density = str( density )
   else:
     density = csvinput[ 0 ][ 3 ]
-  print "The density is " + str( density )
+#  print "The density is " + str( density )
   molsTotal = 0
   for i in range( floatrows ):
     print FloatsInput[ i ]
@@ -336,6 +355,10 @@ NewFile = open( str( NewFileName ) , "w" )
 
 NewFile.write( "% ------ Created on " + time.strftime( "%d-%m-%Y") + " at " + \
     time.strftime( "%H:%M" ) + "\n" )
+NewFile.write( "% ------ Comments:" + "\n" )
+if len( csvinput[ 6 ][ 0 ] ) > 0:
+  for i in range( 0 , len( csvinput[ 6 ][ 0 ] ) , 49 ):
+    NewFile.write( "% ------ <<" + csvinput[ 6 ][ 0 ][ i : i + 49 ] + "\n" )
 
 # This loops through the host file writting out its contents to the new file. It contains an if
 # statement to catch the fuel material section and insert the new data

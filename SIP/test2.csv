@@ -1,9 +1,10 @@
-FREE,6,"""FuelSalt""",4.4,900,,
+FREE,7,"""FuelSalt""",4.4,900,,
 """/home/ddwooten/Dropbox/Dan's Stuff/Documents/UCB/Research/Codes/SIP/SLSR2.txt""","""NaClUPu""",,,,,
 3,2,,,,,
 2,11,50,12,50,,
 5,11,1.1,12,1.3,92,3.6,94,3.7,89,2.5
 0,1,2,3,4,5,6,7,8
+"""This is a comment which I need to be very long to test the chopping abilities of my code. So I'm just gonna write a bunch of stuff"""
 22,13,,,,,
 11,0,1,1,1,100,1
 12,0,1,2,1,100,1
