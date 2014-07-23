@@ -180,7 +180,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
             FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] * ( 1.0 / 10000.0 )
     density = str( density )
   else:
-    density = cscinput[ 0 ][ 3 ]
+    density = csvinput[ 0 ][ 3 ]
   print "The density is " + str( density )
   molsTotal = 0
   for i in range( floatrows ):
@@ -276,8 +276,8 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
         density += DensityArray[ int( FloatsInput[ i ][ ele ] ) ] * \
             FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] * ( 1.0 / 10000.0 )
     density = str( density )
-    else:
-      density = csvinput[ 0 ][ 3 ]
+  else:
+    density = csvinput[ 0 ][ 3 ]
   print "The density is " + str( density )
   molsTotal = 0
   for i in range( floatrows ):
@@ -304,7 +304,7 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
 # This here truncates the floating atomic percentages to 6 decimal palces,
 # or 1/10,000 of a percent accuracy
 for row in range( 1 , floatrows ):
-  FloatsInput[ row ][ atf ] = trunc( ( FloatsInput[ row ][ atf ] / 100.0 ) , 6 )
+  FloatsInput[ row ][ atf ] = trunc( ( FloatsInput[ row ][ atf ] / 100.0 ) , 10 )
 for i in range( floatrows ):
   print FloatsInput[ i ]
 
@@ -356,7 +356,7 @@ for line in HostFile:
       ModA = tzeros[ 0 : ( 3 - len ( A ) ) ] + A
       Isotope = Z + ModA + "." + Temp + "c"
       print Isotope
-      NewFile.write( "{:<10}{}".format( Isotope , FloatsInput[ row ][ atf ] ) + "\n" )
+      NewFile.write( "{:<14}{}".format( Isotope , FloatsInput[ row ][ atf ] ) + "\n" )
   else:
     NewFile.write( line )
 
