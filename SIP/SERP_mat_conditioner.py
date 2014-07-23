@@ -169,7 +169,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # all components
 # Also, right below, is a density calculator is denstity calculation
 # is desired
-  if int( csvinput[ 0 ][ 3 ] ) < 0:
+  if float( csvinput[ 0 ][ 3 ] ) < 0:
     density = 0.0
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
@@ -266,7 +266,7 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
       FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ grp ] ) - 3 ] )
 # This determines if a density calculation is desired and if so
 # the caluclation is performed
-  if int( csvinput[ 0 ][ 3 ] ) < 0:
+  if float( csvinput[ 0 ][ 3 ] ) < 0:
     density = 0.0
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
