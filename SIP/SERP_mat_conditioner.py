@@ -192,7 +192,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     if FloatsInput[ i ][ grp ] == 2:
       SaltTotal = 0
       for j in range( 1 , floatrows ):
-        if FloatsInput[ j ][ htc ] != 0:
+        if FloatsInput[ j ][ grp ] != 2:
           molsTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mof ] * \
               FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
           SaltTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mot ] * \
@@ -289,8 +289,8 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     if FloatsInput[ i ][ grp ] == 2:
       SaltTotal = 0
       for j in range( 1 , floatrows ):
-        if FloatsInput[ j ][ htc ] != 0:
-          molsTotal += FloatsInput[ j ][ 4 ] * FloatsInput[ j ][ mof ] * \
+        if FloatsInput[ j ][ grp ] != 2:
+          molsTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mof ] * \
               FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
           SaltTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mof ] * \
               FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
