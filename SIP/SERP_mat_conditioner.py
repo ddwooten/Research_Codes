@@ -195,7 +195,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
         if FloatsInput[ j ][ grp ] != 2:
           molsTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mof ] * \
               FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
-          SaltTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mot ] * \
+          SaltTotal += FloatsInput[ j ][ htc ] * FloatsInput[ j ][ mof ] * \
               FloatsInput[ i ][ pct ] * FloatsInput[ j ][ pct ] / (100 * 100 )
       FloatsInput[ i ].append( SaltTotal )
     if FloatsInput[ i ][ grp ] == 1:
