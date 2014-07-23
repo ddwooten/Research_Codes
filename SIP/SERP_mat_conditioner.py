@@ -203,7 +203,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
           FloatsInput[ i ][ mof ] / ( 100 )
   for i in range( 1 , floatrows ):
     FloatsInput[ i ].append( FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] \
-        / ( molsTotal ) )
+        * FloatsInput[ i ][ cth ]/ ( molsTotal ) )
 
 # This is the preserved seperate solver. I.E. the ratios of the different
 # groups to one another are given, as are their max solubilities. A solution
@@ -300,7 +300,8 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
           FloatsInput[ i ][ mof ] / ( 100 )
   for i in range( 1 , floatrows ):
     FloatsInput[ i ].append( FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] \
-        / ( molsTotal ) )
+        * FloatsInput[ i ][ cth ] / ( molsTotal ) )
+
 # This here truncates the floating atomic percentages to 6 decimal palces,
 # or 1/10,000 of a percent accuracy
 for row in range( 1 , floatrows ):
