@@ -1,4 +1,4 @@
-% ------ Created on 23-07-2014 at 12:52
+% ------ Created on 23-07-2014 at 13:15
 set title "Simplified Liquid Sphere Reactor"
 
 % --- Surfaces (i.e. the rx)
@@ -31,7 +31,7 @@ mat HastelloyNMod       -8.86   tmp     973 rgb 192 192 192
 22000.09c       -0.01
 
 % ------ Fuel Salt
-mat    FuelSalt    -2.0374    tmp    900    5    rgb    225    0    0
+mat    FuelSalt    -4.4    tmp    900    5    rgb    225    0    0
 11000.09c     0.1074380165
 12000.09c     0.2148760330
 17000.09c     0.5619834710
