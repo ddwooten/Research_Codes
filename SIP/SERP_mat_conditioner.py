@@ -45,7 +45,7 @@ def trunc( f , n ):
   slen = len( '%.*f' % ( n , f ) )
   return str( f )[:slen]
 
-print "Fuel Material Conditioner beginning"
+#print "Fuel Material Conditioner beginning"
 
 # Here we define two stirngs we will use later to format the input for the serpent file
 
@@ -53,11 +53,11 @@ dzeros = "00"
 tzeros = "000"
 
 inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
-print "Opening csv file now"
+#print "Opening csv file now"
 
 csvfile = open( inputfile, "r" )
 
-print "Reading file now"
+#print "Reading file now"
 
 reader = csvreader.reader( csvfile )
 
@@ -122,7 +122,7 @@ FloatsInput=[]
 csvinputrows = len( csvinput )
 # Total rows in FloatsInput
 floatrows = csvinputrows - StartRow
-print " Creating floats array"
+#print " Creating floats array"
 for i in range( floatrows ):
   FloatsInput.append( 0 )
 # This is a clumsy way to turn csvinputs into floats, tmp array isn't
@@ -141,7 +141,7 @@ for row in range( StartRow , csvinputrows ):
 
 if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     or csvinput[ 0 ][ 0 ] == "FREE":
-  print "Running under the \"Free\" assumption"
+  #print "Running under the \"Free\" assumption"
 # molcar is the molar percentage of base salt after additions of fuel salt
   molcar = 1
 # This simply calculates the molar percentage of base salt
@@ -202,8 +202,6 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     density = csvinput[ 0 ][ 3 ]
 #  print "The density is " + str( density )
   molsTotal = 0
-  for i in range( floatrows ):
-    print FloatsInput[ i ]
   for i in range( 1 , floatrows ):
     if FloatsInput[ i ][ grp ] > 2:
       molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ grp ] ) - 3 ] * FloatsInput[ i ][ cth ] * \
@@ -231,15 +229,15 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 
 if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     or csvinput[ 0 ][ 0 ] == "PRESERVED":
-  print "Running under the \"Preserved\" assumption"
+  #print "Running under the \"Preserved\" assumption"
   # initilize ratios array
   ratio = []
   for column in range( len( csvinput[ 2 ] ) ):
     if len ( csvinput[ 2 ][ column ] ) > 0:
       ratio.append( float( csvinput[ 2 ][ column ] ) )
   # initilize multiplier array
-  print " Displaying ratio array"
-  print ratio
+  #print " Displaying ratio array"
+  #print ratio
   mult = []
 # The only thing I will explain is this. What this does,
 # is because the total mol fraction of a perserved ratio of
@@ -248,19 +246,19 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
 # that will determine the mol percents.
   for column in range( len( ratio ) ):
     mult.append( FloatsInput[ 0 ][ column ] / ratio[ column ] )
-  print " Displaying multiplier array"
-  print mult
+  #print " Displaying multiplier array"
+  #print mult
   multiplier = min( mult )
-  print " Displaying multiplier"
-  print multiplier
-  print "Adusting FloatsInput 0th row "
+  #print " Displaying multiplier"
+  #print multiplier
+  #print "Adusting FloatsInput 0th row "
   for column in range( len( FloatsInput[ 0 ] ) ):
     FloatsInput[ 0 ][ column ] = ratio[ column ] * multiplier
-  print FloatsInput[ 0 ]
+  #print FloatsInput[ 0 ]
   molcar = 1
   for column in range( len( FloatsInput[ 0 ] ) ):
     molcar -= FloatsInput[ 0 ][ column ] / 100
-  print "The value of molcar is " + str(molcar)
+  #print "The value of molcar is " + str(molcar)
   for row in range( 1 , floatrows ):
     if FloatsInput[ row ][ ptt ] < 0:
       if FloatsInput[ row ][ grp ] == 1:
@@ -297,10 +295,8 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     density = str( density )
   else:
     density = csvinput[ 0 ][ 3 ]
-  print "The density is " + str( density )
+  #print "The density is " + str( density )
   molsTotal = 0
-  for i in range( floatrows ):
-    print FloatsInput[ i ]
   for i in range( 1 , floatrows ):
     if FloatsInput[ i ][ grp ] > 2:
       molsTotal += FloatsInput[ 0 ][ int(FloatsInput[ i ][ grp ] ) - 3 ] * FloatsInput[ i ][ cth ] * \
@@ -325,12 +321,10 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
 # or 1/10,000 of a percent accuracy
 for row in range( 1 , floatrows ):
   FloatsInput[ row ][ atf ] = trunc( ( FloatsInput[ row ][ atf ] / 100.0 ) , 10 )
-for i in range( floatrows ):
-  print FloatsInput[ i ]
 
 HostFileName = csvinput[ 1 ][ 0 ][ 1 : len( csvinput[ 1 ][ 0 ] ) - 1 ]
 
-print HostFileName
+#print HostFileName
 
 HostFile = open( HostFileName , "r" )
 
@@ -349,7 +343,7 @@ NameExtension = csvinput[ 1 ][ 1 ][ 1 : len( csvinput[ 1 ][ 1 ] ) - 1 ]
 NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
     + ".txt"
 
-print NewFileName
+#print NewFileName
 
 NewFile = open( str( NewFileName ) , "w" )
 
@@ -374,12 +368,12 @@ for line in HostFile:
     NewFile.write( NewString )
     for row in range( 1, floatrows - 1 ):
       Z = str( int( FloatsInput[ row ][ ele ] ) )
-      print Z
+      #print Z
       A = str( int( FloatsInput[ row ][ iso ] ) )
-      print A
+      #print A
       ModA = tzeros[ 0 : ( 3 - len ( A ) ) ] + A
       Isotope = Z + ModA + "." + Temp + "c"
-      print Isotope
+      #print Isotope
       NewFile.write( "{:<14}{}".format( Isotope , FloatsInput[ row ][ atf ] ) + "\n" )
   else:
     NewFile.write( line )
@@ -388,6 +382,6 @@ HostFile.close()
 
 NewFile.close()
 
-print "The SERPENT material conditioner has finished running"
+#print "The SERPENT material conditioner has finished running"
 exit()
 
