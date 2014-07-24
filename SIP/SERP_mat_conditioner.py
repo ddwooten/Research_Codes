@@ -350,9 +350,11 @@ NewFile = open( str( NewFileName ) , "w" )
 NewFile.write( "% ------ Created on " + time.strftime( "%d-%m-%Y") + " at " + \
     time.strftime( "%H:%M" ) + "\n" )
 NewFile.write( "% ------ Comments:" + "\n" )
+NewFile.write( "% ------ << ")
 if len( csvinput[ 6 ][ 0 ] ) > 0:
   for i in range( 0 , len( csvinput[ 6 ][ 0 ] ) , 49 ):
-    NewFile.write( "% ------ <<" + csvinput[ 6 ][ 0 ][ i : i + 49 ] + "\n" )
+    NewFile.write( "% ------ < " + csvinput[ 6 ][ 0 ][ i : i + 49 ] + "\n" )
+NewFile.write( "% ------ >>")
 
 # This loops through the host file writting out its contents to the new file. It contains an if
 # statement to catch the fuel material section and insert the new data
