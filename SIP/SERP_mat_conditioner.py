@@ -188,12 +188,13 @@ if LogLevel <= 10:
 
 if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     or csvinput[ 0 ][ 0 ] == "FREE":
-  #print "Running under the \"Free\" assumption"
+  logging.info( "Running under the \"Free\" assumption" )
 # molcar is the molar percentage of base salt after additions of fuel salt
   molcar = 1
 # This simply calculates the molar percentage of base salt
   for column in range( len( FloatsInput[ 0 ] ) ):
     molcar -= FloatsInput[ 0 ][ column ] / 100
+  logging.debug( "molcar has the value " + str( molcar ) )
 # This converts all weight percentages to atomic percentages by
 # looping over a catagory given in weight and doing the appropriate
 # math
@@ -235,6 +236,11 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 # all components
 # Also, right below, is a density calculator is denstity calculation
 # is desired
+  if LogLevel <= 10:
+    logging.debug( "After modification for weight percentage and molar ratios" )
+    logging.debug( "FloatsInpput has the value seen below" )
+    for row in range( floatrows ):
+      logging.debug( FloatsInput [ row ] )
   if float( csvinput[ 0 ][ 3 ] ) < 0:
     density = 0.0
     DensityArray = {}
