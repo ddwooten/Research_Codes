@@ -356,6 +356,8 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
       DensityArray[ int( csvinput[ 4 ][ i ] ) ] = float( csvinput[ 4 ][ i + 1 ] )
+    logging.debug( "DensityArray has the value seen below" )
+    logging.debug( DensityArray)
     for i in range( 1 , floatrows ):
       if FloatsInput[ i ][ grp ] != 2:
         density += DensityArray[ int( FloatsInput[ i ][ ele ] ) ] * \
@@ -363,7 +365,7 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     density = str( density )
   else:
     density = csvinput[ 0 ][ 3 ]
-  #print "The density is " + str( density )
+  logging.debug( "density has the value " + str( density ) )
   molsTotal = 0
   for i in range( 1 , floatrows ):
     if FloatsInput[ i ][ grp ] > 2:
@@ -384,11 +386,20 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
   for i in range( 1 , floatrows ):
     FloatsInput[ i ].append( FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] \
         * FloatsInput[ i ][ cth ] / ( molsTotal ) )
+  logging.debug( "molsTotal has the value " + str( molsTotal ) )
+  if LogLevel <= 10:
+    logging.debug( "FloatsInput, after atomic ratio calc, has value seen below" )
+    for row in range( floatrows ):
+      logging.debug( FloatsInput[ row ] )
 
 # This here truncates the floating atomic percentages to 6 decimal palces,
 # or 1/10,000 of a percent accuracy
 for row in range( 1 , floatrows ):
   FloatsInput[ row ][ atf ] = trunc( ( FloatsInput[ row ][ atf ] / 100.0 ) , 10 )
+if LogLevel <= 10:
+  logging.debug( "After truncation to strings FloatsInput has the valeu" )
+  for row in range( floatrows ):
+    logging.debug( FloatsInput[ row ] )
 
 
 NewFile.write( "% ------ Created on " + time.strftime( "%d-%m-%Y") + " at " + \
