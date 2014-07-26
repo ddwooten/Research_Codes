@@ -246,6 +246,8 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
       DensityArray[ int( csvinput[ 4 ][ i ] ) ] = float( csvinput[ 4 ][ i + 1 ] )
+    logging.debug( "DensityArray has the value seen below" )
+    logging.debug( DensityArray )
     for i in range( 1 , floatrows ):
       if FloatsInput[ i ][ grp ] != 2:
         density += DensityArray[ int( FloatsInput[ i ][ ele ] ) ] * \
@@ -253,7 +255,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     density = str( density )
   else:
     density = csvinput[ 0 ][ 3 ]
-#  print "The density is " + str( density )
+  logging.debug( "density has the value of " + str( density ) )
   molsTotal = 0
   for i in range( 1 , floatrows ):
     if FloatsInput[ i ][ grp ] > 2:
@@ -274,7 +276,11 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
   for i in range( 1 , floatrows ):
     FloatsInput[ i ].append( FloatsInput[ i ][ mof ] * FloatsInput[ i ][ pct ] \
         * FloatsInput[ i ][ cth ]/ ( molsTotal ) )
-
+  logging.debug( "molsTotal has the value " + str( molsTotal ) )
+  if LogLevel <= 10:
+    logging.debug( "FloatsInput with atomic ratios is as seen below" )
+    for row in range( floatrows ):
+      logging.debug( FloatsInput[ row ] )
 # This is the preserved seperate solver. I.E. the ratios of the different
 # groups to one another are given, as are their max solubilities. A solution
 # must be found that maximizes the groups in the salt but preserves their ratio.
