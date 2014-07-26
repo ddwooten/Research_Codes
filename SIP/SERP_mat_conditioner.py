@@ -439,6 +439,8 @@ HostFile.close()
 
 NewFile.close()
 
-#print "The SERPENT material conditioner has finished running"
+logging.info( "Code has finished running succesfully")
+
+logging.shutdown()
 exit()
 
