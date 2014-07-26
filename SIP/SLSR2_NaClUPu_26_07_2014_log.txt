@@ -1,0 +1,5 @@
+[   DEBUG] This is the debug level reporting in
+[    INFO] This is the info level reporting in 
+[ WARNING] This is the warning level reporting in
+[   ERROR] This is the error level reporting in
+[CRITICAL] This is the critical level reporting in

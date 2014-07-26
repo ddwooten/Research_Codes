@@ -3,10 +3,9 @@
 
 import csv as csvreader
 import pdb as pdb
-import scipy as sp
 import time as time
 import sys as sys
-
+import logging as logging
 """ SERP_mat_conditioner is a simple python script that takes in a comma delimited input
     file which contains parameters and options and outputs the appropriate fuel
     composition in atomic percent inside of a SERPENT file that is also specified in the
@@ -67,6 +66,43 @@ csvinput = []
 # This creates an array of strings from the csv file
 for row in reader:
   csvinput.append( row )
+
+HostFileName = csvinput[ 1 ][ 0 ][ 1 : len( csvinput[ 1 ][ 0 ] ) - 1 ]
+
+HostFile = open( HostFileName , "r" )
+
+# This is going to be the index where to grab the file name
+
+NameStartIndex = HostFileName.rfind("/") + 1
+
+# This is going to be the index where to chop off the extension
+
+NameEndIndex = HostFileName.rfind(".")
+
+BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
+
+NameExtension = csvinput[ 1 ][ 1 ][ 1 : len( csvinput[ 1 ][ 1 ] ) - 1 ]
+
+NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
+    + ".txt"
+
+LogFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
+    + "_log" + ".txt"
+
+NewFile = open( str( NewFileName ) , "w" )
+
+try:
+  LogLevel = int( csvinput[ 0 ][ 5 ] )
+except:
+  sys.exit( "ERROR!!: Log level can not be cast as an integer!" )
+
+logging.basicConfig( filename = LogFileName , format ="[%(levelname)8s] %(message)s" \
+    , filemode = 'w' , level = LogLevel )
+logging.debug( "This is the debug level reporting in" )
+logging.info( "This is the info level reporting in " )
+logging.warning( "This is the warning level reporting in" )
+logging.error( "This is the error level reporting in" )
+logging.critical( "This is the critical level reporting in" )
 
 # This reads in values of the locations in the array where information
 # can be found and assings it to its identifiers
@@ -322,30 +358,6 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
 for row in range( 1 , floatrows ):
   FloatsInput[ row ][ atf ] = trunc( ( FloatsInput[ row ][ atf ] / 100.0 ) , 10 )
 
-HostFileName = csvinput[ 1 ][ 0 ][ 1 : len( csvinput[ 1 ][ 0 ] ) - 1 ]
-
-#print HostFileName
-
-HostFile = open( HostFileName , "r" )
-
-# This is going to be the index where to grab the file name
-
-NameStartIndex = HostFileName.rfind("/") + 1
-
-# This is going to be the index where to chop off the extension
-
-NameEndIndex = HostFileName.rfind(".")
-
-BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
-
-NameExtension = csvinput[ 1 ][ 1 ][ 1 : len( csvinput[ 1 ][ 1 ] ) - 1 ]
-
-NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
-    + ".txt"
-
-#print NewFileName
-
-NewFile = open( str( NewFileName ) , "w" )
 
 NewFile.write( "% ------ Created on " + time.strftime( "%d-%m-%Y") + " at " + \
     time.strftime( "%H:%M" ) + "\n" )

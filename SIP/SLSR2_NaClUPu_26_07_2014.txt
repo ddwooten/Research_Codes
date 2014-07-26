@@ -1,0 +1,64 @@
+% ------ Created on 26-07-2014 at 16:35
+% ------ Comments:
+% ------ << 
+% ------ < "This is a comment which I need to be very long t
+% ------ < o test the chopping abilities of my code. So I'm 
+% ------ < just gonna write a bunch of stuff"
+% ------ >> 
+set title "Simplified Liquid Sphere Reactor"
+
+% --- Surfaces (i.e. the rx)
+
+% ------ Fuel Sphere
+surf    1       sph     0       0       0       1000
+
+% ------ Outer Edge of Vessel
+surf    2       sph     0       0       0       1010
+
+% --- Cells
+cell    1       0       FuelSalt        -1
+cell    2       0       HastelloyNMod   1       -2
+cell    3       0       void    2
+
+% --- Materials
+
+% ------ Hastelloy N Modified
+mat HastelloyNMod       -8.86   tmp     973 rgb 192 192 192
+28000.09c       -0.67
+24000.09c       -0.07
+74000.09c       -0.165
+26000.09c       -0.05
+14000.09c       -0.01
+25055.09c       -0.008
+6000.09c        -0.0008
+27059.09c       -0.002
+29000.09c       -0.0035
+41093.09c       -0.01
+22000.09c       -0.01
+
+% ------ Fuel Salt
+mat    FuelSalt    -2.0374    tmp    900    5    rgb    225    0    0
+11000.09c     0.1074380165
+12000.09c     0.2148760330
+17000.09c     0.5619834710
+92235.09c     0.0583288657
+92238.09c     0.0143984069
+94239.09c     0.0257851239
+94241.09c     0.0128925619
+% ------ End Fuel Salt
+
+% --- Cross section library file path
+
+set acelib "/home/ddwooten/Documents/Research/Codes/SERPENT/serpent/xsdata/endfb7/sss_endfb7u.xsdata"
+
+% --- Boundary condition
+
+set bc 1
+
+% --- Neutron population and criticality cycles:
+
+set pop 10000 300 50
+
+% --- Plot
+
+plot 3 500 500
