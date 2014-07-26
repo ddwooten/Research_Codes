@@ -6,12 +6,14 @@ import pdb as pdb
 import time as time
 import sys as sys
 import logging as logging
+
 """ SERP_mat_conditioner is a simple python script that takes in a comma delimited input
     file which contains parameters and options and outputs the appropriate fuel
     composition in atomic percent inside of a SERPENT file that is also specified in the
     input file. A sample input file is given below
     <<
-    < Free/Preserved , [number of header lines] , [Material Name] , [Density Option] , [Temperature in K] >
+    < Free/Preserved , [number of header lines] , [Material Name] , [Density Option] , [Temperature in K]
+        , [ logger option] >
     < [Path_to_SERPENT_input_file.txt] , [Mid Part of New File Name] >
     < [ Ratio of group n] , [Ratio of group n + 1] , [ ....N] >
     < [ Number of carrier salt species ] , [ Z of n species ] , [Ratio of n species ] ,  [ Z of N ] , [ R of N] >
@@ -21,6 +23,7 @@ import logging as logging
     <  [ Comments ] >
     < [ele] , [iso] , [grp], [htc] ,[cth] , [pct],[ptt]
     >>
+    [logger option] sets theh logger default level. 0 for all, > 10 for just info and crits
     [Material Name] is the exact material name used in SERPENT
     [ Density Option] -1 indicates a desire to calculate density using the density array (row 4) a
       positive number will be taken as the input density
@@ -135,12 +138,16 @@ if len( Temperature ) > 3:
   Temp = Temperature[ 0 : 2 ]
 else:
   Temp = "0" + Temperature[ 0 : 1 ]
-#print "This is the temperature " + str(Temp)
+
+logging.info( "The temperature is " + str( Temperature ) )
+logging.info( "The SERPENT tempreature library is " + str( Temp ) )
 
 # This extracts the name of the material being written
 
 material = csvinput[ 0 ][ 2 ][ 1 : len( csvinput[ 0 ][ 2 ] ) - 1 ]
 mat = "mat    " + material
+
+logging.info( "The material search pattern is " + str( mat ) )
 # This creates the dictionary of lookup values for the salt constituents.
 # This is a patch for the original inability to have a mutliple species
 # carrier salt.
@@ -149,7 +156,8 @@ CarrierComp = {}
 for i in range( 1 , int( csvinput[ 3 ][ 0 ] ) * 2 , 2 ):
   CarrierComp[ int( csvinput[ 3 ][ i ] ) ] = float( csvinput[ 3 ][ i + 1 ] ) * \
       ( 1.0 / 100 )
-#print CarrierComp
+
+logging.debug( "The CarrierComp is " + str( CarrierComp ) )
 
 # initilizing FloatsInput array, the next 13 lines of code simply copy the csvinput
 # array into another array as float values as opposed to strings
@@ -169,8 +177,11 @@ for row in range( StartRow , csvinputrows ):
     if len( csvinput[ row ][ column ] ) > 0:
       tmpArray.append( float( csvinput[ row ][ column ] ) )
   FloatsInput[ row - StartRow ] = tmpArray
-#for i in range( floatrows ):
-#  print FloatsInput[ i ]
+
+if LogLevel <= 10:
+  logging.debug( "At initilization FloatsInput has the form")
+  for row in range( floatrows ):
+    logging.debug( FloatsInput[ row ] )
 
 # This is the Free section. Ratio of componenets not given, simply
 # max solubilities which are used.

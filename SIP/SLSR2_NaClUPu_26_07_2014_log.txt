@@ -3,3 +3,17 @@
 [ WARNING] This is the warning level reporting in
 [   ERROR] This is the error level reporting in
 [CRITICAL] This is the critical level reporting in
+[    INFO] The temperature is 900
+[    INFO] The SERPENT tempreature library is 09
+[    INFO] The material search pattern is mat    FuelSalt
+[   DEBUG] The CarrierComp is {11: 0.5, 12: 0.5}
+[   DEBUG] At initilization FloatsInput has the form
+[   DEBUG] [22.0, 13.0]
+[   DEBUG] [11.0, 0.0, 1.0, 1.0, 1.0, 100.0, 1.0]
+[   DEBUG] [12.0, 0.0, 1.0, 2.0, 1.0, 100.0, 1.0]
+[   DEBUG] [17.0, 0.0, 2.0, 1.0, 1.0, 100.0, 1.0]
+[   DEBUG] [92.0, 235.0, 3.0, 1.0, 3.0, 80.0, -1.0]
+[   DEBUG] [92.0, 238.0, 3.0, 1.0, 3.0, 20.0, -1.0]
+[   DEBUG] [94.0, 239.0, 4.0, 1.0, 3.0, 60.0, 1.0]
+[   DEBUG] [94.0, 241.0, 4.0, 1.0, 3.0, 30.0, 1.0]
+[   DEBUG] [89.0, 225.0, 4.0, 1.0, 3.0, 10.0, 1.0]
