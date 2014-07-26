@@ -242,6 +242,7 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
     for row in range( floatrows ):
       logging.debug( FloatsInput [ row ] )
   if float( csvinput[ 0 ][ 3 ] ) < 0:
+    logging.debug( "A density calculation request was made")
     density = 0.0
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
@@ -288,12 +289,14 @@ if csvinput[ 0 ][ 0 ] == "Free" or csvinput[ 0 ][ 0 ] == "free" \
 
 if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
     or csvinput[ 0 ][ 0 ] == "PRESERVED":
-  #print "Running under the \"Preserved\" assumption"
+  logging.info( "Running under the \"Preserved\" assumption" )
   # initilize ratios array
   ratio = []
   for column in range( len( csvinput[ 2 ] ) ):
     if len ( csvinput[ 2 ][ column ] ) > 0:
       ratio.append( float( csvinput[ 2 ][ column ] ) )
+  logging.debug( "The ratio array has value seen below" )
+  logging.debug( ratio )
   # initilize multiplier array
   #print " Displaying ratio array"
   #print ratio
@@ -305,19 +308,20 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
 # that will determine the mol percents.
   for column in range( len( ratio ) ):
     mult.append( FloatsInput[ 0 ][ column ] / ratio[ column ] )
-  #print " Displaying multiplier array"
-  #print mult
+  logging.debug( "mult has value seen below" )
+  logging.debug( mult )
   multiplier = min( mult )
-  #print " Displaying multiplier"
-  #print multiplier
-  #print "Adusting FloatsInput 0th row "
+  logging.debug( "multiplier has the value " + str( multiplier ) )
   for column in range( len( FloatsInput[ 0 ] ) ):
     FloatsInput[ 0 ][ column ] = ratio[ column ] * multiplier
-  #print FloatsInput[ 0 ]
+  if LogLevel <= 10:
+    logging.debug( "After ratio modification FloatsInpput has value seen below" )
+    for row in range( floatrows ):
+      logging.debug( FloatsInput[ row ] )
   molcar = 1
   for column in range( len( FloatsInput[ 0 ] ) ):
     molcar -= FloatsInput[ 0 ][ column ] / 100
-  #print "The value of molcar is " + str(molcar)
+  logging.debug( "molcar has the value " + str( molcar ) )
   for row in range( 1 , floatrows ):
     if FloatsInput[ row ][ ptt ] < 0:
       if FloatsInput[ row ][ grp ] == 1:
@@ -342,7 +346,12 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
       FloatsInput[ row ].append( FloatsInput[ 0 ][ int( FloatsInput[ row ][ grp ] ) - 3 ] )
 # This determines if a density calculation is desired and if so
 # the caluclation is performed
+  if LogLevel <= 10:
+    logging.debug( "After weight percentage and molar ratio mods FloatsInput has value")
+    for row in range( floatrows ):
+      logging.debug( FloatsInput[ row ] )
   if float( csvinput[ 0 ][ 3 ] ) < 0:
+    logging.debug( "A density calculation request was made")
     density = 0.0
     DensityArray = {}
     for i in range( 1 , int( csvinput[ 4 ][ 0 ] ) * 2 , 2 ):
