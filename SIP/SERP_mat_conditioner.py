@@ -395,7 +395,7 @@ if csvinput[ 0 ][ 0 ] == "Preserved" or csvinput[ 0 ][ 0 ] == "preserved" \
 # This here truncates the floating atomic percentages to 6 decimal palces,
 # or 1/10,000 of a percent accuracy
 for row in range( 1 , floatrows ):
-  FloatsInput[ row ][ atf ] = trunc( ( FloatsInput[ row ][ atf ] / 100.0 ) , 10 )
+  FloatsInput[ row ][ atf ] = "%.10f" % ( FloatsInput[ row ][ atf ] / 100.0 )
 if LogLevel <= 10:
   logging.debug( "After truncation to strings FloatsInput has the valeu" )
   for row in range( floatrows ):
