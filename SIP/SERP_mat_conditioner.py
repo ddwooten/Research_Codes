@@ -423,7 +423,7 @@ for line in HostFile:
     NewString = NewString1 + "-" + density + "    tmp    " + csvinput[ 0 ][ 4 ] + "    " + \
         NewString2
     NewFile.write( NewString )
-    for row in range( 1, floatrows - 1 ):
+    for row in range( 1, floatrows ):
       Z = str( int( FloatsInput[ row ][ ele ] ) )
       #print Z
       A = str( int( FloatsInput[ row ][ iso ] ) )

@@ -1,4 +1,4 @@
-% ------ Created on 27-07-2014 at 15:17
+% ------ Created on 27-07-2014 at 15:28
 % ------ Comments:
 % ------ << 
 % ------ < "This is a comment which I need to be very long t
@@ -45,6 +45,7 @@ mat    FuelSalt    -2.0374    tmp    900    5    rgb    225    0    0
 92238.09c     0.0143984070
 94239.09c     0.0257851240
 94241.09c     0.0128925620
+89225.09c     0.0042975207
 % ------ End Fuel Salt
 
 % --- Cross section library file path
