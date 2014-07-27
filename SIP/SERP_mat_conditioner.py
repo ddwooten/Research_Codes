@@ -419,7 +419,7 @@ for line in HostFile:
     OldString = line
     Anchor = OldString.find( "tmp" )
     NewString1 = OldString[ 0 : Anchor - 9 ]
-    NewString2 = OldString[ Anchor + 6 + len( csvinput[ 0 ][ 4 ] ) : ]
+    NewString2 = OldString[ Anchor + 10 : ]
     NewString = NewString1 + "-" + density + "    tmp    " + csvinput[ 0 ][ 4 ] + "    " + \
         NewString2
     NewFile.write( NewString )
