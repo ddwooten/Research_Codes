@@ -38,7 +38,8 @@ import logging as logging
       3...N = all other groups, generally assumed to be fuel
     [htc] is the number of group 2 atoms per that element in the salt
     [cth] is the number of that element atoms per group 2 atom
-    [pct] is the input atomic or weight percentage within the group. Unless it is group 1
+    [pct] is the input atomic or weight percentage (as a percent, so 100,
+      not 1, for 100%) within the group. Unless it is group 1
       in which case it is the atomic percentage of that element's isotope within that element
     [ptt] where -1 indicates a weight percentage and 1 indicates an atomic percentage for input
       option [pct]
