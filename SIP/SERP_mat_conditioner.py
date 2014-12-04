@@ -9,7 +9,7 @@ import sys as sys
 import logging as logging
 
 """ SERP_mat_conditioner is a simple python script that takes in a comma delimited input
-    file which contains parameters and options and outputs the appropriate fuel
+    file which contains parameters and options and outputs the appropriate material
     composition in atomic percent inside of a SERPENT file that is also specified in the
     input file. A sample input file is given below
     <<
@@ -22,13 +22,13 @@ import logging as logging
     < [ele],[iso],[grp],[cth],[htc],[pct],[ptt],[mof],[atf] #These are the columns in the input files below which
       #correspond to the above catagories >
     <  [ Comments ] >
-    < [ele] , [iso] , [grp], [htc] ,[cth] , [pct],[ptt]
+    < [ele] , [iso] , [grp] , [htc] , [cth] , [pct] , [ptt]
     >>
     [logger option] sets theh logger default level. 0 for all, > 10 for just info and crits
     [Material Name] is the exact material name used in SERPENT
-    [ Density Option] -1 indicates a desire to calculate density using the density array (row 4) a
+    [Density Option] -1 indicates a desire to calculate density using the density array (row 4) a
       positive number will be taken as the input density
-    [ Ratio of group n] in the 2nd row is for the preserved option where a spent fuel ratio is
+    [Ratio of group n] in the 2nd row is for the preserved option where a spent fuel ratio is
       desired to be preserved
     [ele] is the Z number of each isotope
     [iso] is the A number of each isotope
@@ -72,7 +72,7 @@ csvinput = []
 for row in reader:
   csvinput.append( row )
 
-HostFileName = csvinput[ 1 ][ 0 ][ 1 : len( csvinput[ 1 ][ 0 ] ) - 1 ]
+HostFileName = csvinput[ 1 ][ 0 ][ 0 : len( csvinput[ 1 ][ 0 ] ) ]
 
 HostFile = open( HostFileName , "r" )
 
@@ -86,7 +86,7 @@ NameEndIndex = HostFileName.rfind(".")
 
 BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
 
-NameExtension = csvinput[ 1 ][ 1 ][ 1 : len( csvinput[ 1 ][ 1 ] ) - 1 ]
+NameExtension = csvinput[ 1 ][ 1 ][ 0 : len( csvinput[ 1 ][ 1 ] ) ]
 
 NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
     + ".txt"
@@ -146,7 +146,7 @@ logging.info( "The SERPENT tempreature library is " + str( Temp ) )
 
 # This extracts the name of the material being written
 
-material = csvinput[ 0 ][ 2 ][ 1 : len( csvinput[ 0 ][ 2 ] ) - 1 ]
+material = csvinput[ 0 ][ 2 ][ 0 : len( csvinput[ 0 ][ 2 ] ) ]
 mat = "mat    " + material
 
 logging.info( "The material search pattern is " + str( mat ) )
@@ -441,7 +441,7 @@ HostFile.close()
 
 NewFile.close()
 
-logging.info( "Code has finished running succesfully")
+logging.info( "Code has finished running succesfully" )
 
 logging.shutdown()
 exit()
