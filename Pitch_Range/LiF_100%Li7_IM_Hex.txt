@@ -1,0 +1,146 @@
+% ------ Created on 22-11-2014 at 17:45
+% ------ Comments:
+% ------ << 
+% ------ < Isotopic composition data from TransAtomic White 
+% ------ < paper read from Figure 10. Assumed only Actinides
+% ------ <  in iso vector. All actinides assumed to be in on
+% ------ < e valence config.
+% ------ < Radius of ZrH is calculated as sqrt((3/(2*pi)) \
+% ------ < * p^2) - 0.0044 - 0.0635*2
+% ------ < Pitch is 6cm.
+% ------ >> 
+set title "LiF 100% Li-7 Infinite Medium Reactivity Analysis Hex Lattice"
+
+% --- Geometry Components
+
+% ------ Cladding Widths: 0.0044, 0.0635, 0.0635
+
+% --- Surfaces
+
+% ------ Fake Surfaces
+
+% ------ Real Surfaces for actual cells
+
+% ------ ZrH1.6 Cylindrical Surface
+surf    11    cyl    0.0    0.0    4.0146
+
+% ------ 316SS Cylindrical Surface
+surf    12    cyl    0.0    0.0    4.0190
+
+% ------ Moly Cylindrical Surface
+surf    13    cyl    0.0    0.0    4.0825
+
+% ------ HastelloyNMod Cylindrical Surface
+surf    14    cyl    0.0    0.0    4.146
+
+% ------ Cell Hexagonal Cylindrical Surface
+surf    15    hexyc     0.0    0.0    6.0     0.0
+
+% --- Cells
+
+% ------ Virtual Cells
+
+% ------ Actual Geometry Cells (Universe 0)
+cell    11    0    fill ZrH1.6                 -11
+cell    12    0    fill 316SS            11    -12
+cell    13    0    fill Moly             12    -13
+cell    14    0    fill HastelloyNMod    13    -14
+cell    15    0    fill FuelSalt         14    -15
+cell    16    0    outside               15
+
+
+% --- Materials
+
+% ------ Hastelloy N Modified
+mat HastelloyNMod    -8.86    tmp    973 rgb 192 192 192 
+28000.09c    -0.67
+24000.09c    -0.07
+74000.09c    -0.165
+26000.09c    -0.05
+14000.09c    -0.01
+25055.09c    -0.008
+6000.09c    -0.0008
+27059.09c    -0.002
+29000.09c    -0.0035
+41093.09c    -0.01
+22000.09c    -0.01
+
+% ------ Zirconium Hydride
+mat    ZrH1.6    -5.66    tmp    900    rgb    255    255    255
+40000.09c    1
+1001.09c     1.599816
+1002.09c     0.000184
+
+% ------ 316SS Clad
+mat    316SS    -7.99    tmp    900    rgb    0    0    153
+6000.09c    -0.08
+25055.09c   -2
+15031.09c   -0.045
+16000.09c   -0.06
+14000.09c   -0.75
+24000.09c   -16
+28000.09c   -10
+42000.09c   -2
+7014.09c   -0.1
+26000.09c   -69.165
+
+% ------ Molybdenum Clad
+mat    Moly    -10.2    tmp    900    rgb    0    255    0
+42000.09c   -1
+
+% ------ Fill Gas 
+mat    FillGas    1    tmp    900    rgb    255    255    0
+2004.09c   1
+
+% ------ Graphite
+mat     Graphite    -2.1    tmp 600 rgb 255 255 255
+6000.06c	1
+
+% ------ Fuel Salt
+mat fuel -3.07010387947 tmp 900 rgb 225 0 0 
+92235.09c     0.0013677775
+92236.09c     0.0007333748
+92238.09c     0.1002264358
+93237.09c     0.0000730280
+94238.09c     0.0000041555
+94239.09c     0.0007241693
+94240.09c     0.0004120868
+94241.09c     0.0002051884
+94242.09c     0.0000817362
+95241.09c     0.0000512971
+95243.09c     0.0000203500
+9019.09c      0.6558135756
+3007.09c      0.2580286227
+% ------ End Fuel Salt
+
+% --- BURNUP DECK
+
+% ------ Burnup Intervals
+% ------ End Burnup Intervals
+
+% ------ Set Power for Normalization
+set power 625000000
+
+% ------ Set Inventory for Burnup Report
+set inventory all
+
+% ------ Set xscalc mode
+set xscalc 1
+
+% --- Cross section library file path
+
+set acelib "/global/home/groups/ac_nuclear/serpent/xsdata/endfb7/sss_endfb7u.xsdata"
+set declib "/global/home/groups/ac_nuclear/serpent/xsdata/endfb7/sss_endfb7.dec"
+set nfylib "/global/home/groups/ac_nuclear/serpent/xsdata/endfb7/sss_endfb7.nfy"
+
+% --- Boundary condition
+
+set bc 1
+
+% --- Neutron population and criticality cycles:
+
+set pop 10000 300 50
+
+% --- Plot
+
+plot 3 1000 1000
