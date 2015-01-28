@@ -13,7 +13,12 @@ set title "LiF 100% Li-7 Infinite Medium Reactivity Analysis Hex Lattice"
 
 % --- Geometry Components
 
-% ------ Cladding Widths: 0.0044, 0.0635, 0.0635
+% ------ SETUP
+% ------ Hex
+% ------ 316SS,0.0044
+% ------ Moly,0.0635
+% ------ HastelloyNMod,0.0635
+% ------ END SETUP 
 
 % --- Surfaces
 
@@ -21,19 +26,19 @@ set title "LiF 100% Li-7 Infinite Medium Reactivity Analysis Hex Lattice"
 
 % ------ Real Surfaces for actual cells
 
-% ------ ZrH1.6 Cylindrical Surface
+% ------ ZrH1.6 Surface
 surf    11    cyl    0.0    0.0    4.0146
 
-% ------ 316SS Cylindrical Surface
+% ------ 316SS Surface
 surf    12    cyl    0.0    0.0    4.0190
 
-% ------ Moly Cylindrical Surface
+% ------ Moly Surface
 surf    13    cyl    0.0    0.0    4.0825
 
-% ------ HastelloyNMod Cylindrical Surface
+% ------ HastelloyNMod Surface
 surf    14    cyl    0.0    0.0    4.146
 
-% ------ Cell Hexagonal Cylindrical Surface
+% ------ Cell Surface
 surf    15    hexyc     0.0    0.0    6.0     0.0
 
 % --- Cells

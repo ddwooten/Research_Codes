@@ -3,46 +3,12 @@
 # Version 1.0.
 
 import csv as csvreader
-import pdb as pdb
 import time as time
 import sys as sys
 import logging as logging
-
-""" SERP_mat_conditioner is a simple python script that takes in a comma delimited input
-    file which contains parameters and options and outputs the appropriate material
-    composition in atomic percent inside of a SERPENT file that is also specified in the
-    input file. A sample input file is given below
-    <<
-    < Free/Preserved , [number of header lines] , [Material Name] , [Density Option] , [Temperature in K]
-        , [ logger option] >
-    < [Path_to_SERPENT_input_file.txt] , [Mid Part of New File Name] >
-    < [ Ratio of group n] , [Ratio of group n + 1] , [ ....N] >
-    < [ Number of carrier salt species ] , [ Z of n species ] , [Ratio of n species ] ,  [ Z of N ] , [ R of N] >
-    < [ Num of salt species ] , [ Z of non host ] , [ Density of species with Z and host ] .... [ Nth species ] >
-    < [ele],[iso],[grp],[cth],[htc],[pct],[ptt],[mof],[atf] #These are the columns in the input files below which
-      #correspond to the above catagories >
-    <  [ Comments ] >
-    < [ele] , [iso] , [grp] , [htc] , [cth] , [pct] , [ptt]
-    >>
-    [logger option] sets theh logger default level. 0 for all, > 10 for just info and crits
-    [Material Name] is the exact material name used in SERPENT
-    [Density Option] -1 indicates a desire to calculate density using the density array (row 4) a
-      positive number will be taken as the input density
-    [Ratio of group n] in the 2nd row is for the preserved option where a spent fuel ratio is
-      desired to be preserved
-    [ele] is the Z number of each isotope
-    [iso] is the A number of each isotope
-    [grp] is the salt calculation group (detemrines how it is handled)
-      1 = Salt Constituent, think Na in NaCl
-      2 = Salt Primary Carrier, think Cl in NaCl
-      3...N = all other groups, generally assumed to be fuel
-    [htc] is the number of group 2 atoms per that element in the salt
-    [cth] is the number of that element atoms per group 2 atom
-    [pct] is the input atomic or weight percentage (as a percent, so 100,
-      not 1, for 100%) within the group. Unless it is group 1
-      in which case it is the atomic percentage of that element's isotope within that element
-    [ptt] where -1 indicates a weight percentage and 1 indicates an atomic percentage for input
-      option [pct]
+    """ This is the SERPENT Incremental Pitch code. It requires a configuration file titled,
+    exactly, "pitches.txt". This file must consist of one column of numbers. These numbers
+    are the pitches, in cm, to be used. Additionally
     """
 def trunc( f , n ):
   ''' Truncates/pads a float f to n decimal places no rounding '''
