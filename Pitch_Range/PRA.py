@@ -16,11 +16,47 @@ def Read_Setup():
     file as a list object from which the file's contents can be retrieved."""
         input_file = open( "init_setup.txt" , "r" )
         setup_file = input_file.readlines()
+        input_file.close()
         return( setup_file )
 
-def Read_Input( file_name ):
+def Start_Log( BaseName , LogLevel ): 
+    LogFileName = BaseName + "_" + time.strftime( "%d_%m_%Y" ) \
+        + "_log" + ".txt"
+
+    LogLevel = 0
+
+    logging.basicConfig( filename = LogFileName , format = \
+        "[%(levelname)8s] %(message)s" , filemode = 'w' , level = LogLevel )
+    logging.debug( "This is the debug level reporting in" )
+    logging.info( "This is the info level reporting in " )
+    logging.warning( "This is the warning level reporting in" )
+    logging.error( "This is the error level reporting in" )
+    logging.critical( "This is the critical level reporting in" )
+
+def Cep():
+	''' A wrapper to place file seperators in a log file for the
+	debug level '''
+	logging.debug( "*****************************************************" )
+	return()
+
+#Function, refer to docstring for purpose
+def Sep():
+    '''A wrapper to visually seperate functions in log files'''
+    logging.debug( '//////////////////////////////////////////////////////' )
+    return()
+
+def Read_Input( file_name , Sep ):
     """ This function reads in a file whose name is given in file_name to the
-    function 
+    function. It's contents are saved in a list. """
+    Sep()
+    logging.debug( "Reading in file: " + file_name )
+    input_file = open( file_name , "r" )
+    file_contents = input_file.readlines()
+    logging.debug( "Closing file: " + file_name )
+    input_file.close()
+    return( file_contents )
+
+
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
 
@@ -38,22 +74,6 @@ NameStartIndex = HostFileName.rfind("/") + 1
 NameEndIndex = HostFileName.rfind(".")
 
 BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
-
-def StartLog( BaseName , LogLevel ): 
-    LogFileName = BaseName + "_" + time.strftime( "%d_%m_%Y" ) \
-        + "_log" + ".txt"
-
-    #NewFile = open( str( NewFileName ) , "w" )
-
-    LogLevel = 0
-
-    logging.basicConfig( filename = LogFileName , format ="[%(levelname)8s] %(message)s" \
-        , filemode = 'w' , level = LogLevel )
-    logging.debug( "This is the debug level reporting in" )
-    logging.info( "This is the info level reporting in " )
-    logging.warning( "This is the warning level reporting in" )
-    logging.error( "This is the error level reporting in" )
-logging.critical( "This is the critical level reporting in" )
 
 # Loop over the input file and store the pitches
 # First, initilize an array to hold the pitches
