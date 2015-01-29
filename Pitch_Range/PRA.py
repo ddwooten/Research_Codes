@@ -10,35 +10,12 @@ import logging as logging
     exactly, "pitches.txt". This file must consist of one column of numbers. These numbers
     are the pitches, in cm, to be used. Additionally
     """
-def trunc( f , n ):
-  ''' Truncates/pads a float f to n decimal places no rounding '''
-  slen = len( '%.*f' % ( n , f ) )
-  return str( f )[:slen]
 
-#print "Fuel Material Conditioner beginning"
+# Opens, as a file object, the file containing the pitches to be calculated
+inputfile = open( "pitches.txt", "r" )
 
-# Here we define two stirngs we will use later to format the input for the serpent file
-
-dzeros = "00"
-tzeros = "000"
-
-inputfile = raw_input( "Please enter file name, local path only, of csv file to open \n" )
-#print "Opening csv file now"
-
-csvfile = open( inputfile, "r" )
-
-#print "Reading file now"
-
-reader = csvreader.reader( csvfile )
-
-# initilizing array
-csvinput = []
-
-# This creates an array of strings from the csv file
-for row in reader:
-  csvinput.append( row )
-
-HostFileName = csvinput[ 1 ][ 0 ][ 0 : len( csvinput[ 1 ][ 0 ] ) ]
+# Extract the name of the file to be modified, i.e., the host
+HostFileName = inputfile.readline()
 
 HostFile = open( HostFileName , "r" )
 
@@ -52,20 +29,12 @@ NameEndIndex = HostFileName.rfind(".")
 
 BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
 
-NameExtension = csvinput[ 1 ][ 1 ][ 0 : len( csvinput[ 1 ][ 1 ] ) ]
-
-NewFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
-    + ".txt"
-
-LogFileName = BaseName + "_" + NameExtension + "_" + time.strftime( "%d_%m_%Y" ) \
+LogFileName = BaseName + "_" + time.strftime( "%d_%m_%Y" ) \
     + "_log" + ".txt"
 
-NewFile = open( str( NewFileName ) , "w" )
+#NewFile = open( str( NewFileName ) , "w" )
 
-try:
-  LogLevel = int( csvinput[ 0 ][ 5 ] )
-except:
-  sys.exit( "ERROR!!: Log level can not be cast as an integer!" )
+LogLevel = 0
 
 logging.basicConfig( filename = LogFileName , format ="[%(levelname)8s] %(message)s" \
     , filemode = 'w' , level = LogLevel )
@@ -75,26 +44,16 @@ logging.warning( "This is the warning level reporting in" )
 logging.error( "This is the error level reporting in" )
 logging.critical( "This is the critical level reporting in" )
 
-# This reads in values of the locations in the array where information
-# can be found and assings it to its identifiers
+# Loop over the input file and store the pitches
+# First, initilize an array to hold the pitches
+pitches = []
+i = 0
+for line in inputfile:
+    pitches.append( float( line ) )
+    if LogLevel < 10 logging.debug( "The " + str( i ) + "th pitch is " + \
+        str( pitches[ i ] ) )
+    i += 1
 
-ele = int( csvinput[ 5 ][ 0 ] )
-iso = int( csvinput[ 5 ][ 1 ] )
-grp = int( csvinput[ 5 ][ 2 ] )
-cth = int( csvinput[ 5 ][ 3 ] )
-htc = int( csvinput[ 5 ][ 4 ] )
-pct = int( csvinput[ 5 ][ 5 ] )
-ptt = int( csvinput[ 5 ][ 6 ] )
-mof = int( csvinput[ 5 ][ 7 ] )
-atf = int( csvinput[ 5 ][ 8 ] )
-
-# This prints out the read in csv file, it should be commented out for
-# real runs
-#for row in range( len ( csvinput ) ):
-#  print csvinput[ row ]
-
-# This extracts the row in cvs input where the actual info begins and
-# not header stuff.
 
 StartRow = int( csvinput[ 0 ][ 1 ] )
 
