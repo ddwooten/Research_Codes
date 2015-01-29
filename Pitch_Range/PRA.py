@@ -6,11 +6,21 @@ import csv as csvreader
 import time as time
 import sys as sys
 import logging as logging
-    """ This is the SERPENT Incremental Pitch code. It requires a configuration file titled,
-    exactly, "pitches.txt". This file must consist of one column of numbers. These numbers
-    are the pitches, in cm, to be used. Additionally
+    """ This is the SERPENT Incremental Pitch code. It requires a configuration
+    file titled, exactly, "pitches.txt". This file must consist of one column
+    of numbers. These numbers are the pitches, in cm, to be used. Additionally
     """
 
+def Read_Setup():
+    """ This function reads in a file named "init_setup.txt". It stores this 
+    file as a list object from which the file's contents can be retrieved."""
+        input_file = open( "init_setup.txt" , "r" )
+        setup_file = input_file.readlines()
+        return( setup_file )
+
+def Read_Input( file_name ):
+    """ This function reads in a file whose name is given in file_name to the
+    function 
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
 
@@ -29,19 +39,20 @@ NameEndIndex = HostFileName.rfind(".")
 
 BaseName = HostFileName[ NameStartIndex : NameEndIndex ]
 
-LogFileName = BaseName + "_" + time.strftime( "%d_%m_%Y" ) \
-    + "_log" + ".txt"
+def StartLog( BaseName , LogLevel ): 
+    LogFileName = BaseName + "_" + time.strftime( "%d_%m_%Y" ) \
+        + "_log" + ".txt"
 
-#NewFile = open( str( NewFileName ) , "w" )
+    #NewFile = open( str( NewFileName ) , "w" )
 
-LogLevel = 0
+    LogLevel = 0
 
-logging.basicConfig( filename = LogFileName , format ="[%(levelname)8s] %(message)s" \
-    , filemode = 'w' , level = LogLevel )
-logging.debug( "This is the debug level reporting in" )
-logging.info( "This is the info level reporting in " )
-logging.warning( "This is the warning level reporting in" )
-logging.error( "This is the error level reporting in" )
+    logging.basicConfig( filename = LogFileName , format ="[%(levelname)8s] %(message)s" \
+        , filemode = 'w' , level = LogLevel )
+    logging.debug( "This is the debug level reporting in" )
+    logging.info( "This is the info level reporting in " )
+    logging.warning( "This is the warning level reporting in" )
+    logging.error( "This is the error level reporting in" )
 logging.critical( "This is the critical level reporting in" )
 
 # Loop over the input file and store the pitches
