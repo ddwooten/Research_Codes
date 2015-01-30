@@ -52,13 +52,26 @@ def Sep():
     logging.debug( '//////////////////////////////////////////////////////' )
     return()
 
-def Read_Input( file_name , Sep ):
+def Read_Host( file_name , Sep ):
     """ This function reads in a file whose name is given in file_name to the
     function. It's contents are saved in a list. """
     Sep()
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
+    logging.debug( "Closing file: " + file_name )
+    input_file.close()
+    return( file_contents )
+
+def Read_Input( file_name , Sep ):
+    """ This function reads in a file whose name is given in file_name to the
+    function. It's contents are saved in a list and stripped of new lines. 
+    They are also converted to floats. """
+    Sep()
+    logging.debug( "Reading in file: " + file_name )
+    input_file = open( file_name , "r" )
+    file_contents = input_file.readlines()
+    file_contents = [ float( x ) for x in file_contents ]
     logging.debug( "Closing file: " + file_name )
     input_file.close()
     return( file_contents )
@@ -140,11 +153,14 @@ def Surface_Line_Writer( material , radius , lattice , x_pos , y_pos , \
     """ This function generates the strings for surfaces, both comment and
     actual """
     Sep()
-    comment_string = "% ------ " + material + " Surface"
-    surf_string = "surf    " + str( id_num ) + "    " + shape + "    " + \
-        str( x_pos ) + "    " + str( y_pos ) + "    " + str( radius )
+    comment_string = "% ------ " + material + " Surface\n"
     if shape != "cyl":
-        surf_string = surf_string + "    0.0"
+        surf_string = "surf    " + str( id_num ) + "    " + lattice + "    " + \
+            str( x_pos ) + "    " + str( y_pos ) + "    " + str( radius ) + \
+                "    0.0\n" 
+    else:
+        surf_string = "surf    " + str( id_num ) + "    " + shape + "    " + \
+            str( x_pos ) + "    " + str( y_pos ) + "    " + str( radius ) + "\n"
     output = [ comment_string , surf_string ]
     return( output )
 
@@ -153,24 +169,44 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num , \
     """ This function writes strings for cells """
     Sep()
     if material == "outside"
-        cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:>19}{ 5:<6 }".\
+        cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:>19}{ 5:<6 }\n".\
             format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) )
     else: 
-        cell_string = "{ 0 }    { 1 }    { 2 }    fill { 3 }{ 4:>19}{ 5:<6 }".\
+        cell_string = "{ 0 }    { 1 }    { 2 }    fill { 3 }{4:>19}{ 5:<6 }\n".\
             format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) ) 
     return( cell_string )
 
 def Files_Generator( base_name , materials , radii , host_file , options, \
-     Sep , Cep ):
+     pitch_array , diameters , Sep , Cep ):
     """ This function generates values to pass to the string writers and then
     inserts these values into the file to be written actually writes the
      contents to file """
     Sep()
     surf_start = host_file.index( "% ------ RSAC\n" )
+    logging.debug( "The surf_start index is: " + str( surf_start ) )
     cell_start = host_file.index( "% ------ AGC\n" )
-    lattice = options[ "la    
+    logging.debug( "The cell_start index is: " + str( cell_start ) )
+    lattice = options[ 1 ]
+    logging.debug( "The lattice is: " + options[ 1 ] )
+    for i in range( len( pitch_array ) ):
+        Cep()
+        pitch = pitch_array[ i ]
+        logging.debug( "The pitch is: " + str( pitch ) )
+        for j in range( len( diameters ) ):
+            logging.debug( "The inner radius is: " + str( diameters[ j ] ) )
+            new_file_list = host_file
+            new_name = base_name + "_" + lattice + "_" + str( pitch ) + \
+                "P_" + str( diameters[ j ] ) + "D_.txt"
+            logging.debug( "The new_name is: " + new_name )
+            surface_card = ["\n"]
+            cell_card = ["\n"]
+            for k in range( len( materials ) ):
+                surface_card.append( Surface_Line_Writer( materials[ k ] , \
+                 radii[ j ][ k ]  , lattice , 0.0 , 0.0 , "cyl" , id_num , Sep ):
+
+       
      
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
