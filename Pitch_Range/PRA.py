@@ -16,8 +16,10 @@ def Read_Setup():
     file as a list object from which the file's contents can be retrieved."""
         input_file = open( "init_setup.txt" , "r" )
         setup_file = input_file.readlines()
+        setup_file = dict( setup_file )
         input_file.close()
         return( setup_file )
+
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """
     end_index = file_name.rfind( "." )
@@ -160,9 +162,15 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num , \
                 str( inner_bound ) , str( outer_bound ) ) 
     return( cell_string )
 
-def Files_Generator( base_name , materials , radii , host_file , Sep , Cep ):
-    """ This function actually writes the contents to file """
+def Files_Generator( base_name , materials , radii , host_file , options, \
+     Sep , Cep ):
+    """ This function generates values to pass to the string writers and then
+    inserts these values into the file to be written actually writes the
+     contents to file """
     Sep()
+    surf_start = host_file.index( "% ------ RSAC\n" )
+    cell_start = host_file.index( "% ------ AGC\n" )
+    lattice = options[    
      
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
