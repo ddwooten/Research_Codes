@@ -78,7 +78,7 @@ def Gen_Pitch_or_Diameter( pd , given , desired , Sep ):
     return( output )
 
 def Gen_Width_List( cladding, Sep ):
-    "This function creates a list of floats for clad widths """
+    """ This function creates a list of floats for clad widths """
     Sep()
     logging.debug( "The initial cladding array is: ")
     logging.debug( cladding )
@@ -86,6 +86,16 @@ def Gen_Width_List( cladding, Sep ):
     logging.debug( "The widths array is: " )
     logging.debug( widths )
     return( widths )
+
+def Gen_Materials_List( cladding, Sep ):
+    """ This function creates a list of strings for the materials """
+    Sep()
+    logging.debug( "The initial cladding array is: " )
+    logging.debug( cladding )
+    materials = cladding[ 0 : : 2 ]
+    logging.debug( "The materials array is: ")
+    logging.debug( materials )
+    return( materials )
 
 
 def Gen_Inmost_Radius( widths , diameter , Sep ):
