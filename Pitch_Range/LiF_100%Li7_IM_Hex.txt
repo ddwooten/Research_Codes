@@ -25,6 +25,7 @@ set title "LiF 100% Li-7 Infinite Medium Reactivity Analysis Hex Lattice"
 % ------ Fake Surfaces
 
 % ------ Real Surfaces for actual cells
+% ------ RSAC
 
 % ------ ZrH1.6 Surface
 surf    11    cyl    0.0    0.0    4.0146
@@ -46,6 +47,8 @@ surf    15    hexyc     0.0    0.0    6.0     0.0
 % ------ Virtual Cells
 
 % ------ Actual Geometry Cells (Universe 0)
+% ------ AGC
+
 cell    11    0    fill ZrH1.6                 -11
 cell    12    0    fill 316SS            11    -12
 cell    13    0    fill Moly             12    -13

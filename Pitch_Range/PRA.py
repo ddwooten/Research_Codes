@@ -127,6 +127,7 @@ def Gen_Cladding_Radii( widths , inner_radius , Sep , Cep ):
         logging.debug( "The build array is: " + str( widths ) ) 
         radii.append( width )
     if LogLevel < 10:
+        Cep()
         logging.debug( "The final build array is: " )
         for radius in radii:
             logging.debug( str( radius ) )
@@ -149,13 +150,20 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num , \
     uni_num , Sep )
     """ This function writes strings for cells """
     Sep()
-    cell_string = "{ 0 }    { 1 }    { 2 }    fill { 3 }{ 4:>19}{ 5:<6 }".\
-        format( "cell" , str( id_num ) , str( uni_num ) , material , \
-            str( inner_bound ) 
-def Files_Generator( base_name , materials , radii , Sep , Cep ):
+    if material == "outside"
+        cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:>19}{ 5:<6 }".\
+            format( "cell" , str( id_num ) , str( uni_num ) , material , \
+                str( inner_bound ) , str( outer_bound ) )
+    else: 
+        cell_string = "{ 0 }    { 1 }    { 2 }    fill { 3 }{ 4:>19}{ 5:<6 }".\
+            format( "cell" , str( id_num ) , str( uni_num ) , material , \
+                str( inner_bound ) , str( outer_bound ) ) 
+    return( cell_string )
+
+def Files_Generator( base_name , materials , radii , host_file , Sep , Cep ):
     """ This function actually writes the contents to file """
     Sep()
-            
+     
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
 
