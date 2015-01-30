@@ -18,14 +18,19 @@ def Read_Setup():
         setup_file = input_file.readlines()
         input_file.close()
         return( setup_file )
+def Get_Base_Name( file_name ):
+    """ This function gets a base name from the host file name """
+    end_index = file_name.rfind( "." )
+    base_name = file_name[ 0 : end_index ]
+    return( base_name )
 
-def Start_Log( BaseName , level ): 
-    LogFileName = BaseName + "_" + time.strftime( "%d_%m_%Y" ) \
+def Start_Log( base_name , level ): 
+    log_file_name = base_name + "_" + time.strftime( "%d_%m_%Y" ) \
         + "_log" + ".txt"
 
     LogLevel = level 
 
-    logging.basicConfig( filename = LogFileName , format = \
+    logging.basicConfig( filename = log_file_name , format = \
         "[%(levelname)8s] %(message)s" , filemode = 'w' , level = LogLevel )
     logging.debug( "This is the debug level reporting in" )
     logging.info( "This is the info level reporting in " )
@@ -126,6 +131,23 @@ def Gen_Cladding_Radii( widths , inner_radius , Sep , Cep ):
         for radius in radii:
             logging.debug( str( radius ) )
     return( radii )
+
+def Surface_Line_Writer( material , radius , lattice , x_pos , y_pos , \
+    shape , id_num , Sep ):
+    """ This function generates the strings for surfaces, both comment and
+    actual """
+    Sep()
+    comment_string = "% ------ " + material + " Surface"
+    surf_string = "surf    1" + id_num + "    " + shape + "    " + \
+        str( x_pos ) + "    " + str( y_pos ) + "    " + str( radius )
+    if shape != "cyl":
+        surf_string = surf_string + "    0.0"
+    output = [ comment_string , surf_string ]
+    return( output )
+
+def Files_Generator( base_name , materials , radii , Sep , Cep ):
+    """ This function actually writes the contents to file """
+    Sep()
             
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
