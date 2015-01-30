@@ -19,11 +19,11 @@ def Read_Setup():
         input_file.close()
         return( setup_file )
 
-def Start_Log( BaseName , LogLevel ): 
+def Start_Log( BaseName , level ): 
     LogFileName = BaseName + "_" + time.strftime( "%d_%m_%Y" ) \
         + "_log" + ".txt"
 
-    LogLevel = 0
+    LogLevel = level 
 
     logging.basicConfig( filename = LogFileName , format = \
         "[%(levelname)8s] %(message)s" , filemode = 'w' , level = LogLevel )
@@ -77,17 +77,46 @@ def Gen_Pitch_or_Diameter( pd , given , desired , Sep ):
         exit()
     return( output )
 
+def Gen_Width_List( cladding, Sep ):
+    "This function creates a list of floats for clad widths """
+    Sep()
+    logging.debug( "The initial cladding array is: ")
+    logging.debug( cladding )
+    widths = [ float( x ) for x in cladding[ 1 : : 2 ] ]
+    logging.debug( "The widths array is: " )
+    logging.debug( widths )
+    return( widths )
 
-def Gen_Inmost_Radius( cladding , diameter , Sep ):
+
+def Gen_Inmost_Radius( widths , diameter , Sep ):
     """ This function generates the inner substance radius """
     Sep()
-    widths = [ float( x ) for x in cladding[ 1 : : 2 ] ]
     logging.debug( "The widths are: " + str( widths ) )
     logging.debug( "The sum of widths is: " + str( sum( widths ) ) ) 
     inner_radius = diameter \ 2.0 - sum( widths )
     logging.debug( "The inner radius is: " + str( inner_radius ) )
     return( inner_radius )
 
+def Gen_Cladding_Radii( widths , inner_radius , Sep , Cep ):
+    """ This function generates the outer radii for each clad layer """
+    Sep()
+    radii = []
+    logging.debug( "The widths array is: " + str( widths ) )
+    for i in range( len( inner_radius ) ):
+        Cep()
+        logging.debug( "Inner radius being built is: " + str( \
+            inner_radius[ i ] ) )
+        width = [ inner_radius ]
+        for j in range( len( widths ) - 1 ):
+            width.append( width[ j ] + widths[ j ] ) 
+        logging.debug( "The build array is: " + str( widths ) ) 
+        radii.append( width )
+    if LogLevel < 10:
+        logging.debug( "The final build array is: " )
+        for radius in radii:
+            logging.debug( str( radius ) )
+    return( radii )
+            
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
 
