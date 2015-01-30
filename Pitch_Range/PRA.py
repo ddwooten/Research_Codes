@@ -16,7 +16,7 @@ def Read_Setup():
     file as a list object from which the file's contents can be retrieved."""
         input_file = open( "init_setup.txt" , "r" )
         setup_file = input_file.readlines()
-        setup_file = dict( setup_file )
+        setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
         input_file.close()
         return( setup_file )
 
@@ -170,7 +170,7 @@ def Files_Generator( base_name , materials , radii , host_file , options, \
     Sep()
     surf_start = host_file.index( "% ------ RSAC\n" )
     cell_start = host_file.index( "% ------ AGC\n" )
-    lattice = options[    
+    lattice = options[ "la    
      
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
