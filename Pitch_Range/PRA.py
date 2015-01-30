@@ -56,6 +56,37 @@ def Read_Input( file_name , Sep ):
     input_file.close()
     return( file_contents )
 
+def Gen_Pitch_or_Diameter( pd , given , desired , Sep ):
+    """ This function generates a list of either diameters or pitches from 
+    a list of pitch to diameter ratios depending on which one is additionally
+    given"""
+    Sep()
+    if desired == "diameter":
+        output = given / pd
+        logging.debug( "The generated diameters are: " )
+        logging.debug( output )
+    elif desired == "pitch":
+        output = given * pd
+        logging.debug( "The generated pitches are: " )
+        logging.debug( output )
+    else:
+        print( "ERROR: Choice of pitch or diameter ( given as 'pitch' or \n \
+            'diameter' ) was not properly given. Goodbye. " )
+        logging.debug( "< desired > in function < Gen_Pitch_or_Diameter > \n \
+            was neither 'diameter' nor 'pitch'" )
+        exit()
+    return( output )
+
+
+def Gen_Inmost_Radius( cladding , diameter , Sep ):
+    """ This function generates the inner substance radius """
+    Sep()
+    widths = [ float( x ) for x in cladding[ 1 : : 2 ] ]
+    logging.debug( "The widths are: " + str( widths ) )
+    logging.debug( "The sum of widths is: " + str( sum( widths ) ) ) 
+    inner_radius = diameter \ 2.0 - sum( widths )
+    logging.debug( "The inner radius is: " + str( inner_radius ) )
+    return( inner_radius )
 
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
