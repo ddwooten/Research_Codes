@@ -138,13 +138,20 @@ def Surface_Line_Writer( material , radius , lattice , x_pos , y_pos , \
     actual """
     Sep()
     comment_string = "% ------ " + material + " Surface"
-    surf_string = "surf    1" + id_num + "    " + shape + "    " + \
+    surf_string = "surf    " + str( id_num ) + "    " + shape + "    " + \
         str( x_pos ) + "    " + str( y_pos ) + "    " + str( radius )
     if shape != "cyl":
         surf_string = surf_string + "    0.0"
     output = [ comment_string , surf_string ]
     return( output )
 
+def Cell_Line_Writer( material , outer_bound , inner_bound , id_num , \
+    uni_num , Sep )
+    """ This function writes strings for cells """
+    Sep()
+    cell_string = "{ 0 }    { 1 }    { 2 }    fill { 3 }{ 4:>19}{ 5:<6 }".\
+        format( "cell" , str( id_num ) , str( uni_num ) , material , \
+            str( inner_bound ) 
 def Files_Generator( base_name , materials , radii , Sep , Cep ):
     """ This function actually writes the contents to file """
     Sep()
