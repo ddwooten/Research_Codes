@@ -128,12 +128,14 @@ def Gen_Width_List( cladding, Sep ):
     logging.debug( widths )
     return( widths )
 
-def Gen_Materials_List( cladding, Sep ):
+def Gen_Materials_List( cladding, filler , Sep ):
     """ This function creates a list of strings for the materials """
     Sep()
     logging.debug( "The initial cladding array is: " )
     logging.debug( cladding )
-    materials = cladding[ 0 : : 2 ]
+    logging.debug( "The filler is: " + filler )
+    materials = [ filler ]
+    materials = materials + cladding[ 0 : : 2 ]
     logging.debug( "The materials array is: ")
     logging.debug( materials )
     return( materials )
