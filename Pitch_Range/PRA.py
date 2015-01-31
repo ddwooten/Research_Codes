@@ -17,6 +17,8 @@ def Read_Setup():
     input_file = open( "init_setup.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
+    setup_file = { x : y for x in setup_file[ 0 : : 2 ] for y in \
+        setup_file[ 1 : : 2 ] }
     input_file.close()
     return( setup_file )
 
