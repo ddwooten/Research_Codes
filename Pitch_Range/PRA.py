@@ -222,6 +222,35 @@ def Files_Generator( base_name , materials , radii , host_file , options, \
             destination_file.close()
     return()
 
+# Start the program
+setup = Read_Setup()
+
+base_name = Get_Base_Name( setup[ 0 ] )
+
+Start_Log( base_name , 0 )
+
+host_file = Read_Host( setup[ 0 ] )
+
+pitches = Read_Input( "pitches.txt" , Sep )
+
+pd = Read_Input( "pd.txt" , Sep )
+
+cladding = Read_Input( "cladding.txt" , Sep )
+
+diameters = Gen_Pitch_or_Diameter( pd , pitches , "diameter" , Sep )
+
+widths = Gen_Width_List( cladding , Sep )
+
+materials = Gen_Materials_List( cladding , Sep )
+
+inner_radii = Gen_Inmost_Radius( widths , diameters , Sep )
+
+all_radii = Gen_Cladding_Radii( widths , inner_radii , Sep , Cep )
+
+Files_Generator( base_name , materials , all_radii , host_file , setup , \
+    pitches , diameters , Sep , Cep )
+
+
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
 
