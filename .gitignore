@@ -14,4 +14,5 @@
 *.err
 *.webm
 *.~*
-.log
+*.log
+*.test
