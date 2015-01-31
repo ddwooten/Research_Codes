@@ -128,7 +128,7 @@ def Gen_Width_List( cladding, Sep ):
     logging.debug( widths )
     return( widths )
 
-def Gen_Materials_List( cladding, filler , Sep ):
+def Gen_Materials_List( cladding , filler , Sep ):
     """ This function creates a list of strings for the materials """
     Sep()
     logging.debug( "The initial cladding array is: " )
@@ -171,7 +171,7 @@ def Gen_Cladding_Radii( widths , inner_radius , Sep , Cep ):
             logging.debug( str( radius ) )
     return( radii )
 
-def Surface_Line_Writer( material , radius , lattice , x_pos , y_pos , \
+def Surface_Line_Writer( material , radius , x_pos , y_pos , \
     shape , id_num , Sep ):
     """ This function generates the strings for surfaces, both comment and
     actual """
@@ -188,11 +188,16 @@ def Surface_Line_Writer( material , radius , lattice , x_pos , y_pos , \
     return( output )
 
 def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
-        , uni_num , Sep ):
+        , uni_num , index , Sep ):
     """ This function writes strings for cells """
     Sep()
     if material == "outside":
         cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:>19}{ 5:<6 }\n".\
+            format( "cell" , str( id_num ) , str( uni_num ) , material , \
+                str( inner_bound ) , str( outer_bound ) )
+    elif index < 1:
+        inner_bound = inner_bound * -1
+        cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:<6 }\n".\
             format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) )
     else: 
@@ -201,8 +206,8 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
                 str( inner_bound ) , str( outer_bound ) ) 
     return( cell_string )
 
-def Files_Generator( base_name , materials , radii , host_file , options, \
-     pitch_array , diameters , Sep , Cep ):
+def Files_Generator( base_name , materials , radii , host_file , options , \
+     geo_array , diameters , Sep , Cep ):
     """ This function generates values to pass to the string writers and then
     inserts these values into the file to be written actually writes the
      contents to file """
@@ -211,40 +216,36 @@ def Files_Generator( base_name , materials , radii , host_file , options, \
     logging.debug( "The surf_start index is: " + str( surf_start ) )
     cell_start = host_file.index( "% ------ AGC\n" )
     logging.debug( "The cell_start index is: " + str( cell_start ) )
-    lattice = options[ 1 ]
+    lattice = options[ "lattice_type" ]
     logging.debug( "The lattice is: " + options[ 1 ] )
-    materials = materials.insert( 0 , options[ 2 ] )
-    for i in range( len( pitch_array ) ):
+    for i in range( len( geo_array ) ):
         Cep()
-        pitch = pitch_array[ i ]
+        pitch = geo_array[ i ][ 0 ]
         logging.debug( "The pitch is: " + str( pitch ) )
-        for j in range( len( diameters ) ):
-            logging.debug( "The inner radius is: " + str( diameters[ j ] ) )
-            new_file_list = host_file
-            new_name = base_name + "_" + lattice + "_" + str( pitch ) + \
-                "P_" + str( diameters[ j ] ) + "D_.txt"
-            logging.debug( "The new_name is: " + new_name )
-            surface_card = ["\n"]
-            cell_card = ["\n"]
+        logging.debug( "The inner radius is: " + str( geo_array[ i ][ 2][0] ) )
+        new_file_list = host_file
+        new_name = base_name + "_" + lattice + "_" + str( pitch ) + \
+            "P_" + str( geo_array[ i ][ 2 ] ) + "D_.txt"
+        logging.debug( "The new_name is: " + new_name )
 # This loop writes out the surfaces for the various materials
-            for k in range( len( materials ) ):
-                id_num = 11 + k
-                new_file_list.insert( surf_start + k , Surface_Line_Writer( \
-                    materials[ k ] , radii[ j ][ k ]  , lattice , 0.0 , 0.0 , \
-                    "cyl" , id_num , Sep ) )
-                new_file_list.insert( cell_start + k , Cell_Line_Writer( \
-                   materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 \
-                   , Sep ) )
+        for k in range( len( materials ) ):
+            id_num = 11 + k
+            new_file_list.insert( surf_start + k , Surface_Line_Writer( \
+                materials[ k ] , geo_array[ i ][ 3 ][ k ]  , \
+                0.0 , 0.0 , "cyl" , id_num , Sep ) )
+            new_file_list.insert( cell_start + 2 * k , Cell_Line_Writer( \
+               materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 \
+               , k , Sep ) )
 # These two function calls write out the final surface and cell lines each
-            new_file_list.insert( surf_start + k + 1 , Surface_Line_Writer( \
-                "FuelSalt" , pitch  , lattice , 0.0 , 0.0 , lattice , \
-                id_num + 1 , Sep ) )
-            new_file_list.insert( Cell_Line_Writer( outside , \
-                id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep ) )
+        new_file_list.insert( surf_start + k + 1 , Surface_Line_Writer( \
+            materials[ k ] , pitch  , lattice , 0.0 , 0.0 , lattice , \
+            id_num + 1 , Sep ) )
+        new_file_list.insert( Cell_Line_Writer( "outside" , \
+            id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep ) )
 # Here we actually write to file
-            destination_file = open( new_name , "w" )
-            destination_file.writelines( new_file_list )
-            destination_file.close()
+        destination_file = open( new_name , "w" )
+        destination_file.writelines( new_file_list )
+        destination_file.close()
     return()
 
 # Start the program
