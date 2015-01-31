@@ -28,7 +28,7 @@ def Get_Base_Name( file_name ):
 
 def Start_Log( base_name , level ): 
     log_file_name = base_name + "_" + time.strftime( "%d_%m_%Y" ) \
-        + "_log" + ".txt"
+        + ".log"
 
     LogLevel = level 
 
@@ -232,11 +232,11 @@ Start_Log( base_name , 0 )
 
 host_file = Read_Host( setup[ 0 ] )
 
-pitches = Read_Input( "pitches.txt" , Sep )
+pitches = Read_Input( "pitches.test" , Sep )
 
-pd = Read_Input( "pd.txt" , Sep )
+pd = Read_Input( "pd.test" , Sep )
 
-cladding = Read_Input( "cladding.txt" , Sep )
+cladding = Read_Input( "cladding.test" , Sep )
 
 diameters = Gen_Pitch_or_Diameter( pd , pitches , "diameter" , Sep )
 
