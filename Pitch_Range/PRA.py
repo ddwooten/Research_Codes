@@ -78,13 +78,13 @@ def Read_Input( file_name , Sep ):
     input_file.close()
     return( file_contents )
 
-def Gen_Pitch_or_Diameter( pd , given , desired , Sep , Cep ):
+def Gen_Pitch_or_Diameter( pd , given , given_type , Sep , Cep ):
     """ This function generates a list of either diameters or pitches from 
     a list of pitch to diameter ratios depending on which one is additionally
     given"""
     Sep()
     geo_instance=[]
-    if desired == "diameter":
+    if given_type == "pitch":
         for i in range( len( given ) ):
             for j in range( len( pd ) ):
                 Cep()
@@ -96,7 +96,7 @@ def Gen_Pitch_or_Diameter( pd , given , desired , Sep , Cep ):
             output.append( diameters )
         logging.debug( "There are " + str( len( given ) ) + " pitches \n" + \
             " and there are " + str( len( geo_instance) ) + " geo arrays" )
-    elif desired == "pitch":
+    elif given_type == "diameter":
         for i in range( len( given ) ):
             for j in range( len( pd ) ):
                 Cep()
@@ -110,7 +110,7 @@ def Gen_Pitch_or_Diameter( pd , given , desired , Sep , Cep ):
     else:
         print( "ERROR: Choice of pitch or diameter ( given as 'pitch' or \n \
             'diameter' ) was not properly given. Goodbye. " )
-        logging.debug( "< desired > in function < Gen_Pitch_or_Diameter > \n \
+        logging.debug( "< given_type > in function < Gen_Pitch_or_Diameter >\n\
             was neither 'diameter' nor 'pitch'" )
         exit()
     if LogLevel < 10:
@@ -118,7 +118,7 @@ def Gen_Pitch_or_Diameter( pd , given , desired , Sep , Cep ):
         logging.debug( "The geo_instance array is: " ) 
         for i in range( len( geo_instance ) ):
             logging.debug( str( geo_instance[ i ] ) )
-    return( output )
+    return( geo_instance )
 
 def Gen_Width_List( cladding, Sep ):
     """ This function creates a list of floats for clad widths """
@@ -143,35 +143,37 @@ def Gen_Materials_List( cladding , filler , Sep ):
     return( materials )
 
 
-def Gen_Inmost_Radius( widths , diameter , Sep ):
+def Gen_Inmost_Radius( widths , geo_instance , Sep , Cep ):
     """ This function generates the inner substance radius """
     Sep()
     logging.debug( "The widths are: " + str( widths ) )
-    logging.debug( "The sum of widths is: " + str( sum( widths ) ) ) 
-    inner_radius = diameter / 2.0 - sum( widths )
-    logging.debug( "The inner radius is: " + str( inner_radius ) )
-    return( inner_radius )
+    thickness = sum( widths )
+    logging.debug( "The sum of widths is: " + str( thickness ) )
+    Cep()
+    for i in range( len( geo_instance ) ): 
+        geo_instance[ i ].append( [ geo_instance[ i ][ 1 ] / 2.0 - \
+            thickness ] )
+        logging.debug( "The inner radius is: " + str( geo_instance[ i ][ 2 ] ) )
+    return( geo_instance )
 
-def Gen_Cladding_Radii( widths , inner_radius , Sep , Cep ):
+def Gen_Cladding_Radii( widths , geo_instance , Sep , Cep ):
     """ This function generates the outer radii for each clad layer """
     Sep()
-    radii = []
     logging.debug( "The widths array is: " + str( widths ) )
-    for i in range( len( inner_radius ) ):
+    for i in range( len( geo_instance ) ):
         Cep()
         logging.debug( "Inner radius being built is: " + str( \
-            inner_radius[ i ] ) )
-        width = [ inner_radius ]
-        for j in range( len( widths ) - 1 ):
-            width.append( width[ j ] + widths[ j ] ) 
-        logging.debug( "The build array is: " + str( widths ) ) 
-        radii.append( width )
+            geo_instance[ i ][ 2 ] ) )
+        for j in range( len( widths ) ):
+            geo_instance[ i ][ 2 ].append( width[ j ] + \
+                sum( geo_instance[ i ][ 2 ] ) ) 
+        logging.debug( "The build array is: " + str( geo_instance[ i ][ 2 ] ) ) 
     if LogLevel < 10:
         Cep()
         logging.debug( "The final build array is: " )
-        for radius in radii:
-            logging.debug( str( radius ) )
-    return( radii )
+        for i in range( len( geo_instance ) ):
+            logging.debug( str( geo_instance[ i ] ) )
+    return( geo_instance )
 
 def Surface_Line_Writer( material , radius , x_pos , y_pos , \
     shape , id_num , Sep ):
@@ -209,7 +211,7 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
     return( cell_string )
 
 def Files_Generator( base_name , materials , radii , host_file , options , \
-     geo_array , diameters , Sep , Cep ):
+     geo_array , Sep , Cep ):
     """ This function generates values to pass to the string writers and then
     inserts these values into the file to be written actually writes the
      contents to file """
@@ -256,7 +258,10 @@ setup = Read_Setup()
 
 base_name = Get_Base_Name( setup[ "file_name" ] )
 
-Start_Log( base_name , 0 )
+try:
+    Start_Log( base_name , float( setup[ "log_level" ] ) )
+except:
+    Start_Lob( base_name , 0 )
 
 host_file = Read_Host( setup[ "file_name" ] , Sep )
     
@@ -266,17 +271,18 @@ pd = Read_Input( setup[ "pd_file" ] , Sep )
 
 cladding = Read_Input( setup[ "materials_file" ] , Sep )
 
-diameters = Gen_Pitch_or_Diameter( pd , pitches , "diameter" , Sep )
+generated = Gen_Pitch_or_Diameter( pd , given , setup[ "given_type" ] , Sep , \
+    Cep )
 
 widths = Gen_Width_List( cladding , Sep )
 
-materials = Gen_Materials_List( cladding , Sep )
+materials = Gen_Materials_List( cladding , setup[ "filler_type" ] , Sep )
 
-inner_radii = Gen_Inmost_Radius( widths , diameters , Sep )
+generated = Gen_Inmost_Radius( widths , generated , Sep )
 
-all_radii = Gen_Cladding_Radii( widths , inner_radii , Sep , Cep )
+generated = Gen_Cladding_Radii( widths , generated , Sep , Cep )
 
-Files_Generator( base_name , materials , all_radii , host_file , setup , \
-    pitches , diameters , Sep , Cep )
+Files_Generator( base_name , materials , generated , host_file , setup , \
+    Sep , Cep )
 
 print( "The program has finished\n" )
