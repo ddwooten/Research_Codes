@@ -205,17 +205,23 @@ def Files_Generator( base_name , materials , radii , host_file , options, \
 # This loop writes out the surfaces for the various materials
             for k in range( len( materials ) ):
                 id_num = 11 + k
-                surface_card.append( Surface_Line_Writer( materials[ k ] , \
-                 radii[ j ][ k ]  , lattice , 0.0 , 0.0 , "cyl" , id_num , Sep )
-                cell_card.append( Cell_Line_Writer( materials[ k ] , \
-                id_num , id_num + 1 * -1 , id_num , 0 , Sep )
+                new_file_list.insert( surf_start + k , Surface_Line_Writer( \
+                    materials[ k ] , radii[ j ][ k ]  , lattice , 0.0 , 0.0 , \
+                    "cyl" , id_num , Sep ) )
+                new_file_list.insert( cell_start + k , Cell_Line_Writer( \
+                   materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 , Sep )
 # These two function calls write out the final surface and cell lines each
-            surface_card.append( Surface_Line_Writer( "FuelSalt" , \
-             pitch  , lattice , 0.0 , 0.0 , lattice , id_num + 1 , Sep )
-            cell_card.append( Cell_Line_Writer( outside , \
-            id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep )
-# Here we insert the cards into the new file list
-            new_file_list.insert( surface_start ,  
+            new_file_list.insert( surf_start + k + 1 , Surface_Line_Writer( \
+                "FuelSalt" , pitch  , lattice , 0.0 , 0.0 , lattice , \
+                id_num + 1 , Sep ) )
+            new_file_list.insert( Cell_Line_Writer( outside , \
+                id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep )
+# Here we actually write to file
+            destination_file = open( new_name , "w" )
+            destination_file.writelines( new_file_list )
+            destination_file.close()
+    return()
+
 # Opens, as a file object, the file containing the pitches to be calculated
 inputfile = open( "pitches.txt", "r" )
 
