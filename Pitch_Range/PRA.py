@@ -78,44 +78,46 @@ def Read_Input( file_name , Sep ):
     input_file.close()
     return( file_contents )
 
-def Gen_Pitch_or_Diameter( pd , given , desired , Sep ):
+def Gen_Pitch_or_Diameter( pd , given , desired , Sep , Cep ):
     """ This function generates a list of either diameters or pitches from 
     a list of pitch to diameter ratios depending on which one is additionally
     given"""
     Sep()
+    geo_instance=[]
     if desired == "diameter":
-        output=[]
         for i in range( len( given ) ):
-            diameters=[]
             for j in range( len( pd ) ):
-                diameters.append( given[ i ] / pd[ j ] )
+                Cep()
+                geo_instance[ j ] = [ [ given [ i ] ] ]
+                geo_instance[ j ].append( given[ i ] / pd[ j ] )
             logging.debug( "For pitch " + str( given[ i ] ) + \
-                " the diameters are: " )
-            logging.debug( str( diameters ) )
+                " and p/d ratio " + str( pd[ j ] ) + " the diameter is: " )
+            logging.debug( str( geo_instance[ j ][ 1 ] ) )
             output.append( diameters )
         logging.debug( "There are " + str( len( given ) ) + " pitches \n" + \
-            " and there are " + str( len( output ) ) + " diameter arrays" )
+            " and there are " + str( len( geo_instance) ) + " geo arrays" )
     elif desired == "pitch":
-        output=[]
         for i in range( len( given ) ):
-            pitches=[]
             for j in range( len( pd ) ):
-                pitches.append( given[ i ] * pd[ j ] )
+                Cep()
+                geo_instance[ j ].append( [ given[ i ] * pd[ j ] , \
+                     given[ i ] )
             logging.debug( "For diameter " + str( given[ i ] ) + \
-                " the pitches are: " )
-            logging.debug( str( pitches ) )
-            output.append( pitches )
+                " and p/d raio " + str( pd[ j ] ) + " the pitch is: " )
+            logging.debug( str( geo_instance[ j ][ 0 ] ) )
         logging.debug( "There are " + str( len( given ) ) + " diameters \n" + \
-            " and there are " + str( len( output ) ) + " pitch arrays" )
-        output = given * pd
-        logging.debug( "The generated pitches are: " )
-        logging.debug( output )
+            " and there are " + str( len( geo_instance ) ) + " geo arrays" )
     else:
         print( "ERROR: Choice of pitch or diameter ( given as 'pitch' or \n \
             'diameter' ) was not properly given. Goodbye. " )
         logging.debug( "< desired > in function < Gen_Pitch_or_Diameter > \n \
             was neither 'diameter' nor 'pitch'" )
         exit()
+    if LogLevel < 10:
+        Cep()
+        logging.debug( "The geo_instance array is: " ) 
+        for i in range( len( geo_instance ) ):
+            logging.debug( str( geo_instance[ i ] ) )
     return( output )
 
 def Gen_Width_List( cladding, Sep ):
@@ -252,17 +254,17 @@ def Files_Generator( base_name , materials , radii , host_file , options , \
 print( "The program is now running\n" )
 setup = Read_Setup()
 
-base_name = Get_Base_Name( setup[ 0 ] )
+base_name = Get_Base_Name( setup[ "file_name" ] )
 
 Start_Log( base_name , 0 )
 
-host_file = Read_Host( setup[ 0 ] , Sep )
+host_file = Read_Host( setup[ "file_name" ] , Sep )
+    
+given = Read_Input( setup[ "given_file" ] , Sep )
 
-pitches = Read_Input( "pitches.test" , Sep )
+pd = Read_Input( setup[ "pd_file" ] , Sep )
 
-pd = Read_Input( "pd.test" , Sep )
-
-cladding = Read_Input( "cladding.test" , Sep )
+cladding = Read_Input( setup[ "materials_file" ] , Sep )
 
 diameters = Gen_Pitch_or_Diameter( pd , pitches , "diameter" , Sep )
 
