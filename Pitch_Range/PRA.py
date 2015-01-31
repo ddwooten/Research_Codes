@@ -14,11 +14,11 @@ of numbers. These numbers are the pitches, in cm, to be used. Additionally
 def Read_Setup():
     """ This function reads in a file named "init_setup.txt". It stores this 
     file as a list object from which the file's contents can be retrieved."""
-        input_file = open( "init_setup.txt" , "r" )
-        setup_file = input_file.readlines()
-        setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
-        input_file.close()
-        return( setup_file )
+    input_file = open( "init_setup.txt" , "r" )
+    setup_file = input_file.readlines()
+    setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
+    input_file.close()
+    return( setup_file )
 
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """
@@ -71,7 +71,7 @@ def Read_Input( file_name , Sep ):
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
-    file_contents = [ float( x ) for x in file_contents ]
+    file_contents = [ x.rstrip( "\n" ) for x in file_contents ]
     logging.debug( "Closing file: " + file_name )
     input_file.close()
     return( file_contents )
@@ -82,10 +82,29 @@ def Gen_Pitch_or_Diameter( pd , given , desired , Sep ):
     given"""
     Sep()
     if desired == "diameter":
-        output = given / pd
-        logging.debug( "The generated diameters are: " )
-        logging.debug( output )
+        output=[]
+        for i in range( len( given ) ):
+            diameters=[]
+            for j in range( len( pd ) ):
+                diameters.append( given[ i ] / pd[ j ] )
+            logging.debug( "For pitch " + str( given[ i ] ) + \
+                " the diameters are: " )
+            logging.debug( str( diameters ) )
+            output.append( diameters )
+        logging.debug( "There are " + str( len( given ) ) + " pitches \n" + \
+            " and there are " + str( len( output ) ) + " diameter arrays" )
     elif desired == "pitch":
+        output=[]
+        for i in range( len( given ) ):
+            pitches=[]
+            for j in range( len( pd ) ):
+                pitches.append( given[ i ] * pd[ j ] )
+            logging.debug( "For diameter " + str( given[ i ] ) + \
+                " the pitches are: " )
+            logging.debug( str( pitches ) )
+            output.append( pitches )
+        logging.debug( "There are " + str( len( given ) ) + " diameters \n" + \
+            " and there are " + str( len( output ) ) + " pitch arrays" )
         output = given * pd
         logging.debug( "The generated pitches are: " )
         logging.debug( output )
@@ -123,7 +142,7 @@ def Gen_Inmost_Radius( widths , diameter , Sep ):
     Sep()
     logging.debug( "The widths are: " + str( widths ) )
     logging.debug( "The sum of widths is: " + str( sum( widths ) ) ) 
-    inner_radius = diameter \ 2.0 - sum( widths )
+    inner_radius = diameter / 2.0 - sum( widths )
     logging.debug( "The inner radius is: " + str( inner_radius ) )
     return( inner_radius )
 
@@ -164,11 +183,11 @@ def Surface_Line_Writer( material , radius , lattice , x_pos , y_pos , \
     output = [ comment_string , surf_string ]
     return( output )
 
-def Cell_Line_Writer( material , outer_bound , inner_bound , id_num , \
-    uni_num , Sep )
+def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
+        , uni_num , Sep ):
     """ This function writes strings for cells """
     Sep()
-    if material == "outside"
+    if material == "outside":
         cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:>19}{ 5:<6 }\n".\
             format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) )
@@ -210,13 +229,14 @@ def Files_Generator( base_name , materials , radii , host_file , options, \
                     materials[ k ] , radii[ j ][ k ]  , lattice , 0.0 , 0.0 , \
                     "cyl" , id_num , Sep ) )
                 new_file_list.insert( cell_start + k , Cell_Line_Writer( \
-                   materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 , Sep )
+                   materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 \
+                   , Sep ) )
 # These two function calls write out the final surface and cell lines each
             new_file_list.insert( surf_start + k + 1 , Surface_Line_Writer( \
                 "FuelSalt" , pitch  , lattice , 0.0 , 0.0 , lattice , \
                 id_num + 1 , Sep ) )
             new_file_list.insert( Cell_Line_Writer( outside , \
-                id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep )
+                id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep ) )
 # Here we actually write to file
             destination_file = open( new_name , "w" )
             destination_file.writelines( new_file_list )
@@ -231,7 +251,7 @@ base_name = Get_Base_Name( setup[ 0 ] )
 
 Start_Log( base_name , 0 )
 
-host_file = Read_Host( setup[ 0 ] )
+host_file = Read_Host( setup[ 0 ] , Sep )
 
 pitches = Read_Input( "pitches.test" , Sep )
 
