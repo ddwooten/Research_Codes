@@ -6,10 +6,10 @@ import csv as csvreader
 import time as time
 import sys as sys
 import logging as logging
-    """ This is the SERPENT Incremental Pitch code. It requires a configuration
-    file titled, exactly, "pitches.txt". This file must consist of one column
-    of numbers. These numbers are the pitches, in cm, to be used. Additionally
-    """
+""" This is the SERPENT Incremental Pitch code. It requires a configuration
+file titled, exactly, "pitches.txt". This file must consist of one column
+of numbers. These numbers are the pitches, in cm, to be used. Additionally
+"""
 
 def Read_Setup():
     """ This function reads in a file named "init_setup.txt". It stores this 
@@ -190,6 +190,7 @@ def Files_Generator( base_name , materials , radii , host_file , options, \
     logging.debug( "The cell_start index is: " + str( cell_start ) )
     lattice = options[ 1 ]
     logging.debug( "The lattice is: " + options[ 1 ] )
+    materials = materials.insert( 0 , options[ 2 ] )
     for i in range( len( pitch_array ) ):
         Cep()
         pitch = pitch_array[ i ]
