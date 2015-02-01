@@ -253,14 +253,16 @@ def Files_Generator( base_name , materials , host_file , options , \
         logging.debug( "The inner radius is: " + str( geo_array[ i ][ 2][0] ) )
         new_file_list = host_file
         new_name = base_name + "_" + str( options[ "lattice_type" ] ) + \
-        "_" + str( pitch ) + "P_" + str( geo_array[ i ][ 1 ] ) + "D_.test"
+        "_" + str( pitch ) + "_P_" + str( geo_array[ i ][ 1 ] ) + "_D_.test"
         logging.debug( "The new_name is: " + new_name )
 # This loop writes out the surfaces for the various materials
         for k in range( len( materials ) ):
             id_num = 11 + k
-            new_file_list.insert( surf_start + k , Surface_Line_Writer( \
+            surface_strings = Surface_Line_Writer( \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
                 0.0 , 0.0 , "cyl" , id_num , Sep , Cep ) )
+            new_file_list.insert( surf_start + k , surface_strings[ 0 ] )
+            new_file_list.insert( surf_start + k + 1 , surface_strings[ 1 ] )
             new_file_list.insert( cell_start + 2 * k , Cell_Line_Writer( \
                materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 \
                , k , Sep , Cep ) )
