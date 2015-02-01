@@ -66,7 +66,7 @@ def Read_Host( file_name , Sep ):
     input_file.close()
     return( file_contents )
 
-def Read_Input( file_name , convert_float , Sep ):
+def Read_Input( file_name , form , Sep ):
     """ This function reads in a file whose name is given in file_name to the
     function. It's contents are saved in a list and stripped of new lines. 
     They are also converted to floats. """
@@ -74,10 +74,12 @@ def Read_Input( file_name , convert_float , Sep ):
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
-    if convert_float == 'string':
+    if form == 'string':
         file_contents = [ x.rstrip( "\n" ) for x in file_contents ]
-    elif convert_float == 'float':
+    elif form == 'float':
         file_contents = [ float( x ) for x in file_contents ]
+    elif form == 'raw':
+        pass
     else:
         print( "ERROR!!!: Choice of conversion for input from file " + \
             file_name + " either not given or not 'string' or not 'float'" )
@@ -276,7 +278,7 @@ except:
     logging.debug( "ERROR!!: < log_level > was not found in init_setup.txt\n \
         and as such LogLevel was set to 0" )
 
-host_file = Read_Host( setup[ "file_name" ] , Sep )
+host_file = Read_Input( setup[ "file_name" ] , 'raw' , Sep )
     
 given = Read_Input( setup[ "given_file" ] , 'float' , Sep )
 
