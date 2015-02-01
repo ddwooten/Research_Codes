@@ -217,17 +217,25 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
         , uni_num , index , Sep , Cep ):
     """ This function writes strings for cells """
     Cep()
+    logging.debug( "The material is: " + str( material ) )
+    logging.debug( "The outer_bound is: " + str( outer_bound ) )
+    logging.debug( "The inner_bound is: " + str( inner_bound ) )
+    logging.debug( "The id_num is: " + str( id_num ) )
+    logging.debug( "The uni_num is: " + str( uni_num ) )
+    logging.debug( "The index is: " + str( index ) )
     if material == "outside":
-        cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:>19}{ 5:<6 }\n".\
+        cell_string = "{ 0:<8 } { 1:<6 } { 2:<6 } { 3:<15 } { 4:<4 }\
+            { 5:<4 }\n".\
             format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) )
     elif index < 1:
         inner_bound = inner_bound * -1
-        cell_string = "{ 0 }    { 1 }    { 2 }    { 3 }{ 4:<6 }\n".\
-            format( "cell" , str( id_num ) , str( uni_num ) , material , \
+        cell_string = "{ 0:<8 } { 1:<6 } { 2:<6 } { 3:<15 }     { 4:<4 }\n".\
+            format( "cell" , str( id_num ) , str( uni_num ) , str( material ), \
                 str( inner_bound ) )
     else: 
-        cell_string = "{ 0 }    { 1 }    { 2 }    fill { 3 }{4:>19}{ 5:<6 }\n".\
+        cell_string = "{ 0:<8 } { 1:<6 } { 2:<6 } fill { 3:<15 } {4:<4}\
+            { 5:<4 }\n".\
             format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) ) 
     logging.debug( "The cell string is: " )
@@ -257,10 +265,10 @@ def Files_Generator( base_name , materials , host_file , options , \
         logging.debug( "The new_name is: " + new_name )
 # This loop writes out the surfaces for the various materials
         for k in range( len( materials ) ):
-            id_num = 11 + k
+            id_num = 10 + k
             surface_strings = Surface_Line_Writer( \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
-                0.0 , 0.0 , "cyl" , id_num , Sep , Cep ) )
+                0.0 , 0.0 , "cyl" , id_num , Sep , Cep ) 
             new_file_list.insert( surf_start + k , surface_strings[ 0 ] )
             new_file_list.insert( surf_start + k + 1 , surface_strings[ 1 ] )
             new_file_list.insert( cell_start + 2 * k , Cell_Line_Writer( \
