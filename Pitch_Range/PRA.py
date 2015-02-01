@@ -18,8 +18,16 @@ def Read_Setup():
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
     dictionary = {}
-    for i in range( len( setup_file ) -1 ):
+    for i in range( ( len( setup_file ) -1 ) , 2 ):
+        string0 = "Iteration: " + str( i )
+        string1 = "key: " + str( setup_file[ i ] )
+        string2 = "value: " + str( setup_file[ i + 1 ] ) 
         dictionary[ setup_file[ i ] ] = setup_file[ i + 1 ]
+        string3 = "Dictionary: " + str( dictionary )
+        print( string0 )
+        print( string1 )
+        print( string2 )
+        print( string3 )
     if 'log_level' in dictionary.keys():
         dictionary[ 'log_level' ] = int( dictionary[ 'log_level' ] )
     input_file.close()
