@@ -103,11 +103,11 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
             for j in range( len( pd ) ):
                 Cep()
                 geo_instance.append( [ given [ i ] ] )
-                geo_instance[ i * len( given ) + j ].append( \
+                geo_instance[ i * len( pd ) + j ].append( \
                      given[ i ] / pd[ j ] )
             logging.debug( "For pitch " + str( given[ i ] ) + \
                 " and p/d ratio " + str( pd[ j ] ) + " the diameter is: " )
-            logging.debug( str( geo_instance[ i * len( given ) + j ][ 1 ] ) )
+            logging.debug( str( geo_instance[ i * len( pd ) + j ][ 1 ] ) )
         logging.debug( "There are " + str( len( given ) ) + " pitches \n" + \
             " and there are " + str( len( geo_instance) ) + " geo arrays" )
     elif given_type == "diameter":
@@ -118,7 +118,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
                      given[ i ] ] )
             logging.debug( "For diameter " + str( given[ i ] ) + \
                 " and p/d raio " + str( pd[ j ] ) + " the pitch is: " )
-            logging.debug( str( geo_instance[ i * len( given ) + j ][ 0 ] ) )
+            logging.debug( str( geo_instance[ i * len( pd ) + j ][ 0 ] ) )
         logging.debug( "There are " + str( len( given ) ) + " diameters \n" + \
             " and there are " + str( len( geo_instance ) ) + " geo arrays" )
     else:
