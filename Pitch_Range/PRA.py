@@ -161,7 +161,7 @@ def Gen_Materials_List( cladding , filler , outside_mat , Sep ):
     logging.debug( "Materials after =cladding[blah]" )
     logging.debug( str( materials ) )
     logging.debug( "Type of materials: " + str( type( materials ) ) )
-    materials = materials.append( outside_mat )
+    materials.append( outside_mat )
     logging.debug( "Materials after append" )
     logging.debug( str( materials ) )
     logging.debug( "Type of materials: " + str( type( materials ) ) )
