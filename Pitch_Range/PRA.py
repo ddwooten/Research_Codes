@@ -66,7 +66,7 @@ def Read_Host( file_name , Sep ):
     input_file.close()
     return( file_contents )
 
-def Read_Input( file_name , Sep ):
+def Read_Input( file_name , convert_float , Sep ):
     """ This function reads in a file whose name is given in file_name to the
     function. It's contents are saved in a list and stripped of new lines. 
     They are also converted to floats. """
@@ -74,7 +74,16 @@ def Read_Input( file_name , Sep ):
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
-    file_contents = [ x.rstrip( "\n" ) for x in file_contents ]
+    if convert_float == 'string':
+        file_contents = [ x.rstrip( "\n" ) for x in file_contents ]
+    elif convert_float == 'float':
+        file_contents = [ float( x ) for x in file_contents ]
+    else:
+        print( "ERROR!!!: Choice of conversion for input from file " + \
+            file_name + " either not given or not 'string' or not 'float'" )
+        logging.debug( "ERROR!!!: Choice of conversion for input from file " + \
+            file_name + " either not given or not 'string' or not 'float'" )
+        exit()
     logging.debug( "Closing file: " + file_name )
     input_file.close()
     return( file_contents )
@@ -89,8 +98,8 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , Sep , Cep ):
         for i in range( len( given ) ):
             for j in range( len( pd ) ):
                 Cep()
-                geo_instance[ j ] = [ [ given [ i ] ] ]
-                geo_instance[ j ].append( given[ i ] / pd[ j ] )
+                geo_instance.append( [ given [ i ] ] )
+                geo_instance[ i ].append( given[ i ] / pd[ j ] )
             logging.debug( "For pitch " + str( given[ i ] ) + \
                 " and p/d ratio " + str( pd[ j ] ) + " the diameter is: " )
             logging.debug( str( geo_instance[ j ][ 1 ] ) )
@@ -101,7 +110,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , Sep , Cep ):
         for i in range( len( given ) ):
             for j in range( len( pd ) ):
                 Cep()
-                geo_instance[ j ].append( [ given[ i ] * pd[ j ] , \
+                geo_instance.append( [ given[ i ] * pd[ j ] , \
                      given[ i ] ] )
             logging.debug( "For diameter " + str( given[ i ] ) + \
                 " and p/d raio " + str( pd[ j ] ) + " the pitch is: " )
@@ -269,11 +278,11 @@ except:
 
 host_file = Read_Host( setup[ "file_name" ] , Sep )
     
-given = Read_Input( setup[ "given_file" ] , Sep )
+given = Read_Input( setup[ "given_file" ] , 'float' , Sep )
 
-pd = Read_Input( setup[ "pd_file" ] , Sep )
+pd = Read_Input( setup[ "pd_file" ] , 'float' , Sep )
 
-cladding = Read_Input( setup[ "materials_file" ] , Sep )
+cladding = Read_Input( setup[ "materials_file" ] , 'string' , Sep )
 
 generated = Gen_Pitch_or_Diameter( pd , given , setup[ "given_type" ] , Sep , \
     Cep )
