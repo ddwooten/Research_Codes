@@ -103,10 +103,11 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
             for j in range( len( pd ) ):
                 Cep()
                 geo_instance.append( [ given [ i ] ] )
-                geo_instance[ i ].append( given[ i ] / pd[ j ] )
+                geo_instance[ i * len( given ) + j ].append( \
+                     given[ i ] / pd[ j ] )
             logging.debug( "For pitch " + str( given[ i ] ) + \
                 " and p/d ratio " + str( pd[ j ] ) + " the diameter is: " )
-            logging.debug( str( geo_instance[ i ][ 1 ] ) )
+            logging.debug( str( geo_instance[ i * len( given ) + j ][ 1 ] ) )
         logging.debug( "There are " + str( len( given ) ) + " pitches \n" + \
             " and there are " + str( len( geo_instance) ) + " geo arrays" )
     elif given_type == "diameter":
@@ -117,7 +118,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
                      given[ i ] ] )
             logging.debug( "For diameter " + str( given[ i ] ) + \
                 " and p/d raio " + str( pd[ j ] ) + " the pitch is: " )
-            logging.debug( str( geo_instance[ j ][ 0 ] ) )
+            logging.debug( str( geo_instance[ i * len( given ) + j ][ 0 ] ) )
         logging.debug( "There are " + str( len( given ) ) + " diameters \n" + \
             " and there are " + str( len( geo_instance ) ) + " geo arrays" )
     else:
@@ -296,7 +297,7 @@ widths = Gen_Width_List( cladding , Sep )
 materials = Gen_Materials_List( cladding , setup[ "filler_type" ] , \
     setup[ "outside_type" ] , Sep )
 
-generated = Gen_Inmost_Radius( widths , generated , Sep )
+generated = Gen_Inmost_Radius( widths , generated , Sep , Cep )
 
 generated = Gen_Cladding_Radii( widths , generated , Sep , Cep )
 
