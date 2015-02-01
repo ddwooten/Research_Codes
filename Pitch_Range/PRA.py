@@ -268,7 +268,7 @@ def Files_Generator( base_name , materials , host_file , options , \
         "_" + str( pitch ) + "_P_" + str( geo_array[ i ][ 1 ] ) + "_D_.test"
         logging.debug( "The new_name is: " + new_name )
 # This loop writes out the surfaces for the various materials
-        for k in range( len( materials ) ):
+        for k in range( len( materials ) - 1 ):
             id_num = 10 + k
             surface_strings = Surface_Line_Writer( \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
@@ -279,9 +279,11 @@ def Files_Generator( base_name , materials , host_file , options , \
                materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 \
                , k , Sep , Cep ) )
 # These two function calls write out the final surface and cell lines each
-        new_file_list.insert( surf_start + k + 1 , Surface_Line_Writer( \
-            materials[ k ] , pitch  , lattice , 0.0 , 0.0 , lattice , \
+        surface_strings = Surface_Line_Writer( \
+            materials[ k ] , pitch  ,  0.0 , 0.0 , lattice , \
             id_num + 1 , Sep , Cep ) )
+        new_file_list.insert( surf_start + k + 1 , surface_strings[ 0 ] )
+        new_file_list.insert( surf_start + k + 2 , surface_strings[ 1 ] )
         new_file_list.insert( Cell_Line_Writer( "outside" , \
             id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep , Cep ) )
 # Here we actually write to file
