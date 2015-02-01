@@ -159,7 +159,7 @@ def Gen_Materials_List( cladding , filler , outside_mat , Sep ):
     return( materials )
 
 
-def Gen_Inmost_Radius( widths , geo_instance , Sep , Cep ):
+def Gen_Inmost_Radius( widths , geo_instance , options , Sep , Cep ):
     """ This function generates the inner substance radius """
     Sep()
     logging.debug( "The widths are: " + str( widths ) )
@@ -172,7 +172,7 @@ def Gen_Inmost_Radius( widths , geo_instance , Sep , Cep ):
         logging.debug( "The inner radius is: " + str( geo_instance[ i ][ 2 ] ) )
     return( geo_instance )
 
-def Gen_Cladding_Radii( widths , geo_instance , Sep , Cep ):
+def Gen_Cladding_Radii( widths , geo_instance , options , Sep , Cep ):
     """ This function generates the outer radii for each clad layer """
     Sep()
     logging.debug( "The widths array is: " + str( widths ) )
@@ -184,11 +184,12 @@ def Gen_Cladding_Radii( widths , geo_instance , Sep , Cep ):
             geo_instance[ i ][ 2 ].append( widths[ j ] + \
                 sum( geo_instance[ i ][ 2 ] ) ) 
         logging.debug( "The build array is: " + str( geo_instance[ i ][ 2 ] ) ) 
-    if LogLevel < 10:
-        Cep()
-        logging.debug( "The final build array is: " )
-        for i in range( len( geo_instance ) ):
-            logging.debug( str( geo_instance[ i ] ) )
+    if 'log_level' in options: 
+        if options[ 'log_level' ] < 10:
+            Cep()
+            logging.debug( "The final build array is: " )
+            for i in range( len( geo_instance ) ):
+                logging.debug( str( geo_instance[ i ] ) )
     return( geo_instance )
 
 def Surface_Line_Writer( material , radius , x_pos , y_pos , \
@@ -226,7 +227,7 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
                 str( inner_bound ) , str( outer_bound ) ) 
     return( cell_string )
 
-def Files_Generator( base_name , materials , radii , host_file , options , \
+def Files_Generator( base_name , materials , host_file , options , \
      geo_array , Sep , Cep ):
     """ This function generates values to pass to the string writers and then
     inserts these values into the file to be written actually writes the
@@ -297,11 +298,11 @@ widths = Gen_Width_List( cladding , Sep )
 materials = Gen_Materials_List( cladding , setup[ "filler_type" ] , \
     setup[ "outside_type" ] , Sep )
 
-generated = Gen_Inmost_Radius( widths , generated , Sep , Cep )
+generated = Gen_Inmost_Radius( widths , generated , setup , Sep , Cep )
 
-generated = Gen_Cladding_Radii( widths , generated , Sep , Cep )
+generated = Gen_Cladding_Radii( widths , generated , setup , Sep , Cep )
 
-Files_Generator( base_name , materials , generated , host_file , setup , \
+Files_Generator( base_name , materials , host_file , setup , generated , \
     Sep , Cep )
 
 print( "The program has finished\n" )
