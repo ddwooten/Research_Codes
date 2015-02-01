@@ -181,7 +181,7 @@ def Gen_Cladding_Radii( widths , geo_instance , Sep , Cep ):
         logging.debug( "Inner radius being built is: " + str( \
             geo_instance[ i ][ 2 ] ) )
         for j in range( len( widths ) ):
-            geo_instance[ i ][ 2 ].append( width[ j ] + \
+            geo_instance[ i ][ 2 ].append( widths[ j ] + \
                 sum( geo_instance[ i ][ 2 ] ) ) 
         logging.debug( "The build array is: " + str( geo_instance[ i ][ 2 ] ) ) 
     if LogLevel < 10:
