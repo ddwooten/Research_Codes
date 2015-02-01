@@ -32,7 +32,7 @@ def Get_Base_Name( file_name ):
     return( base_name )
 
 def Start_Log( base_name , level ): 
-    log_file_name = base_name + "_" + time.strftime( "%d_%m_%Y" ) \
+    log_file_name = "Log_" + base_name + "_" + time.strftime( "%d_%m_%Y" ) \
         + ".log"
 
     LogLevel = level 
@@ -151,11 +151,21 @@ def Gen_Materials_List( cladding , filler , outside_mat , Sep ):
     logging.debug( "The initial cladding array is: " )
     logging.debug( cladding )
     logging.debug( "The filler is: " + filler )
+    logging.debug( "The outside_mat is " + outside_mat )
     materials = [ filler ]
+    logging.debug( "Materials after =[filler]")
+    logging.debug( str( materials ) )
+    logging.debug( "Type of materials: " + str( type( materials ) ) )
     materials = materials + cladding[ 0 : : 2 ]
+    logging.debug( "Materials after =cladding[blah]" )
+    logging.debug( str( materials ) )
+    logging.debug( "Type of materials: " + str( type( materials ) ) )
     materials = materials.append( outside_mat )
+    logging.debug( "Materials after append" )
+    logging.debug( str( materials ) )
+    logging.debug( "Type of materials: " + str( type( materials ) ) )
     logging.debug( "The materials array is: ")
-    logging.debug( materials )
+    logging.debug( str( materials ) )
     return( materials )
 
 
@@ -238,7 +248,7 @@ def Files_Generator( base_name , materials , host_file , options , \
     cell_start = host_file.index( "% ------ AGC\n" )
     logging.debug( "The cell_start index is: " + str( cell_start ) )
     lattice = options[ "lattice_type" ]
-    logging.debug( "The lattice is: " + options[ 1 ] )
+    logging.debug( "The lattice is: " + options[ 'lattice_type' ] )
     for i in range( len( geo_array ) ):
         Cep()
         pitch = geo_array[ i ][ 0 ]
@@ -281,6 +291,13 @@ except:
     Start_Log( base_name , 0 )
     logging.debug( "ERROR!!: < log_level > was not found in init_setup.txt\n \
         and as such LogLevel was set to 0" )
+
+if 'log_level' in setup:
+    if setup[ 'log_level' ] < 10:
+        Sep()
+        logging.debug( "The input dictionary is: " )
+        for keys,values in setup.items():
+            logging.debug( str( keys ) + " : " + str( values ) )
 
 host_file = Read_Input( setup[ "file_name" ] , 'raw' , Sep )
     
