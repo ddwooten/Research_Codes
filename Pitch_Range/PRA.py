@@ -201,7 +201,7 @@ def Surface_Line_Writer( material , radius , x_pos , y_pos , \
     Cep()
     comment_string = "% ------ " + material + " Surface\n"
     if shape != "cyl":
-        surf_string = "surf    " + str( id_num ) + "    " + lattice + "    " + \
+        surf_string = "surf    " + str( id_num ) + "    " + shape + "    " + \
             str( x_pos ) + "    " + str( y_pos ) + "    " + str( radius ) + \
                 "    0.0\n" 
     else:
@@ -275,17 +275,18 @@ def Files_Generator( base_name , materials , host_file , options , \
                 0.0 , 0.0 , "cyl" , id_num , Sep , Cep ) 
             new_file_list.insert( surf_start + k , surface_strings[ 0 ] )
             new_file_list.insert( surf_start + k + 1 , surface_strings[ 1 ] )
-            new_file_list.insert( cell_start + 2 * k , Cell_Line_Writer( \
+            new_file_list.insert( cell_start + 2 * k + 2 , Cell_Line_Writer( \
                materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 \
                , k , Sep , Cep ) )
 # These two function calls write out the final surface and cell lines each
         surface_strings = Surface_Line_Writer( \
             materials[ k ] , pitch  ,  0.0 , 0.0 , lattice , \
-            id_num + 1 , Sep , Cep ) )
+            id_num + 1 , Sep , Cep ) 
         new_file_list.insert( surf_start + k + 1 , surface_strings[ 0 ] )
         new_file_list.insert( surf_start + k + 2 , surface_strings[ 1 ] )
-        new_file_list.insert( Cell_Line_Writer( "outside" , \
-            id_num + 1 , id_num + 2 * -1 , id_num + 1 , 0 , Sep , Cep ) )
+        new_file_list.insert( cell_start + 2 * k + 4 ,\
+            Cell_Line_Writer( "outside" , id_num + 1 , id_num + 2 * -1 ,\
+            id_num + 1 , 0 , k + 1 , Sep , Cep ) )
 # Here we actually write to file
         destination_file = open( new_name , "w" )
         destination_file.writelines( new_file_list )
