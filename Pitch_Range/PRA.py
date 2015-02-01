@@ -17,10 +17,11 @@ def Read_Setup():
     input_file = open( "init_setup.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
-    setup_file = { x : y for x in setup_file[ 0 : : 2 ] for y in \
-        setup_file[ 1 : : 2 ] }
+    dictionary = {}
+    for i in range( len( setup_file ) -1 ):
+        dictionary[ setup_file[ i ] ] = setup_file[ i + 1 ]
     input_file.close()
-    return( setup_file )
+    return( dictionary )
 
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """
@@ -101,7 +102,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , Sep , Cep ):
             for j in range( len( pd ) ):
                 Cep()
                 geo_instance[ j ].append( [ given[ i ] * pd[ j ] , \
-                     given[ i ] )
+                     given[ i ] ] )
             logging.debug( "For diameter " + str( given[ i ] ) + \
                 " and p/d raio " + str( pd[ j ] ) + " the pitch is: " )
             logging.debug( str( geo_instance[ j ][ 0 ] ) )
@@ -130,7 +131,7 @@ def Gen_Width_List( cladding, Sep ):
     logging.debug( widths )
     return( widths )
 
-def Gen_Materials_List( cladding , filler , Sep ):
+def Gen_Materials_List( cladding , filler , outside_mat , Sep ):
     """ This function creates a list of strings for the materials """
     Sep()
     logging.debug( "The initial cladding array is: " )
@@ -138,6 +139,7 @@ def Gen_Materials_List( cladding , filler , Sep ):
     logging.debug( "The filler is: " + filler )
     materials = [ filler ]
     materials = materials + cladding[ 0 : : 2 ]
+    materials = materials.append( outside_mat )
     logging.debug( "The materials array is: ")
     logging.debug( materials )
     return( materials )
@@ -228,8 +230,8 @@ def Files_Generator( base_name , materials , radii , host_file , options , \
         logging.debug( "The pitch is: " + str( pitch ) )
         logging.debug( "The inner radius is: " + str( geo_array[ i ][ 2][0] ) )
         new_file_list = host_file
-        new_name = base_name + "_" + lattice + "_" + str( pitch ) + \
-            "P_" + str( geo_array[ i ][ 2 ] ) + "D_.txt"
+        new_name = base_name + "_" + str( options[ "lattice_type" ] ) + \
+        "_" + str( pitch ) + "P_" + str( geo_array[ i ][ 2 ] ) + "D_.test"
         logging.debug( "The new_name is: " + new_name )
 # This loop writes out the surfaces for the various materials
         for k in range( len( materials ) ):
@@ -261,7 +263,9 @@ base_name = Get_Base_Name( setup[ "file_name" ] )
 try:
     Start_Log( base_name , float( setup[ "log_level" ] ) )
 except:
-    Start_Lob( base_name , 0 )
+    Start_Log( base_name , 0 )
+    logging.debug( "ERROR!!: < log_level > was not found in init_setup.txt\n \
+        and as such LogLevel was set to 0" )
 
 host_file = Read_Host( setup[ "file_name" ] , Sep )
     
@@ -276,7 +280,8 @@ generated = Gen_Pitch_or_Diameter( pd , given , setup[ "given_type" ] , Sep , \
 
 widths = Gen_Width_List( cladding , Sep )
 
-materials = Gen_Materials_List( cladding , setup[ "filler_type" ] , Sep )
+materials = Gen_Materials_List( cladding , setup[ "filler_type" ] , \
+    setup[ "outside_type" ] , Sep )
 
 generated = Gen_Inmost_Radius( widths , generated , Sep )
 
