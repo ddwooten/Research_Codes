@@ -20,6 +20,8 @@ def Read_Setup():
     dictionary = {}
     for i in range( len( setup_file ) -1 ):
         dictionary[ setup_file[ i ] ] = setup_file[ i + 1 ]
+    if 'log_level' in dictionary.keys():
+        dictionary[ 'log_level' ] = int( dictionary[ 'log_level' ] )
     input_file.close()
     return( dictionary )
 
@@ -90,7 +92,7 @@ def Read_Input( file_name , form , Sep ):
     input_file.close()
     return( file_contents )
 
-def Gen_Pitch_or_Diameter( pd , given , given_type , Sep , Cep ):
+def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
     """ This function generates a list of either diameters or pitches from 
     a list of pitch to diameter ratios depending on which one is additionally
     given"""
@@ -104,8 +106,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , Sep , Cep ):
                 geo_instance[ i ].append( given[ i ] / pd[ j ] )
             logging.debug( "For pitch " + str( given[ i ] ) + \
                 " and p/d ratio " + str( pd[ j ] ) + " the diameter is: " )
-            logging.debug( str( geo_instance[ j ][ 1 ] ) )
-            output.append( diameters )
+            logging.debug( str( geo_instance[ i ][ 1 ] ) )
         logging.debug( "There are " + str( len( given ) ) + " pitches \n" + \
             " and there are " + str( len( geo_instance) ) + " geo arrays" )
     elif given_type == "diameter":
@@ -124,12 +125,13 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , Sep , Cep ):
             'diameter' ) was not properly given. Goodbye. " )
         logging.debug( "< given_type > in function < Gen_Pitch_or_Diameter >\n\
             was neither 'diameter' nor 'pitch'" )
-        exit()
-    if LogLevel < 10:
-        Cep()
-        logging.debug( "The geo_instance array is: " ) 
-        for i in range( len( geo_instance ) ):
-            logging.debug( str( geo_instance[ i ] ) )
+        exit()  
+    if 'log_level' in options: 
+        if options[ 'log_level' ] < 10:
+            Cep()
+            logging.debug( "The geo_instance array is: " ) 
+            for i in range( len( geo_instance ) ):
+                logging.debug( str( geo_instance[ i ] ) )
     return( geo_instance )
 
 def Gen_Width_List( cladding, Sep ):
@@ -272,7 +274,7 @@ setup = Read_Setup()
 base_name = Get_Base_Name( setup[ "file_name" ] )
 
 try:
-    Start_Log( base_name , float( setup[ "log_level" ] ) )
+    Start_Log( base_name ,  setup[ "log_level" ] )
 except:
     Start_Log( base_name , 0 )
     logging.debug( "ERROR!!: < log_level > was not found in init_setup.txt\n \
@@ -286,8 +288,8 @@ pd = Read_Input( setup[ "pd_file" ] , 'float' , Sep )
 
 cladding = Read_Input( setup[ "materials_file" ] , 'string' , Sep )
 
-generated = Gen_Pitch_or_Diameter( pd , given , setup[ "given_type" ] , Sep , \
-    Cep )
+generated = Gen_Pitch_or_Diameter( pd , given , setup[ "given_type" ] , \
+    setup , Sep , Cep )
 
 widths = Gen_Width_List( cladding , Sep )
 
