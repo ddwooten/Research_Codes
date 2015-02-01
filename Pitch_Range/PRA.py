@@ -218,20 +218,28 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
     """ This function writes strings for cells """
     Cep()
     logging.debug( "The material is: " + str( material ) )
+    logging.debug( "It's type is: " + str( type( material ) ) )
     logging.debug( "The outer_bound is: " + str( outer_bound ) )
+    logging.debug( "It's type is: " + str( type( outer_bound ) ) )
     logging.debug( "The inner_bound is: " + str( inner_bound ) )
+    logging.debug( "It's type is: " + str( type( inner_bound ) ) )
     logging.debug( "The id_num is: " + str( id_num ) )
+    logging.debug( "It's type is: " + str( type( id_num ) ) )
     logging.debug( "The uni_num is: " + str( uni_num ) )
+    logging.debug( "It's type is: " + str( type( uni_num ) ) )
     logging.debug( "The index is: " + str( index ) )
+    logging.debug( "It's type is: " + str( type( index ) ) )
     if material == "outside":
         cell_string = "{ 0:<8 } { 1:<6 } { 2:<6 } { 3:<15 } { 4:<4 }\
             { 5:<4 }\n".\
             format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) )
     elif index < 1:
+# This indicates it is the first cell and as such has no inner_bound
+# We only use inner bound because that index number becomes the outer_bound
         inner_bound = inner_bound * -1
-        cell_string = "{ 0:<8 } { 1:<6 } { 2:<6 } { 3:<15 }     { 4:<4 }\n".\
-            format( "cell" , str( id_num ) , str( uni_num ) , str( material ), \
+        cell_string = "{0:<8} {1:<6} {2:<6} {3:<15}     {4:<4}\n"\
+            .format("cell" , str( id_num ) , str( uni_num ) , str( material ), \
                 str( inner_bound ) )
     else: 
         cell_string = "{ 0:<8 } { 1:<6 } { 2:<6 } fill { 3:<15 } {4:<4}\
