@@ -267,11 +267,19 @@ def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
     into the file starting at insert_start and updating the file's offset """
     Sep()
     logging.debug( "The initial offset is: " + str( offset ) )
+    logging.debug( "The lines to be written are: " )
+    for i in range( len( add_lines ) ):
+        logging.debug( add_lines[ i ] )
     for i in range( len( add_lines ) ):
         logging.debug( "Writing to line: " + str( insert_start + \
             offset ) )
+        logging.debug( "Prior line: " )
+        logging.debug( host_file[ insert_start + offset - 1 ] )
+        logging.debug( add_lines[ i ] )
+        logging.debug( host_file[ insert_start + offset + 1 ] )
+        logging.debug( host_file[ insert_start + offset + 2 ] )
         host_file.insert( insert_start + offset , add_lines[ i ] )
-        offset += 2 
+        offset += 1 
     output = [ host_file , offset ]
     return( output )
 
@@ -304,14 +312,14 @@ def Files_Generator( base_name , materials , host_file , options , \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
                 0.0 , 0.0 , "cyl" , k , Sep , Cep ) 
             cell_strings = cell_strings + Cell_Line_Writer( \
-               materials[ k ] , k , k + 1 * -1 , k , 0 \
+               materials[ k ] , k , ( k + 1 ) * -1 , k , 0 \
                , k , Sep , Cep ) 
 # These two function calls write out the final surface and cell lines each
         surface_strings = surface_strings + Surface_Line_Writer( \
             materials[ k ] , geo_array[ i ][ 0 ] ,  0.0 , 0.0 , lattice , \
             k + 1 , Sep , Cep ) 
         cell_strings = cell_strings + Cell_Line_Writer( "outside" , k + 1 , \
-            k + 2 * -1 , k + 1 , 0 , k + 1 , Sep , Cep ) 
+            ( k + 2 ) * -1 , k + 1 , 0 , k + 1 , Sep , Cep ) 
 # Here we insert the lines we have created into the new_file_list
         new_file_list , offset = Insert_Lines( new_file_list , surf_start , \
             offset , surface_strings , Sep , Cep )
