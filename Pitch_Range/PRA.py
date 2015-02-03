@@ -195,11 +195,10 @@ def Gen_Cladding_Radii( widths , geo_instance , options , Sep , Cep ):
     return( geo_instance )
 
 def Surface_Line_Writer( material , radius , x_pos , y_pos , \
-    shape , itr , Sep , Cep ):
+    shape , id_num , Sep , Cep ):
     """ This function generates the strings for surfaces, both comment and
     actual """
     Cep()
-    id_num = 10 + itr
     comment_string = "% ------ " + material + " Surface\n"
     if shape != "cyl":
         surf_string = "surf    " + str( id_num ) + "    " + shape + "    " + \
@@ -259,6 +258,17 @@ def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
          "_D_.test"
     logging.debug( "The new_name is: " + new_name )
     return( new_name )
+def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
+    """ This function takes a list of the host file's lines, host_file ,
+    and a list of lines to be added, add_lines, and inserts these lines
+    into the file starting at insert_start and updating the file's offset """
+    Sep()
+    logging.debug( "The initial offset is: " + str( offset ) )
+    for i in range( len( add_lines ) ):
+        host_file.insert( insert_start + offset + i , add_lines[ i ] )
+        offset += 1
+    output = [ host_file , offset ]
+    return( output )
 
 def Files_Generator( base_name , materials , host_file , options , \
      geo_array , Gen_New_File_Name , Sep , Cep ):
@@ -266,9 +276,9 @@ def Files_Generator( base_name , materials , host_file , options , \
     inserts these values into the file to be written actually writes the
      contents to file """
     Sep()
-    surf_start = host_file.index( "% ------ RSAC\n" )
+    surf_start = host_file.index( "% ------ RSAC\n" ) + 1
     logging.debug( "The surf_start index is: " + str( surf_start ) )
-    cell_start = host_file.index( "% ------ AGC\n" )
+    cell_start = host_file.index( "% ------ AGC\n" ) + 1
     logging.debug( "The cell_start index is: " + str( cell_start ) )
     lattice = options[ "lattice_type" ]
     logging.debug( "The lattice is: " + options[ 'lattice_type' ] )
@@ -277,6 +287,8 @@ def Files_Generator( base_name , materials , host_file , options , \
         new_name = Gen_New_File_Name( geo_array[ i ] , base_name , options , \
             Sep , Cep )
         new_file_list = host_file
+# This variable tracks the number of inserted lines
+        offset = 0
         surface_strings = []
         cell_strings = []
 # This loop generates the list of strings to be added. This list is a list of 
@@ -286,20 +298,16 @@ def Files_Generator( base_name , materials , host_file , options , \
             surface_strings = surface_strings + Surface_Line_Writer( \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
                 0.0 , 0.0 , "cyl" , k , Sep , Cep ) 
-            new_file_list.insert( surf_start + k , surface_strings[ 0 ] )
-            new_file_list.insert( surf_start + k + 1 , surface_strings[ 1 ] )
-            new_file_list.insert( cell_start + 2 * k + 2 , Cell_Line_Writer( \
+            cell_strings = cell_strings + Cell_Line_Writer( \
                materials[ k ] , k , k + 1 * -1 , k , 0 \
                , k , Sep , Cep ) )
 # These two function calls write out the final surface and cell lines each
-        surface_strings = Surface_Line_Writer( \
+        surface_strings = surface_strings + Surface_Line_Writer( \
             materials[ k ] , pitch  ,  0.0 , 0.0 , lattice , \
             k + 1 , Sep , Cep ) 
-        new_file_list.insert( surf_start + k + 1 , surface_strings[ 0 ] )
-        new_file_list.insert( surf_start + k + 2 , surface_strings[ 1 ] )
-        new_file_list.insert( cell_start + 2 * k + 4 ,\
-            Cell_Line_Writer( "outside" , k + 1 , k + 2 * -1 ,\
-            k + 1 , 0 , k + 1 , Sep , Cep ) )
+        cell_strings = cell_strings + Cell_Line_Writer( "outside" , k + 1 , \
+            k + 2 * -1 , k + 1 , 0 , k + 1 , Sep , Cep ) )
+# Here we insert the lines we have created into the new_file_list
 # Here we actually write to file
         destination_file = open( new_name , "w" )
         destination_file.writelines( new_file_list )
