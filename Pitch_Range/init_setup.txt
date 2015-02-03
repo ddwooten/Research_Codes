@@ -1,5 +1,5 @@
 file_name
-LiF_100%Li7_IM_Hex.test
+LiF_100%Li7_IM.test
 lattice_type
 hexyc
 filler_type

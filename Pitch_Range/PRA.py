@@ -294,7 +294,7 @@ def Files_Generator( base_name , materials , host_file , options , \
     return()
 
 # Start the program
-print( "The program is now running\n" )
+print( "\nThe program is now running\n" )
 setup = Read_Setup()
 
 base_name = Get_Base_Name( setup[ "file_name" ] )
