@@ -299,11 +299,17 @@ def Files_Generator( base_name , materials , host_file , options , \
         Cep()
         new_name = Gen_New_File_Name( geo_array[ i ] , base_name , options , \
             Sep , Cep )
+        new_file_list = []
         new_file_list = host_file
 # This variable tracks the number of inserted lines
         offset = 0
         surface_strings = []
         cell_strings = []
+        Sep()
+        logging.debug( "The area to be written to: " )
+        for m in range( surf_start - 10 , cell_start + 10 , 1 ):
+            logging.debug( new_file_list[ m ].rstrip("\n" ) )
+        Sep()
 # This loop generates the list of strings to be added. This list is a list of 
 # lists where each list holds the strings and the starting index for them
 # to be placed in the new file
