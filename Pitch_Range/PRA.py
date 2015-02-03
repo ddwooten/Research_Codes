@@ -266,8 +266,10 @@ def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
     Sep()
     logging.debug( "The initial offset is: " + str( offset ) )
     for i in range( len( add_lines ) ):
+        logging.debug( "Writing to line: " + str( insert_start + \
+            offset + i ) )
         host_file.insert( insert_start + offset + i , add_lines[ i ] )
-        offset += 1
+        offset += 2 
     output = [ host_file , offset ]
     return( output )
 
