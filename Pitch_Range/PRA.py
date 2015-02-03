@@ -241,10 +241,10 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
             {5:<4}\n"\
             .format( "cell" , str( id_num ) , str( uni_num ) , \
                 str( material ) , str( inner_bound ) , str( outer_bound ) ) 
-
+    output = [ cell_string ]
     logging.debug( "The cell string is: " )
-    logging.debug( cell_string.rstrip( "\n" ) )
-    return( cell_string )
+    logging.debug( output[ 0 ].rstrip( "\n" ) )
+    return( output )
 
 def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
     """ This function generates the new file name """
@@ -254,7 +254,7 @@ def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
     logging.debug( "The diameter being developed is: " + \
         str( geo_array_seg[ 1 ] ) )
     new_name = base_name + "_" + str( options[ "lattice_type" ] ) + \
-    "_" + str( geo_array_set[ 0 ] ) + "_P_" + str( geo_array[ i ][ 1 ] ) + \
+    "_" + str( geo_array_seg[ 0 ] ) + "_P_" + str( geo_array_seg[ 1 ] ) + \
          "_D_.test"
     logging.debug( "The new_name is: " + new_name )
     return( new_name )
@@ -272,7 +272,7 @@ def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
     return( output )
 
 def Files_Generator( base_name , materials , host_file , options , \
-     geo_array , Gen_New_File_Name , Sep , Cep ):
+     geo_array , Gen_New_File_Name , Insert_Lines , Sep , Cep ):
     """ This function generates values to pass to the string writers and then
     inserts these values into the file to be written actually writes the
      contents to file """
@@ -301,13 +301,13 @@ def Files_Generator( base_name , materials , host_file , options , \
                 0.0 , 0.0 , "cyl" , k , Sep , Cep ) 
             cell_strings = cell_strings + Cell_Line_Writer( \
                materials[ k ] , k , k + 1 * -1 , k , 0 \
-               , k , Sep , Cep ) )
+               , k , Sep , Cep ) 
 # These two function calls write out the final surface and cell lines each
         surface_strings = surface_strings + Surface_Line_Writer( \
-            materials[ k ] , pitch  ,  0.0 , 0.0 , lattice , \
+            materials[ k ] , geo_array[ i ][ 0 ] ,  0.0 , 0.0 , lattice , \
             k + 1 , Sep , Cep ) 
         cell_strings = cell_strings + Cell_Line_Writer( "outside" , k + 1 , \
-            k + 2 * -1 , k + 1 , 0 , k + 1 , Sep , Cep ) )
+            k + 2 * -1 , k + 1 , 0 , k + 1 , Sep , Cep ) 
 # Here we insert the lines we have created into the new_file_list
         new_file_list , offset = Insert_Lines( new_file_list , surf_start , \
             offset , surface_strings , Sep , Cep )
@@ -360,6 +360,6 @@ generated = Gen_Inmost_Radius( widths , generated , setup , Sep , Cep )
 generated = Gen_Cladding_Radii( widths , generated , setup , Sep , Cep )
 
 Files_Generator( base_name , materials , host_file , setup , generated , \
-    Gen_New_File_Name , Sep , Cep )
+    Gen_New_File_Name , Insert_Lines , Sep , Cep )
 
 print( "The program has finished\n" )
