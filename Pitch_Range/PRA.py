@@ -171,7 +171,9 @@ def Gen_Inmost_Radius( widths , geo_instance , options , Sep , Cep ):
     for i in range( len( geo_instance ) ): 
         geo_instance[ i ].append( [ geo_instance[ i ][ 1 ] / 2.0 - \
             thickness ] )
-        logging.debug( "The inner radius is: " + str( geo_instance[ i ][ 2 ] ) )
+        logging.debug( "The inner radius for diameter " + \
+            str( geo_instance[ i ][ 1 ] ) + " is: " + \
+            str( geo_instance[ i ][ 2 ] ) )
     return( geo_instance )
 
 def Gen_Cladding_Radii( widths , geo_instance , options , Sep , Cep ):
@@ -267,8 +269,8 @@ def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
     logging.debug( "The initial offset is: " + str( offset ) )
     for i in range( len( add_lines ) ):
         logging.debug( "Writing to line: " + str( insert_start + \
-            offset + i ) )
-        host_file.insert( insert_start + offset + i , add_lines[ i ] )
+            offset ) )
+        host_file.insert( insert_start + offset , add_lines[ i ] )
         offset += 2 
     output = [ host_file , offset ]
     return( output )
