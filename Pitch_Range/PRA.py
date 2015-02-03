@@ -195,10 +195,11 @@ def Gen_Cladding_Radii( widths , geo_instance , options , Sep , Cep ):
     return( geo_instance )
 
 def Surface_Line_Writer( material , radius , x_pos , y_pos , \
-    shape , id_num , Sep , Cep ):
+    shape , itr , Sep , Cep ):
     """ This function generates the strings for surfaces, both comment and
     actual """
     Cep()
+    id_num = 10 + itr
     comment_string = "% ------ " + material + " Surface\n"
     if shape != "cyl":
         surf_string = "surf    " + str( id_num ) + "    " + shape + "    " + \
@@ -246,8 +247,21 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
     logging.debug( cell_string.rstrip( "\n" ) )
     return( cell_string )
 
+def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
+    """ This function generates the new file name """
+    Sep()
+    logging.debug( "The pitch being developed is: " + \
+        str( geo_array_seg[ 0 ] ) )
+    logging.debug( "The diameter being developed is: " + \
+        str( geo_array_seg[ 1 ] ) )
+    new_name = base_name + "_" + str( options[ "lattice_type" ] ) + \
+    "_" + str( geo_array_set[ 0 ] ) + "_P_" + str( geo_array[ i ][ 1 ] ) + \
+         "_D_.test"
+    logging.debug( "The new_name is: " + new_name )
+    return( new_name )
+
 def Files_Generator( base_name , materials , host_file , options , \
-     geo_array , Sep , Cep ):
+     geo_array , Gen_New_File_Name , Sep , Cep ):
     """ This function generates values to pass to the string writers and then
     inserts these values into the file to be written actually writes the
      contents to file """
@@ -260,33 +274,32 @@ def Files_Generator( base_name , materials , host_file , options , \
     logging.debug( "The lattice is: " + options[ 'lattice_type' ] )
     for i in range( len( geo_array ) ):
         Cep()
-        pitch = geo_array[ i ][ 0 ]
-        logging.debug( "The pitch is: " + str( pitch ) )
-        logging.debug( "The inner radius is: " + str( geo_array[ i ][ 2][0] ) )
+        new_name = Gen_New_File_Name( geo_array[ i ] , base_name , options , \
+            Sep , Cep )
         new_file_list = host_file
-        new_name = base_name + "_" + str( options[ "lattice_type" ] ) + \
-        "_" + str( pitch ) + "_P_" + str( geo_array[ i ][ 1 ] ) + "_D_.test"
-        logging.debug( "The new_name is: " + new_name )
-# This loop writes out the surfaces for the various materials
+        surface_strings = []
+        cell_strings = []
+# This loop generates the list of strings to be added. This list is a list of 
+# lists where each list holds the strings and the starting index for them
+# to be placed in the new file
         for k in range( len( materials ) - 1 ):
-            id_num = 10 + k
-            surface_strings = Surface_Line_Writer( \
+            surface_strings = surface_strings + Surface_Line_Writer( \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
-                0.0 , 0.0 , "cyl" , id_num , Sep , Cep ) 
+                0.0 , 0.0 , "cyl" , k , Sep , Cep ) 
             new_file_list.insert( surf_start + k , surface_strings[ 0 ] )
             new_file_list.insert( surf_start + k + 1 , surface_strings[ 1 ] )
             new_file_list.insert( cell_start + 2 * k + 2 , Cell_Line_Writer( \
-               materials[ k ] ,id_num , id_num + 1 * -1 , id_num , 0 \
+               materials[ k ] , k , k + 1 * -1 , k , 0 \
                , k , Sep , Cep ) )
 # These two function calls write out the final surface and cell lines each
         surface_strings = Surface_Line_Writer( \
             materials[ k ] , pitch  ,  0.0 , 0.0 , lattice , \
-            id_num + 1 , Sep , Cep ) 
+            k + 1 , Sep , Cep ) 
         new_file_list.insert( surf_start + k + 1 , surface_strings[ 0 ] )
         new_file_list.insert( surf_start + k + 2 , surface_strings[ 1 ] )
         new_file_list.insert( cell_start + 2 * k + 4 ,\
-            Cell_Line_Writer( "outside" , id_num + 1 , id_num + 2 * -1 ,\
-            id_num + 1 , 0 , k + 1 , Sep , Cep ) )
+            Cell_Line_Writer( "outside" , k + 1 , k + 2 * -1 ,\
+            k + 1 , 0 , k + 1 , Sep , Cep ) )
 # Here we actually write to file
         destination_file = open( new_name , "w" )
         destination_file.writelines( new_file_list )
@@ -334,6 +347,6 @@ generated = Gen_Inmost_Radius( widths , generated , setup , Sep , Cep )
 generated = Gen_Cladding_Radii( widths , generated , setup , Sep , Cep )
 
 Files_Generator( base_name , materials , host_file , setup , generated , \
-    Sep , Cep )
+    Gen_New_File_Name , Sep , Cep )
 
 print( "The program has finished\n" )
