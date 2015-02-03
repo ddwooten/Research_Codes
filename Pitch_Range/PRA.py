@@ -258,6 +258,7 @@ def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
          "_D_.test"
     logging.debug( "The new_name is: " + new_name )
     return( new_name )
+
 def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
     """ This function takes a list of the host file's lines, host_file ,
     and a list of lines to be added, add_lines, and inserts these lines
@@ -308,6 +309,10 @@ def Files_Generator( base_name , materials , host_file , options , \
         cell_strings = cell_strings + Cell_Line_Writer( "outside" , k + 1 , \
             k + 2 * -1 , k + 1 , 0 , k + 1 , Sep , Cep ) )
 # Here we insert the lines we have created into the new_file_list
+        new_file_list , offset = Insert_Lines( new_file_list , surf_start , \
+            offset , surface_strings , Sep , Cep )
+        new_file_list , offset = Insert_Lines( new_file_list , cell_start , \
+            offset , cell_strings , Sep , Cep )
 # Here we actually write to file
         destination_file = open( new_name , "w" )
         destination_file.writelines( new_file_list )
