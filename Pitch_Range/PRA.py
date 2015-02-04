@@ -22,9 +22,21 @@ with no whitespace. Keys are given below with pertinent notes
         lower in the file.
     [lattice_type] - this is used to name the new files and to give the 
         surface shape for the bounding surface
-    [filler_type]
+    [filler_type] - this is the material inside the cladding
+    [given_file] - plain text file consisting of one column of numbers
+        specifying the measurments for the given parameter ( below )
+    [given_type] - either, and exactly "pitch" or "diameter"
+    [materials_file] - a plain text file name  with a single column of data
+        each even row is a cladding material while each odd is the thickness
+        of that material
+    [pd_file] - a plain text file name of a single column of numbers denoting
+        the p/d ratios
+    [outside_type] - the name of the material outside the rod
+    [log_level] - the python logger utility logging level. If none is given
+        it defaults to 0 but will print much less than if 0 is actually given
+Simply create the files above and then execute this program. It will generate
+all the desired files.
 """
-
 def Read_Setup():
     """ This function reads in a file named "init_setup.txt". It stores this 
     file as a list object from which the file's contents can be retrieved."""
