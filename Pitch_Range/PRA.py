@@ -6,6 +6,7 @@ import csv as csvreader
 import time as time
 import sys as sys
 import logging as logging
+import copy as cp
 """ This is the SERPENT Incremental Pitch code. It requires a configuration
 file titled, exactly, "pitches.txt". This file must consist of one column
 of numbers. These numbers are the pitches, in cm, to be used. Additionally
@@ -215,7 +216,7 @@ def Surface_Line_Writer( material , radius , x_pos , y_pos , \
     logging.debug( output[ 1 ].rstrip( "\n" ) )
     return( output )
 
-def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
+def Cell_Line_Writer( material , inner_bound , outer_bound , id_num \
         , uni_num , index , Sep , Cep ):
     """ This function writes strings for cells """
     Cep()
@@ -227,7 +228,7 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
     logging.debug( "uni_num: " + str( id_num ) )
     logging.debug( "index: " + str( index ) )
     if material == "outside":
-        cell_string = "{0:<8} {1:<6} {2:<6} {3:<15} {4:<4}\
+        cell_string = "{0:<8} {1:<6} {2:<6} {3:<29} {4:<4}\
             {5:<4}\n"\
             .format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) )
@@ -235,7 +236,7 @@ def Cell_Line_Writer( material , outer_bound , inner_bound , id_num \
 # This indicates it is the first cell and as such has no inner_bound
 # We only use inner bound because that index number becomes the outer_bound
         inner_bound = inner_bound * -1
-        cell_string = "{0:<8} {1:<6} {2:<6} {3:<15}     {4:<4}\n"\
+        cell_string = "{0:<8} {1:<6} {2:<6} fill {3:<15}     {4:<4}\n"\
             .format("cell" , str( id_num ) , str( uni_num ) , str( material ), \
                 str( inner_bound ) )
     else: 
@@ -299,8 +300,7 @@ def Files_Generator( base_name , materials , host_file , options , \
         Cep()
         new_name = Gen_New_File_Name( geo_array[ i ] , base_name , options , \
             Sep , Cep )
-        new_file_list = []
-        new_file_list = host_file
+        new_file_list = cp.deepcopy( host_file )
 # This variable tracks the number of inserted lines
         offset = 0
         surface_strings = []
@@ -316,16 +316,16 @@ def Files_Generator( base_name , materials , host_file , options , \
         for k in range( len( materials ) - 1 ):
             surface_strings = surface_strings + Surface_Line_Writer( \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
-                0.0 , 0.0 , "cyl" , k , Sep , Cep ) 
+                0.0 , 0.0 , "cyl" , k + 10 , Sep , Cep ) 
             cell_strings = cell_strings + Cell_Line_Writer( \
-               materials[ k ] , k , ( k + 1 ) * -1 , k , 0 \
+               materials[ k ] , k , ( k + 1 ) * -1 , k + 10 , 0 \
                , k , Sep , Cep ) 
 # These two function calls write out the final surface and cell lines each
         surface_strings = surface_strings + Surface_Line_Writer( \
-            materials[ k ] , geo_array[ i ][ 0 ] ,  0.0 , 0.0 , lattice , \
-            k + 1 , Sep , Cep ) 
-        cell_strings = cell_strings + Cell_Line_Writer( "outside" , k + 1 , \
-            ( k + 2 ) * -1 , k + 1 , 0 , k + 1 , Sep , Cep ) 
+            options[ 'outside_type' ] , geo_array[ i ][ 0 ] ,  0.0 , 0.0 , \
+            lattice , k + 11 , Sep , Cep ) 
+        cell_strings = cell_strings + Cell_Line_Writer( "outside" , k , \
+            ( k + 1 ) * -1 , k + 11 , 0 , k + 1 , Sep , Cep ) 
 # Here we insert the lines we have created into the new_file_list
         new_file_list , offset = Insert_Lines( new_file_list , surf_start , \
             offset , surface_strings , Sep , Cep )
