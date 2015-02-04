@@ -234,10 +234,9 @@ def Cell_Line_Writer( material , inner_bound , outer_bound , id_num \
     elif index < 1:
 # This indicates it is the first cell and as such has no inner_bound
 # We only use inner bound because that index number becomes the outer_bound
-        inner_bound = inner_bound * -1
-        cell_string = "{0:<8} {1:<6} {2:<6} fill {3:<11}     {4:<4}\n"\
+        cell_string = "{0:<8} {1:<6} {2:<6} fill {3:<27}     {4:<4}\n"\
             .format("cell" , str( id_num ) , str( uni_num ) , str( material ), \
-                str( inner_bound ) )
+                str( outer_bound ) )
     else: 
         cell_string = "{0:<8} {1:<6} {2:<6} fill {3:<15} {4:<4}\
             {5:<4}\n"\
@@ -317,7 +316,7 @@ def Files_Generator( base_name , materials , host_file , options , \
                 materials[ k ] , geo_array[ i ][ 2 ][ k ]  , \
                 0.0 , 0.0 , "cyl" , k + 10 , Sep , Cep ) 
             cell_strings = cell_strings + Cell_Line_Writer( \
-               materials[ k ] , k + 10 , ( k + 11 ) * -1 , k + 10 , 0 \
+               materials[ k ] , k + 9 , ( k + 10 ) * -1 , k + 10 , 0 \
                , k , Sep , Cep ) 
 # These two function calls write out the final surface and cell lines each
         surface_strings = surface_strings + Surface_Line_Writer( \
