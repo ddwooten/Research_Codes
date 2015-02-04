@@ -275,7 +275,7 @@ def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
         len( str( geo_array_seg[ 1 ] ) ) > 7 else str( geo_array_seg[ 1 ] )
     new_name = base_name + "_" + str( options[ "lattice_type" ] ) + \
     "_" + str( geo_array_seg[ 0 ] ) + "_P_" + d_string + \
-         "_D_.test"
+         "_D_.txt"
     logging.debug( "The new_name is: " + new_name )
     return( new_name )
 
