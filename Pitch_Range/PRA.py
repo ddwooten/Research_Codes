@@ -8,8 +8,21 @@ import sys as sys
 import logging as logging
 import copy as cp
 """ This is the SERPENT Incremental Pitch code. It requires a configuration
-file titled, exactly, "pitches.txt". This file must consist of one column
-of numbers. These numbers are the pitches, in cm, to be used. Additionally
+file titled, exactly, "init_setup.txt". This file must consist of one column
+of text arragned as
+    [ key ]
+    [ value ]
+    [ key ]
+    [ value ]
+with no whitespace. Keys are given below with pertinent notes
+    [file_name] - name of the SERPENT file to be modified. Surface lines
+        will be inserted after the tag "% ------ RSAC" while cell lines
+        will be inserted after the tag "% ------ AGC". Id numbering begins
+        at 10 and any surface or cell lines already in file will be pushed
+        lower in the file.
+    [lattice_type] - this is used to name the new files and to give the 
+        surface shape for the bounding surface
+    [filler_type]
 """
 
 def Read_Setup():
