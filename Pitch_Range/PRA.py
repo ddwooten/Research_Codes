@@ -103,13 +103,12 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
     if given_type == "pitch":
         for i in range( len( given ) ):
             for j in range( len( pd ) ):
-                Cep()
                 geo_instance.append( [ given [ i ] ] )
                 geo_instance[ i * len( pd ) + j ].append( \
                      given[ i ] / pd[ j ] )
-            logging.debug( "For pitch " + str( given[ i ] ) + \
+                logging.debug( "For pitch " + str( given[ i ] ) + \
                 " and p/d ratio " + str( pd[ j ] ) + " the diameter is: " )
-            logging.debug( str( geo_instance[ i * len( pd ) + j ][ 1 ] ) )
+                logging.debug( str( geo_instance[ i * len( pd ) + j ][ 1 ] ) )
         logging.debug( "There are " + str( len( given ) ) + " pitches \n" + \
             " and there are " + str( len( geo_instance) ) + " geo arrays" )
     elif given_type == "diameter":
@@ -220,13 +219,6 @@ def Cell_Line_Writer( material , inner_bound , outer_bound , id_num \
         , uni_num , index , Sep , Cep ):
     """ This function writes strings for cells """
     Cep()
-    logging.debug( "The parameters for writing are: " )
-    logging.debug( "material: " + str( material ) )
-    logging.debug( "outer_bound: " + str( outer_bound ) )
-    logging.debug( "inner_bound: " + str( inner_bound ) )
-    logging.debug( "id_num: " + str( id_num ) )
-    logging.debug( "uni_num: " + str( id_num ) )
-    logging.debug( "index: " + str( index ) )
     if material == "outside":
         cell_string = "{0:<8} {1:<6} {2:<6} {3:<20} {4:<4}\n"\
             .format( "cell" , str( id_num ) , str( uni_num ) , material , \
@@ -254,8 +246,10 @@ def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
         str( geo_array_seg[ 0 ] ) )
     logging.debug( "The diameter being developed is: " + \
         str( geo_array_seg[ 1 ] ) )
+    d_string = str( geo_array_seg[ 1 ] )[ : 6 ] if \
+        len( str( geo_array_seg[ 1 ] ) ) > 7 else str( geo_array_seg[ 1 ] )
     new_name = base_name + "_" + str( options[ "lattice_type" ] ) + \
-    "_" + str( geo_array_seg[ 0 ] ) + "_P_" + str( geo_array_seg[ 1 ] ) + \
+    "_" + str( geo_array_seg[ 0 ] ) + "_P_" + d_string + \
          "_D_.test"
     logging.debug( "The new_name is: " + new_name )
     return( new_name )
@@ -266,17 +260,7 @@ def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
     into the file starting at insert_start and updating the file's offset """
     Sep()
     logging.debug( "The initial offset is: " + str( offset ) )
-    logging.debug( "The lines to be written are: " )
     for i in range( len( add_lines ) ):
-        logging.debug( add_lines[ i ] )
-    for i in range( len( add_lines ) ):
-        logging.debug( "Writing to line: " + str( insert_start + \
-            offset ) )
-        logging.debug( "Prior line: " )
-        logging.debug( host_file[ insert_start + offset - 1 ] )
-        logging.debug( add_lines[ i ] )
-        logging.debug( host_file[ insert_start + offset + 1 ] )
-        logging.debug( host_file[ insert_start + offset + 2 ] )
         host_file.insert( insert_start + offset , add_lines[ i ] )
         offset += 1 
     output = [ host_file , offset ]
