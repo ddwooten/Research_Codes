@@ -313,10 +313,6 @@ def Files_Generator( base_name , materials , host_file , options , \
         surface_strings = []
         cell_strings = []
         Sep()
-        logging.debug( "The area to be written to: " )
-        for m in range( surf_start - 10 , cell_start + 10 , 1 ):
-            logging.debug( new_file_list[ m ].rstrip("\n" ) )
-        Sep()
 # This loop generates the list of strings to be added. This list is a list of 
 # lists where each list holds the strings and the starting index for them
 # to be placed in the new file
