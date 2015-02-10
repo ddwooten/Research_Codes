@@ -211,7 +211,7 @@ def Gen_Cladding_Radii( widths , geo_instance , options , Sep , Cep ):
             geo_instance[ i ][ 2 ] ) )
         for j in range( len( widths ) ):
             geo_instance[ i ][ 2 ].append( widths[ j ] + \
-                sum( geo_instance[ i ][ 2 ] ) ) 
+                geo_instance[ i ][ 2 ][ j ] ) 
         logging.debug( "The build array is: " + str( geo_instance[ i ][ 2 ] ) ) 
     if 'log_level' in options: 
         if options[ 'log_level' ] < 10:
