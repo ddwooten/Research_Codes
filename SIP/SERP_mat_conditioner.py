@@ -419,10 +419,9 @@ NewFile.write( "% ------ >> \n")
 for line in HostFile:
   if line.find( mat ) > -1:
     OldString = line
-    Anchor = OldString.find( "tmp" )
-    NewString1 = OldString[ 0 : Anchor - 9 ]
-    NewString2 = OldString[ Anchor + 10 : ]
-    NewString = NewString1 + "-" + density + "    tmp    " + csvinput[ 0 ][ 4 ] + "    " + \
+    Anchor = OldString.find( "rgb" )
+    NewString2 = OldString[ Anchor : ]
+    NewString = mat + " -" + density + "    tmp    " + csvinput[ 0 ][ 4 ] + "    " + \
         NewString2
     NewFile.write( NewString )
     for row in range( 1, floatrows ):
