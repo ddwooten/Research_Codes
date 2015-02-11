@@ -327,8 +327,10 @@ def Files_Generator( base_name , materials , host_file , options , \
         surface_strings = surface_strings + Surface_Line_Writer( \
             options[ 'outside_type' ] , geo_array[ i ][ 0 ] ,  0.0 , 0.0 , \
             lattice , k + 11 , Sep , Cep ) 
-        cell_strings = cell_strings + Cell_Line_Writer( "outside" , k + 10 , \
-            ( k + 11 ) * -1 , k + 11 , 0 , k + 1 , Sep , Cep ) 
+        cell_strings = cell_strings + Cell_Line_Writer( materials[ k + 1 ] , \
+            ( k + 11 ) , ( k + 12 ) * -1 , k + 11 , 0 , k + 1 , Sep , Cep ) 
+        cell_strings = cell_strings + Cell_Line_Writer( "outside" , k + 12 , \
+            ( k + 13 ) * -1 , k + 12 , 0 , k + 2 , Sep , Cep ) 
 # Here we insert the lines we have created into the new_file_list
         new_file_list , offset = Insert_Lines( new_file_list , surf_start , \
             offset , surface_strings , Sep , Cep )
