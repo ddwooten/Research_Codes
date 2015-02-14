@@ -245,17 +245,17 @@ def Cell_Line_Writer( material , inner_bound , outer_bound , id_num \
     """ This function writes strings for cells """
     Cep()
     if material == "outside":
-        cell_string = "{0:<8} {1:<6} {2:<6} {3:<20} {4:<4}\n"\
+        cell_string = "{0:<8} {1:<6} {2:<6} {3:<15} {4:<4}\n"\
             .format( "cell" , str( id_num ) , str( uni_num ) , material , \
                 str( inner_bound ) , str( outer_bound ) )
     elif index < 1:
 # This indicates it is the first cell and as such has no inner_bound
 # We only use inner bound because that index number becomes the outer_bound
-        cell_string = "{0:<8} {1:<6} {2:<6} fill {3:<27}     {4:<4}\n"\
+        cell_string = "{0:<8} {1:<6} {2:<6} {3:<27}     {4:<4}\n"\
             .format("cell" , str( id_num ) , str( uni_num ) , str( material ), \
                 str( outer_bound ) )
     else: 
-        cell_string = "{0:<8} {1:<6} {2:<6} fill {3:<15} {4:<4}\
+        cell_string = "{0:<8} {1:<6} {2:<6} {3:<15} {4:<4}\
             {5:<4}\n"\
             .format( "cell" , str( id_num ) , str( uni_num ) , \
                 str( material ) , str( inner_bound ) , str( outer_bound ) ) 
@@ -303,10 +303,12 @@ def Files_Generator( base_name , materials , host_file , options , \
     logging.debug( "The cell_start index is: " + str( cell_start ) )
     lattice = options[ "lattice_type" ]
     logging.debug( "The lattice is: " + options[ 'lattice_type' ] )
+    names = []
     for i in range( len( geo_array ) ):
         Cep()
         new_name = Gen_New_File_Name( geo_array[ i ] , base_name , options , \
             Sep , Cep )
+        names.append( new_name )
         new_file_list = cp.deepcopy( host_file )
 # This variable tracks the number of inserted lines
         offset = 0
@@ -340,6 +342,11 @@ def Files_Generator( base_name , materials , host_file , options , \
         destination_file = open( new_name , "w" )
         destination_file.writelines( new_file_list )
         destination_file.close()
+# Here we store a text file of the names of the generated files
+# this will be used by the vol program and whatever else needs it
+    names_file = open( base_name + "_file_names.txt" , "w" )
+    names_file.writelines( names )
+    names_file.close()
     return()
 
 # Start the program
