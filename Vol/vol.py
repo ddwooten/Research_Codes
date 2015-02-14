@@ -7,7 +7,7 @@ import time as time
 import sys as sys
 import logging as logging
 import copy as cp
-""" This is the SERPENT Incremental Pitch code. It requires a configuration
+""" This is the SERPENT volume writter code. It requires a configuration
 file titled, exactly, "init_setup.txt". This file must consist of one column
 of text arragned as
     [ key ]
@@ -45,8 +45,9 @@ def Read_Setup():
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
     dictionary = {}
     num_lines = len( setup_file )
-    for i in range( 0 , num_lines - 1 , 2 ):
-        dictionary[ setup_file[ i ] ] = setup_file[ i + 1 ]
+    for i in range( num_lines ):
+        line = setup_file[ i ].split( ',' )
+        dictionary[ line[ 0 ] ] = line[ 1 ]
     if 'log_level' in dictionary.keys():
         dictionary[ 'log_level' ] = int( dictionary[ 'log_level' ] )
     input_file.close()
