@@ -8,13 +8,12 @@ import sys as sys
 import logging as logging
 import copy as cp
 """ This is the SERPENT volume writter code. It requires a configuration
-file titled, exactly, "init_setup.txt". This file must consist of one column
+file titled, exactly, "vol_setup.txt". This file must consist of two columns
 of text arragned as
-    [ key ]
-    [ value ]
-    [ key ]
-    [ value ]
-with no whitespace. Keys are given below with pertinent notes
+    [ key ],[ value ]
+    [ key ],[ value ]
+with no missing rows though whitespace is tolerated.
+Keys are given below with pertinent notes
     [file_name] - name of the SERPENT file to be modified. Surface lines
         will be inserted after the tag "% ------ RSAC" while cell lines
         will be inserted after the tag "% ------ AGC". Id numbering begins
@@ -40,7 +39,7 @@ all the desired files.
 def Read_Setup():
     """ This function reads in a file named "init_setup.txt". It stores this 
     file as a list object from which the file's contents can be retrieved."""
-    input_file = open( "init_setup.txt" , "r" )
+    input_file = open( "vol_setup.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
     dictionary = {}
