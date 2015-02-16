@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#/usr/bin/python
 # Creator: Daniel Wooten
 # Version 1.0.
 
@@ -51,6 +51,36 @@ def Read_Setup():
         dictionary[ 'log_level' ] = int( dictionary[ 'log_level' ] )
     input_file.close()
     return( dictionary )
+
+def Get_Mat_and_Vol( contents , Sep , Cep ):
+    """ This function reads in a SERPENT2 .mvol file and extracts material
+    names and volumes, assigning them to a dict with mat names as keys and
+    vols as values."""
+
+def Insert_Vols( string , volume , Sep , Cep ):
+    """ This function literally inserts the volume amount into the material
+    string"""
+
+def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
+    , options , Sep , Cep ):
+    """This function loops through the files list calling the appropriate
+    functions to determine the volumes and insert them"""
+    Sep()
+       for i in range( len( files_list ) ):
+           logging.debug( "Reading in file: " + files_list[ i ] )
+           host_file = Read_Input( files_list[ i ] , 'string' , Sep )
+           mat_file_name = files_list[ i ] + ".mvol"
+           logging.debug( "Reading in file: " + mat_file_name )
+           material_file = Read_Input( mat_file_name , 'string' , Sep )
+           mats_and_vols = Get_Mat_and_Vol( material_file , Sep , Cep )
+           if 'log_level' in options:
+               if options[ 'log_level' ] < 10:
+                   Cep()
+                   logging.debug( "The material and volume dict is: " )
+                   for keys,values in mats_and_vols.items():
+                       logging.debug( str( keys ) + " : " + str( values ) )
+           for keys in mats_and_vols.items():
+                
 
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """

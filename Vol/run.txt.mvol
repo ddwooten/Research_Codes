@@ -1,0 +1,12 @@
+% --- Material volumes:
+
+% Produced Fri Feb 13 16:49:17 2015 by MC volume calculation routine by
+% sampling 1000000 random points in the geometry.
+
+set mvol
+
+HastelloyNMod      0 7.91977E-01 % (0.016)
+ZrH1.6          0 1.09751E+01 % (0.004)
+316SS           0 5.25435E-02 % (0.053)
+Moly            0 7.59386E-01 % (0.014)
+FuelSalt        0 1.12200E+02 % (0.001)
