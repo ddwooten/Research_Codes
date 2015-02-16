@@ -7,6 +7,7 @@ import time as time
 import sys as sys
 import logging as logging
 import copy as cp
+import re as re
 """ This is the SERPENT volume writter code. It requires a configuration
 file titled, exactly, "vol_setup.txt". This file must consist of two columns
 of text arragned as
@@ -66,6 +67,7 @@ def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
     """This function loops through the files list calling the appropriate
     functions to determine the volumes and insert them"""
     Sep()
+    mat_finder = re.compile( r'\bmat\b\s*?\w' )
        for i in range( len( files_list ) ):
            logging.debug( "Reading in file: " + files_list[ i ] )
            host_file = Read_Input( files_list[ i ] , 'string' , Sep )
@@ -79,8 +81,7 @@ def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
                    logging.debug( "The material and volume dict is: " )
                    for keys,values in mats_and_vols.items():
                        logging.debug( str( keys ) + " : " + str( values ) )
-           for keys in mats_and_vols.items():
-                
+                               
 
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """
