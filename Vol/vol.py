@@ -58,12 +58,18 @@ def Get_Mat_and_Vol( contents , Sep , Cep ):
     names and volumes, assigning them to a dict with mat names as keys and
     vols as values."""
 
-def Insert_Vols( string , volume , Sep , Cep ):
+def Insert_Vols( contents , lines , volumes , Sep , Cep ):
     """ This function literally inserts the volume amount into the material
     string"""
 
+def Find_Mat_Lines( contents , Sep , Cep ):
+    """ This function scans through a file and finds SERPENT material lines
+    using regex. It looks for "mat WORD" and then extracts the line that this
+    occurs on as well as WORD. These are then paired in a dictionary that is
+    the output """
+
 def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
-    , options , Sep , Cep ):
+    , Find_Mat_Lines , options , Sep , Cep ):
     """This function loops through the files list calling the appropriate
     functions to determine the volumes and insert them"""
     Sep()
@@ -71,6 +77,8 @@ def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
        for i in range( len( files_list ) ):
            logging.debug( "Reading in file: " + files_list[ i ] )
            host_file = Read_Input( files_list[ i ] , 'string' , Sep )
+           destination_name = Get_Base_Name( files_list[ i ] ) + \
+            "_vols.txt"
            mat_file_name = files_list[ i ] + ".mvol"
            logging.debug( "Reading in file: " + mat_file_name )
            material_file = Read_Input( mat_file_name , 'string' , Sep )
@@ -81,6 +89,13 @@ def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
                    logging.debug( "The material and volume dict is: " )
                    for keys,values in mats_and_vols.items():
                        logging.debug( str( keys ) + " : " + str( values ) )
+          lines = Find_Mat_Lines( host_file , Sep , Cep )
+          host_file = Insert_Vols( host_file , lines , mats_and_vols , \
+            Sep , Cep )
+          destination_file = open( destination_name , "w" )
+          destination_file.writelines( host_file )
+          destination_file.close()
+    return() 
                                
 
 def Get_Base_Name( file_name ):
