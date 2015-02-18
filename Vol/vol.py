@@ -67,13 +67,20 @@ def Find_Mat_Lines( contents , Sep , Cep ):
     using regex. It looks for "mat WORD" and then extracts the line that this
     occurs on as well as WORD. These are then paired in a dictionary that is
     the output """
+    Sep()
+    line_dict = {}
+    line_finder = re.compile( r'\bmat\b.*' )
+    for i in range( len( contents ) ):
+        string = line_finder.match( contents[ i ] )
+        if string != None:
+           line_dict[ i ] = string.group().split  
+            
 
 def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
     , Find_Mat_Lines , options , Sep , Cep ):
     """This function loops through the files list calling the appropriate
     functions to determine the volumes and insert them"""
     Sep()
-    mat_finder = re.compile( r'\bmat\b\s*?\w' )
        for i in range( len( files_list ) ):
            logging.debug( "Reading in file: " + files_list[ i ] )
            host_file = Read_Input( files_list[ i ] , 'string' , Sep )
