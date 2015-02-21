@@ -58,10 +58,14 @@ def Get_Mat_and_Vol( contents , Sep , Cep ):
     """ This function reads in a SERPENT2 .mvol file and extracts material
     names and volumes, assigning them to a dict with mat names as keys and
     vols as values."""
+    Sep()
+    logging.debug( "Get_Mat_and_Vol" )
 
 def Insert_Vols( contents , lines , volumes , Sep , Cep ):
     """ This function literally inserts the volume amount into the material
     string"""
+    Sep()
+    logging.debug( "Insert_Vols" )
 
 def Find_Mat_Lines( contents , Sep , Cep ):
     """ This function scans through a file and finds SERPENT material lines
@@ -69,6 +73,7 @@ def Find_Mat_Lines( contents , Sep , Cep ):
     occurs on as well as WORD. These are then paired in a dictionary that is
     the output """
     Sep()
+    logging.debug( "Find_Mat_Lines" )
     line_dict = {}
     line_finder = re.compile( r'\bmat\b.*' )
     for i in range( len( contents ) ):
@@ -86,6 +91,7 @@ def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
     """This function loops through the files list calling the appropriate
     functions to determine the volumes and insert them"""
     Sep()
+    logging.debug( "Volumize_Files" )
        for i in range( len( files_list ) ):
            logging.debug( "Reading in file: " + files_list[ i ] )
            host_file = Read_Input( files_list[ i ] , 'string' , Sep )
@@ -146,6 +152,7 @@ def Read_Host( file_name , Sep ):
     """ This function reads in a file whose name is given in file_name to the
     function. It's contents are saved in a list. """
     Sep()
+    logging.debug( "Read_Host" )
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
@@ -158,6 +165,7 @@ def Read_Input( file_name , form , Sep ):
     function. It's contents are saved in a list and stripped of new lines. 
     They are also converted to floats. """
     Sep()
+    logging.debug( "Read_Input" )
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
@@ -182,6 +190,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
     a list of pitch to diameter ratios depending on which one is additionally
     given"""
     Sep()
+    logging.debug( "Gen_Pitch_or_Diameter" )
     geo_instance=[]
     if given_type == "pitch":
         for i in range( len( given ) ):
@@ -222,6 +231,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
 def Gen_Width_List( cladding, Sep ):
     """ This function creates a list of floats for clad widths """
     Sep()
+    logging.debug( "Gen_Width_List" )
     logging.debug( "The initial cladding array is: ")
     logging.debug( cladding )
     widths = [ float( x ) for x in cladding[ 1 : : 2 ] ]
