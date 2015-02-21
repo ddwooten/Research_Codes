@@ -8,6 +8,7 @@ import sys as sys
 import logging as logging
 import copy as cp
 import re as re
+
 """ This is the SERPENT volume writter code. It requires a configuration
 file titled, exactly, "vol_setup.txt". This file must consist of two columns
 of text arragned as
@@ -73,8 +74,12 @@ def Find_Mat_Lines( contents , Sep , Cep ):
     for i in range( len( contents ) ):
         string = line_finder.match( contents[ i ] )
         if string != None:
-           line_dict[ i ] = string.group().split  
-            
+           logging.debug( "The matched string is: " )
+           logging.debug( string.group() )
+           line_dict[ i ] = string.group().split()[ 1 ]  
+    for keys,values in line_dict.items():
+        logging.debug( str( keys ) + " : " + str( values ) )
+    return( line_dict )
 
 def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
     , Find_Mat_Lines , options , Sep , Cep ):
