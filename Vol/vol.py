@@ -1,4 +1,4 @@
-#/usr/bin/python
+#usr/bin/python
 # Creator: Daniel Wooten
 # Version 1.0.
 
@@ -68,7 +68,7 @@ def Get_Mat_and_Vol( contents , Sep , Cep ):
         logging.debug( "The string is: " )
         logging.debug( contents[ i ] )
         mat = string.split()[ 0 ]
-        vol = string.split()[ 2 ]
+        vol = float( string.split()[ 2 ] )
         mat_and_vol_dict[ mat ] = vol
     for keys,values in mat_and_vol_dict.items():
         logging.debug( str( keys ) + " : " + str( values ) )
@@ -81,8 +81,17 @@ def Insert_Vols( contents , lines , volumes , Sep , Cep ):
     logging.debug( "Insert_Vols" )
     for key in lines.keys():
         old_line = contents[ lines[ key ] ]
+        old_line_elements = old_line.split()
         logging.debug( "The initial line is: " )
         logging.debug( contents[ lines[ key ] ] )
+        try:
+            vol_index = old_line_elements.index('vol')
+            old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
+            logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
+                " for " + str( volumes[ key ] ) )
+        except:
+            kdjfk
+        
 
 
 def Find_Mat_Lines( contents , Sep , Cep ):
