@@ -79,6 +79,11 @@ def Insert_Vols( contents , lines , volumes , Sep , Cep ):
     string"""
     Sep()
     logging.debug( "Insert_Vols" )
+    for key in lines.keys():
+        old_line = contents[ lines[ key ] ]
+        logging.debug( "The initial line is: " )
+        logging.debug( contents[ lines[ key ] ] )
+
 
 def Find_Mat_Lines( contents , Sep , Cep ):
     """ This function scans through a file and finds SERPENT material lines
@@ -94,7 +99,7 @@ def Find_Mat_Lines( contents , Sep , Cep ):
         if string != None:
            logging.debug( "The matched string is: " )
            logging.debug( string.group() )
-           line_dict[ i ] = string.group().split()[ 1 ]  
+           line_dict[ string.group().split()[ 1 ] ] = i
     for keys,values in line_dict.items():
         logging.debug( str( keys ) + " : " + str( values ) )
     return( line_dict )
