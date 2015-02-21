@@ -60,6 +60,19 @@ def Get_Mat_and_Vol( contents , Sep , Cep ):
     vols as values."""
     Sep()
     logging.debug( "Get_Mat_and_Vol" )
+    mat_and_vol_dict = {}
+    start_line = contents.index( 'set mvol' ) + 2
+    logging.debug( "The start line is: " + str( start_line ) )
+    for i in range( start_line , len( contents ) , 1 ):
+        string = contents[ i ].split()
+        logging.debug( "The string is: " )
+        logging.debug( contents[ i ] )
+        mat = string.split()[ 0 ]
+        vol = string.split()[ 2 ]
+        mat_and_vol_dict[ mat ] = vol
+    for keys,values in mat_and_vol_dict.items():
+        logging.debug( str( keys ) + " : " + str( values ) )
+    return( mat_and_vol_dict )
 
 def Insert_Vols( contents , lines , volumes , Sep , Cep ):
     """ This function literally inserts the volume amount into the material
