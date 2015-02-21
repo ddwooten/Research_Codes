@@ -88,6 +88,7 @@ def Read_Host( file_name , Sep ):
     """ This function reads in a file whose name is given in file_name to the
     function. It's contents are saved in a list. """
     Sep()
+    logging.debug( "Read_Host" )
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
@@ -100,6 +101,7 @@ def Read_Input( file_name , form , Sep ):
     function. It's contents are saved in a list and stripped of new lines. 
     They are also converted to floats. """
     Sep()
+    logging.debug( "Read_Input" )
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
     file_contents = input_file.readlines()
@@ -124,6 +126,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
     a list of pitch to diameter ratios depending on which one is additionally
     given"""
     Sep()
+    logging.debug( "Gen_Pitch_or_Diameter" )
     geo_instance=[]
     if given_type == "pitch":
         for i in range( len( given ) ):
@@ -164,6 +167,7 @@ def Gen_Pitch_or_Diameter( pd , given , given_type , options , Sep , Cep ):
 def Gen_Width_List( cladding, Sep ):
     """ This function creates a list of floats for clad widths """
     Sep()
+    logging.debug( "Gen_Width_List" )
     logging.debug( "The initial cladding array is: ")
     logging.debug( cladding )
     widths = [ float( x ) for x in cladding[ 1 : : 2 ] ]
@@ -174,6 +178,7 @@ def Gen_Width_List( cladding, Sep ):
 def Gen_Materials_List( cladding , filler , outside_mat , Sep ):
     """ This function creates a list of strings for the materials """
     Sep()
+    logging.debug( "Gen_Materials_List" )
     logging.debug( "The initial cladding array is: " )
     logging.debug( cladding )
     logging.debug( "The filler is: " + filler )
@@ -189,6 +194,7 @@ def Gen_Materials_List( cladding , filler , outside_mat , Sep ):
 def Gen_Inmost_Radius( widths , geo_instance , options , Sep , Cep ):
     """ This function generates the inner substance radius """
     Sep()
+    logging.debug( "Gen_Inmost_Radius" )
     logging.debug( "The widths are: " + str( widths ) )
     thickness = sum( widths )
     logging.debug( "The sum of widths is: " + str( thickness ) )
@@ -204,6 +210,7 @@ def Gen_Inmost_Radius( widths , geo_instance , options , Sep , Cep ):
 def Gen_Cladding_Radii( widths , geo_instance , options , Sep , Cep ):
     """ This function generates the outer radii for each clad layer """
     Sep()
+    logging.debug( "Gen_Cladding_Radii" )
     logging.debug( "The widths array is: " + str( widths ) )
     for i in range( len( geo_instance ) ):
         Cep()
@@ -226,6 +233,7 @@ def Surface_Line_Writer( material , radius , x_pos , y_pos , \
     """ This function generates the strings for surfaces, both comment and
     actual """
     Cep()
+    loggeing.debug( "Surface_Line_Writer" )
     comment_string = "% ------ " + material + " Surface\n"
     if shape != "cyl":
         surf_string = "surf    " + str( id_num ) + "    " + shape + "    " + \
@@ -244,6 +252,7 @@ def Cell_Line_Writer( material , inner_bound , outer_bound , id_num \
         , uni_num , index , Sep , Cep ):
     """ This function writes strings for cells """
     Cep()
+    logging.debug( "Cell_Line_Writer" )
     if material == "outside":
         cell_string = "{0:<8} {1:<6} {2:<6} {3:<15} {4:<4}\n"\
             .format( "cell" , str( id_num ) , str( uni_num ) , material , \
@@ -267,6 +276,7 @@ def Cell_Line_Writer( material , inner_bound , outer_bound , id_num \
 def Gen_New_File_Name( geo_array_seg , base_name , options , Sep , Cep ):
     """ This function generates the new file name """
     Sep()
+    logging.debug( "Gen_New_File_Name" )
     logging.debug( "The pitch being developed is: " + \
         str( geo_array_seg[ 0 ] ) )
     logging.debug( "The diameter being developed is: " + \
@@ -284,6 +294,7 @@ def Insert_Lines( host_file , insert_start , offset , add_lines , Sep , Cep ):
     and a list of lines to be added, add_lines, and inserts these lines
     into the file starting at insert_start and updating the file's offset """
     Sep()
+    logging.debug( "Insert_Lines" )
     logging.debug( "The initial offset is: " + str( offset ) )
     for i in range( len( add_lines ) ):
         host_file.insert( insert_start + offset , add_lines[ i ] )
@@ -297,6 +308,7 @@ def Files_Generator( base_name , materials , host_file , options , \
     inserts these values into the file to be written actually writes the
      contents to file """
     Sep()
+    logging.debug( "Files_Generator" )
     surf_start = host_file.index( "% ------ RSAC\n" ) + 1
     logging.debug( "The surf_start index is: " + str( surf_start ) )
     cell_start = host_file.index( "% ------ AGC\n" ) + 1
