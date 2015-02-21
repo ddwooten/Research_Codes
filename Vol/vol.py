@@ -88,12 +88,18 @@ def Insert_Vols( contents , lines , volumes , Sep , Cep ):
             vol_index = old_line_elements.index('vol')
             old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
             logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
-                " for " + str( volumes[ key ] ) )
+                " for " + str( key ) )
         except:
-            kdjfk
-        
-
-
+            old_line_elements.append( 'vol' )
+            old_line_elements.append( str( volumes[ key ] ) 
+            logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
+                " for " + str(  key ) )
+        new_line = "".join( old_line_elements )
+        logging.debug( "The new line is: " )
+        logging.debug( new_line )
+        contents[ lines[ key ] ] = new_line
+    return( contents )
+            
 def Find_Mat_Lines( contents , Sep , Cep ):
     """ This function scans through a file and finds SERPENT material lines
     using regex. It looks for "mat WORD" and then extracts the line that this
