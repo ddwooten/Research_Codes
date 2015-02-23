@@ -1,2 +1,3 @@
 names_list,names.txt
 log_level,0
+log_name,volumes

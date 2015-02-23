@@ -20,6 +20,7 @@ Keys are given below with pertinent notes
         modified
     [log_level] - the python logger utility logging level. If none is given
         it defaults to 0 but will print much less than if 0 is actually given
+    [log_name] - the base name for the log file
 Simply create the files above and then execute this program. It will generate
 all the desired files.
 """
@@ -193,14 +194,15 @@ def Read_Input( file_name , form , Sep ):
 print( "\nThe volume program is now running\n" )
 setup = Read_Setup()
 
-files_list = Read_Input( setup[ names_list ] , 'raw' , Sep )
+files_list = Read_Input( setup[ 'names_list' ] , 'raw' , Sep )
 
 try:
-    Start_Log( base_name ,  setup[ "log_level" ] )
+    Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
 except:
-    Start_Log( base_name , 0 )
-    logging.debug( "ERROR!!: < log_level > was not found in vol_setup.txt\n \
-        and as such LogLevel was set to 0" )
+    Start_Log( 'volume_error' , 0 )
+    logging.debug( "ERROR!!: < log_level > or < log_name > was not found in \n \
+        vol_setup.txt and as such LogLevel was set to 0 and the base name \n \
+        to 'volume_error' " )
 
 if 'log_level' in setup:
     if setup[ 'log_level' ] < 10:
