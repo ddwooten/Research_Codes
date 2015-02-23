@@ -1,4 +1,4 @@
-#!Usr/bin/python
+#!/usr/bin/python
 # Creator: Daniel Wooten
 # Version 1.0.
 
@@ -71,14 +71,15 @@ def Insert_Vols( contents , lines , volumes , Sep , Cep ):
         logging.debug( contents[ lines[ key ] ] )
         try:
             vol_index = old_line_elements.index('vol')
-            old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
-            logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
-                " for " + str( key ) )
         except:
             old_line_elements.append( 'vol' )
             old_line_elements.append( str( volumes[ key ] ) 
             logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
-                " for " + str(  key ) )
+                " for " + str( key ) )
+        else:
+            old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
+            logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
+                " for " + str( key ) )
         new_line = "".join( old_line_elements )
         logging.debug( "The new line is: " )
         logging.debug( new_line )
