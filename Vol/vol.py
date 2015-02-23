@@ -182,9 +182,9 @@ def Read_Input( file_name , form , Sep ):
         pass
     else:
         print( "ERROR!!!: Choice of conversion for input from file " + \
-            file_name + " either not given or not 'string' or not 'float'" )
+            file_name + " either not given or not 'string','raw', or 'float'" )
         logging.debug( "ERROR!!!: Choice of conversion for input from file " + \
-            file_name + " either not given or not 'string' or not 'float'" )
+            file_name + " either not given or not 'string', 'raw', or 'float'" )
         exit()
     logging.debug( "Closing file: " + file_name )
     input_file.close()
@@ -194,7 +194,7 @@ def Read_Input( file_name , form , Sep ):
 print( "\nThe volume program is now running\n" )
 setup = Read_Setup()
 
-files_list = Read_Input( setup[ 'names_list' ] , 'raw' , Sep )
+files_list = Read_Input( setup[ 'names_list' ] , 'string' , Sep )
 
 try:
     Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
