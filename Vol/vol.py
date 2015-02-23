@@ -16,23 +16,8 @@ of text arragned as
     [ key ],[ value ]
 with no missing rows though whitespace is tolerated.
 Keys are given below with pertinent notes
-    [file_name] - name of the SERPENT file to be modified. Surface lines
-        will be inserted after the tag "% ------ RSAC" while cell lines
-        will be inserted after the tag "% ------ AGC". Id numbering begins
-        at 10 and any surface or cell lines already in file will be pushed
-        lower in the file.
-    [lattice_type] - this is used to name the new files and to give the 
-        surface shape for the bounding surface
-    [filler_type] - this is the material inside the cladding
-    [given_file] - plain text file consisting of one column of numbers
-        specifying the measurments for the given parameter ( below )
-    [given_type] - either, and exactly "pitch" or "diameter"
-    [materials_file] - a plain text file name  with a single column of data
-        each even row is a cladding material while each odd is the thickness
-        of that material
-    [pd_file] - a plain text file name of a single column of numbers denoting
-        the p/d ratios
-    [outside_type] - the name of the material outside the rod
+    [names_list] - name of the txt file containing a list of files to be
+        modified
     [log_level] - the python logger utility logging level. If none is given
         it defaults to 0 but will print much less than if 0 is actually given
 Simply create the files above and then execute this program. It will generate
@@ -119,7 +104,7 @@ def Find_Mat_Lines( contents , Sep , Cep ):
         logging.debug( str( keys ) + " : " + str( values ) )
     return( line_dict )
 
-def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , , Read_Input ,\
+def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input ,\
     , Find_Mat_Lines , Get_Base_Name , options , Sep , Cep ):
     """This function loops through the files list calling the appropriate
     functions to determine the volumes and insert them"""
