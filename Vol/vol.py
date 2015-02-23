@@ -71,15 +71,13 @@ def Insert_Vols( contents , lines , volumes , Sep , Cep ):
         logging.debug( contents[ lines[ key ] ] )
         try:
             vol_index = old_line_elements.index('vol')
-        except:
+        except ValueError:
             old_line_elements.append( 'vol' )
-            old_line_elements.append( str( volumes[ key ] ) 
-            logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
-                " for " + str( key ) )
+            old_line_elements.append( str( volumes[ key ] ) )
         else:
             old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
-            logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
-                " for " + str( key ) )
+        logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
+            " for " + str( key ) )
         new_line = "".join( old_line_elements )
         logging.debug( "The new line is: " )
         logging.debug( new_line )
