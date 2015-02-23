@@ -353,7 +353,7 @@ def Files_Generator( base_name , materials , host_file , options , \
     return()
 
 # Start the program
-print( "\nThe program is now running\n" )
+print( "\nThe geometry program is now running\n" )
 setup = Read_Setup()
 
 base_name = Get_Base_Name( setup[ "file_name" ] )
@@ -362,7 +362,7 @@ try:
     Start_Log( base_name ,  setup[ "log_level" ] )
 except:
     Start_Log( base_name , 0 )
-    logging.debug( "ERROR!!: < log_level > was not found in init_setup.txt\n \
+    logging.debug( "ERROR!!: < log_level > was not found in geo_setup.txt\n \
         and as such LogLevel was set to 0" )
 
 if 'log_level' in setup:
@@ -395,4 +395,4 @@ generated = Gen_Cladding_Radii( widths , generated , setup , Sep , Cep )
 Files_Generator( base_name , materials , host_file , setup , generated , \
     Gen_New_File_Name , Insert_Lines , Sep , Cep )
 
-print( "The program has finished\n" )
+print( "The geometry program has finished\n" )
