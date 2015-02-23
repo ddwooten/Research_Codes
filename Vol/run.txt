@@ -78,14 +78,6 @@ mat    316SS    -7.99    tmp    900    rgb    0    0    153
 mat    Moly    -10.2    tmp    900    rgb    0    255    0
 42000.09c   -1
 
-% ------ Fill Gas 
-mat    FillGas    1    tmp    900    rgb    255    255    0
-2004.09c   1
-
-% ------ Graphite
-mat     Graphite    -2.1    tmp 600 rgb 255 255 255
-6000.06c	1
-
 % ------ Fuel Salt
 mat FuelSalt -3.20779613293 tmp 900 rgb 225 0 0 burn 0
 92234.09c     0.0000151961

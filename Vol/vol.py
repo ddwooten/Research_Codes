@@ -194,15 +194,15 @@ def Read_Input( file_name , form , Sep ):
 print( "\nThe volume program is now running\n" )
 setup = Read_Setup()
 
-files_list = Read_Input( setup[ 'names_list' ] , 'string' , Sep )
+Start_Log( 'log_test' , 0 )
 
-try:
-    Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
-except:
-    Start_Log( 'volume_error' , 0 )
-    logging.debug( "ERROR!!: < log_level > or < log_name > was not found in \n \
-        vol_setup.txt and as such LogLevel was set to 0 and the base name \n \
-        to 'volume_error' " )
+#try:
+#    Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
+#except:
+#    Start_Log( 'volume_error' , 0 )
+#    logging.debug( "ERROR!!: < log_level > or < log_name > was not found in \n \
+#        vol_setup.txt and as such LogLevel was set to 0 and the base name \n \
+#        to 'volume_error' " )
 
 if 'log_level' in setup:
     if setup[ 'log_level' ] < 10:
@@ -210,6 +210,8 @@ if 'log_level' in setup:
         logging.debug( "The input dictionary is: " )
         for keys,values in setup.items():
             logging.debug( str( keys ) + " : " + str( values ) )
+
+files_list = Read_Input( setup[ 'names_list' ] , 'string' , Sep )
 
 Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input \
     , Find_Mat_Lines , Get_Base_Name , setup , Sep , Cep )
