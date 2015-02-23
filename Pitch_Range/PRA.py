@@ -9,13 +9,12 @@ import logging as logging
 import copy as cp
 
 """ This is the SERPENT Incremental Pitch code. It requires a configuration
-file titled, exactly, "init_setup.txt". This file must consist of one column
+file titled, exactly, "geo_setup.txt". This file must consist of two columns
 of text arragned as
-    [ key ]
-    [ value ]
-    [ key ]
-    [ value ]
-with no whitespace. Keys are given below with pertinent notes
+    [ key ],[ value ]
+    [ key ],[ value ]
+Any whitespace is tolerated, it is simply wiped from the file first.
+Keys are given below with pertinent notes
     [file_name] - name of the SERPENT file to be modified. Surface lines
         will be inserted after the tag "% ------ RSAC" while cell lines
         will be inserted after the tag "% ------ AGC". Id numbering begins
@@ -36,18 +35,19 @@ with no whitespace. Keys are given below with pertinent notes
     [log_level] - the python logger utility logging level. If none is given
         it defaults to 0 but will print much less than if 0 is actually given
 Simply create the files above and then execute this program. It will generate
-all the desired files.
-"""
+all the desired files."""
+
 def Read_Setup():
     """ This function reads in a file named "init_setup.txt". It stores this 
     file as a list object from which the file's contents can be retrieved."""
-    input_file = open( "init_setup.txt" , "r" )
+    input_file = open( "geo_setup.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
     dictionary = {}
     num_lines = len( setup_file )
-    for i in range( 0 , num_lines - 1 , 2 ):
-        dictionary[ setup_file[ i ] ] = setup_file[ i + 1 ]
+    for i in range( num_lines ):
+        line = setup_file[ i ].split( ',' )
+        dictionary[ line[ 0 ] ] = line[ 1 ]
     if 'log_level' in dictionary.keys():
         dictionary[ 'log_level' ] = int( dictionary[ 'log_level' ] )
     input_file.close()
