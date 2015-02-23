@@ -1,0 +1,156 @@
+% ------ Created on 22-11-2014 at 17:45
+% ------ Comments:
+% ------ << 
+% ------ < Isotopic composition data REBUS experiment used in SCALE V&V v5.
+% ------ < All salt constituents assumed to be in a single valance state.
+% ------ >>
+ 
+set title "LiF 100% Li-7 Infinite Medium Reactivity Analysis Hex Lattice"
+
+% --- Geometry Components
+
+% --- Surfaces
+
+% ------ Fake Surfaces
+
+% ------ Real Surfaces for actual cells
+% ------ RSAC
+% ------ ZrH1.6 Surface
+surf    10    cyl    0.0    0.0    1.8686
+% ------ 316SS Surface
+surf    11    cyl    0.0    0.0    1.873
+% ------ Moly Surface
+surf    12    cyl    0.0    0.0    1.9365
+% ------ HastelloyNMod Surface
+surf    13    cyl    0.0    0.0    2.0
+% ------ FuelSalt Surface
+surf    14    hexyc    0.0    0.0    6.0    0.0
+
+% --- Cells
+
+% ------ Virtual Cells
+
+% ------ Actual Geometry Cells (Universe 0)
+% ------ AGC
+cell     10     0      ZrH1.6                          -10 
+cell     11     0      316SS           10              -11 
+cell     12     0      Moly            11              -12 
+cell     13     0      HastelloyNMod   12              -13 
+cell     14     0      FuelSalt        13              -14 
+cell     15     0      outside              14  
+
+% --- Materials
+
+% ------ Hastelloy N Modified
+mat HastelloyNMod    -8.86    tmp    973 rgb 192 192 192 
+28000.09c    -0.67
+24000.09c    -0.07
+74000.09c    -0.165
+26000.09c    -0.05
+14000.09c    -0.01
+25055.09c    -0.008
+6000.09c    -0.0008
+27059.09c    -0.002
+29000.09c    -0.0035
+41093.09c    -0.01
+22000.09c    -0.01
+
+% ------ Zirconium Hydride
+mat    ZrH1.6    -5.66    tmp    900    rgb    255    255    255
+40000.09c    1
+1001.09c     1.599816
+1002.09c     0.000184
+
+% ------ 316SS Clad
+mat    316SS    -7.99    tmp    900    rgb    0    0    153
+6000.09c    -0.08
+25055.09c   -2
+15031.09c   -0.045
+16000.09c   -0.06
+14000.09c   -0.75
+24000.09c   -16
+28000.09c   -10
+42000.09c   -2
+7014.09c   -0.1
+26000.09c   -69.165
+
+% ------ Molybdenum Clad
+mat    Moly    -10.2    tmp    900    rgb    0    255    0
+42000.09c   -1
+
+% ------ Fill Gas 
+mat    FillGas    1    tmp    900    rgb    255    255    0
+2004.09c   1
+
+% ------ Graphite
+mat     Graphite    -2.1    tmp 600 rgb 255 255 255
+6000.06c	1
+
+% ------ Fuel Salt
+mat FuelSalt -3.20779613293 tmp 900 rgb 225 0 0 burn 0
+92234.09c     0.0000151961
+92235.09c     0.0005199511
+92236.09c     0.0005410061
+92238.09c     0.0923513069
+93237.09c     0.0000612231
+94238.09c     0.0000429168
+94239.09c     0.0005761536
+94240.09c     0.0003201880
+94241.09c     0.0001287320
+94242.09c     0.0001153801
+95241.09c     0.0000519879
+95243.09c     0.0000001548
+96242.09c     0.0000244542
+96243.09c     0.0000000004
+96244.09c     0.0000000761
+96245.09c     0.0000130083
+9019.09c      0.6420977624
+3007.09c      0.2631405020
+% ------ End Fuel Salt
+
+% --- BURNUP DECK
+
+% ------ Burnup Intervals
+
+dep daystep
+1
+2
+4
+
+% ------ End Burnup Intervals
+
+% ------ Set  Normalization
+
+set flux 1E+13 
+
+% ------ Set Inventory for Burnup Report
+
+set inventory 201 
+
+% ------ Set xscalc mode
+
+set xscalc 1
+
+% ------ Set materials printing mode
+
+set printm 1
+
+% --- Cross section library file path
+set acelib "/home/ddwooten/Documents/RSICC_Codes/1_SERPENT/c757mnyws00/xsdata/endfb7/sss_endfb7u.xsdata"
+set declib "/home/ddwooten/Documents/RSICC_Codes/1_SERPENT/c757mnyws00/xsdata/endfb7/sss_endfb7.dec"
+set nfylib "/home/ddwooten/Documents/RSICC_Codes/1_SERPENT/c757mnyws00/xsdata/endfb7/sss_endfb7.nfy"
+
+%set acelib "/global/home/groups/ac_nuclear/serpent/xsdata/endfb7/sss_endfb7u.xsdata"
+%set declib "/global/home/groups/ac_nuclear/serpent/xsdata/endfb7/sss_endfb7.dec"
+%set nfylib "/global/home/groups/ac_nuclear/serpent/xsdata/endfb7/sss_endfb7.nfy"
+% --- Boundary condition
+
+set bc 1
+
+% --- Neutron population and criticality cycles:
+
+set pop 10000 300 50
+
+% --- Plot
+
+%plot 3 1000 1000
