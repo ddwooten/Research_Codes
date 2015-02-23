@@ -109,27 +109,27 @@ def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input ,\
     functions to determine the volumes and insert them"""
     Sep()
     logging.debug( "Volumize_Files" )
-       for i in range( len( files_list ) ):
-           logging.debug( "Reading in file: " + files_list[ i ] )
-           host_file = Read_Input( files_list[ i ] , 'string' , Sep )
-           destination_name = Get_Base_Name( files_list[ i ] ) + \
+    for i in range( len( files_list ) ):
+        logging.debug( "Reading in file: " + files_list[ i ] )
+        host_file = Read_Input( files_list[ i ] , 'string' , Sep )
+        destination_name = Get_Base_Name( files_list[ i ] ) + \
             "_vols.txt"
-           mat_file_name = files_list[ i ] + ".mvol"
-           logging.debug( "Reading in file: " + mat_file_name )
-           material_file = Read_Input( mat_file_name , 'string' , Sep )
-           mats_and_vols = Get_Mat_and_Vol( material_file , Sep , Cep )
-           if 'log_level' in options:
-               if options[ 'log_level' ] < 10:
-                   Cep()
-                   logging.debug( "The material and volume dict is: " )
-                   for keys,values in mats_and_vols.items():
-                       logging.debug( str( keys ) + " : " + str( values ) )
-          lines = Find_Mat_Lines( host_file , Sep , Cep )
-          host_file = Insert_Vols( host_file , lines , mats_and_vols , \
-            Sep , Cep )
-          destination_file = open( destination_name , "w" )
-          destination_file.writelines( host_file )
-          destination_file.close()
+        mat_file_name = files_list[ i ] + ".mvol"
+        logging.debug( "Reading in file: " + mat_file_name )
+        material_file = Read_Input( mat_file_name , 'string' , Sep )
+        mats_and_vols = Get_Mat_and_Vol( material_file , Sep , Cep )
+        if 'log_level' in options:
+            if options[ 'log_level' ] < 10:
+                Cep()
+                logging.debug( "The material and volume dict is: " )
+                for keys,values in mats_and_vols.items():
+                    logging.debug( str( keys ) + " : " + str( values ) )
+        lines = Find_Mat_Lines( host_file , Sep , Cep )
+        host_file = Insert_Vols( host_file , lines , mats_and_vols , \
+         Sep , Cep )
+        destination_file = open( destination_name , "w" )
+        destination_file.writelines( host_file )
+        destination_file.close()
     return() 
                                
 def Get_Base_Name( file_name ):
