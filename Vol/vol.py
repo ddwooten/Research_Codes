@@ -53,8 +53,8 @@ def Get_Mat_and_Vol( contents , Sep , Cep ):
         string = contents[ i ].split()
         logging.debug( "The string is: " )
         logging.debug( contents[ i ] )
-        mat = string.split()[ 0 ]
-        vol = float( string.split()[ 2 ] )
+        mat = string[ 0 ]
+        vol = float( string[ 2 ] )
         mat_and_vol_dict[ mat ] = vol
     for keys,values in mat_and_vol_dict.items():
         logging.debug( str( keys ) + " : " + str( values ) )
