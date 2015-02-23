@@ -191,16 +191,16 @@ def Read_Input( file_name , form , Sep ):
     return( file_contents )
 
 # Start the program
-print( "\nThe program is now running\n" )
+print( "\nThe volume program is now running\n" )
 setup = Read_Setup()
 
-base_name = Get_Base_Name( setup[ "file_name" ] )
+files_list = Read_Input( setup[ names_list ] , 'raw' , Sep )
 
 try:
     Start_Log( base_name ,  setup[ "log_level" ] )
 except:
     Start_Log( base_name , 0 )
-    logging.debug( "ERROR!!: < log_level > was not found in init_setup.txt\n \
+    logging.debug( "ERROR!!: < log_level > was not found in vol_setup.txt\n \
         and as such LogLevel was set to 0" )
 
 if 'log_level' in setup:
@@ -210,27 +210,7 @@ if 'log_level' in setup:
         for keys,values in setup.items():
             logging.debug( str( keys ) + " : " + str( values ) )
 
-host_file = Read_Input( setup[ "file_name" ] , 'raw' , Sep )
-    
-given = Read_Input( setup[ "given_file" ] , 'float' , Sep )
+Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input ,\
+    , Find_Mat_Lines , Get_Base_Name , setup , Sep , Cep )
 
-pd = Read_Input( setup[ "pd_file" ] , 'float' , Sep )
-
-cladding = Read_Input( setup[ "materials_file" ] , 'string' , Sep )
-
-generated = Gen_Pitch_or_Diameter( pd , given , setup[ "given_type" ] , \
-    setup , Sep , Cep )
-
-widths = Gen_Width_List( cladding , Sep )
-
-materials = Gen_Materials_List( cladding , setup[ "filler_type" ] , \
-    setup[ "outside_type" ] , Sep )
-
-generated = Gen_Inmost_Radius( widths , generated , setup , Sep , Cep )
-
-generated = Gen_Cladding_Radii( widths , generated , setup , Sep , Cep )
-
-Files_Generator( base_name , materials , host_file , setup , generated , \
-    Gen_New_File_Name , Insert_Lines , Sep , Cep )
-
-print( "The program has finished\n" )
+print( "The volume program has finished\n" )
