@@ -104,7 +104,7 @@ def Find_Mat_Lines( contents , Sep , Cep ):
     return( line_dict )
 
 def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input ,\
-    , Find_Mat_Lines , Get_Base_Name , options , Sep , Cep ):
+    Find_Mat_Lines , Get_Base_Name , options , Sep , Cep ):
     """This function loops through the files list calling the appropriate
     functions to determine the volumes and insert them"""
     Sep()
@@ -209,7 +209,7 @@ if 'log_level' in setup:
         for keys,values in setup.items():
             logging.debug( str( keys ) + " : " + str( values ) )
 
-Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input ,\
+Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input \
     , Find_Mat_Lines , Get_Base_Name , setup , Sep , Cep )
 
 print( "The volume program has finished\n" )
