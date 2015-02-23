@@ -85,18 +85,6 @@ def Sep():
     logging.debug( '//////////////////////////////////////////////////////' )
     return()
 
-def Read_Host( file_name , Sep ):
-    """ This function reads in a file whose name is given in file_name to the
-    function. It's contents are saved in a list. """
-    Sep()
-    logging.debug( "Read_Host" )
-    logging.debug( "Reading in file: " + file_name )
-    input_file = open( file_name , "r" )
-    file_contents = input_file.readlines()
-    logging.debug( "Closing file: " + file_name )
-    input_file.close()
-    return( file_contents )
-
 def Read_Input( file_name , form , Sep ):
     """ This function reads in a file whose name is given in file_name to the
     function. It's contents are saved in a list and stripped of new lines. 
