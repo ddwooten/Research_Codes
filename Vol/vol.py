@@ -77,9 +77,9 @@ def Insert_Vols( contents , lines , volumes , Sep , Cep ):
             old_line_elements.append( str( volumes[ key ] ) )
         else:
             old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
-        logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
+        logging.debug( "Inserted volume " + str( volumes[ key ] ) + \
             " for " + str( key ) )
-        new_line = "    ".join( old_line_elements )
+        new_line = "    ".join( old_line_elements ) 
         logging.debug( "The new line is: " )
         logging.debug( new_line )
         contents[ lines[ key ] ] = new_line
@@ -112,7 +112,7 @@ def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input ,\
     logging.debug( "Volumize_Files" )
     for i in range( len( files_list ) ):
         logging.debug( "Reading in file: " + files_list[ i ] )
-        host_file = Read_Input( files_list[ i ] , 'string' , Sep )
+        host_file = Read_Input( files_list[ i ] , 'raw' , Sep )
         destination_name = Get_Base_Name( files_list[ i ] ) + \
             "_vols.txt"
         mat_file_name = files_list[ i ] + ".mvol"
