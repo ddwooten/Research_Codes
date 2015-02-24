@@ -79,7 +79,7 @@ def Insert_Vols( contents , lines , volumes , Sep , Cep ):
             old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
         logging.debug( "Inserted volume" + str( volumes[ key ] ) + \
             " for " + str( key ) )
-        new_line = "".join( old_line_elements )
+        new_line = "    ".join( old_line_elements )
         logging.debug( "The new line is: " )
         logging.debug( new_line )
         contents[ lines[ key ] ] = new_line
