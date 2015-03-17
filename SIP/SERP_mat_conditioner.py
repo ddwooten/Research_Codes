@@ -1,4 +1,4 @@
-#/usr/bin/python
+#!/usr/bin/python
 # Creator: Daniel Wooten
 # Version 1.0.
 
