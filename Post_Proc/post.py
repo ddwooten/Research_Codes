@@ -2,9 +2,6 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
-import csv as csvreader
-import time as time
-import sys as sys
 import logging as logging
 import copy as cp
 import re as re
@@ -45,7 +42,6 @@ def Nuclide_Dictionaries( Sep , Cep ):
         and creates a dictionary of name:ZAI and ZAI:name """
     Sep()
     logging.debug( "Nuclide_Dictionaries" )
-    logging.debug( "Choice is set to: " + str( choice ) )
     input_file = open( "nuclides.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
@@ -61,15 +57,30 @@ def Nuclide_Dictionaries( Sep , Cep ):
     return( output_list )
 
 def Read_Burn_File( base_name, Read_Input , Sep , Cep ):
-    """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file and stores
-    data as lists inside of a general list """
+    """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file
+    and stores data as lists inside of a general list """
     Sep()
     logging.debug( "Read_Burn_File" )
     burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
 
+def Get_Materials_List( contents , Sep , Cep ):
+    """ This function generates a list of all the materials in the burn file"""
+    Sep()
+    logging.debug( "Get_Materials_List" )
+    materials = []
+    pattern = re.compile(r'MAT_\S*?_VOLUME')
+    for i in range( len( contents ) ):
+        match = pattern.match( contents[ i ] )
+        if match:
+            materials.append( match.group()[ 4 : len( match.group() ) - 7 ] )
+    logging.debug( "The materials found in the burnup file are: " )
+    logging.debug( str( materials ) )
+    return( materials )
+
+
 def Burn_Totals_List( contents , Sep , Cep ):
-    """ This function parses through a list containing the contents of a SERPENT2 burnup file
-    and extracts the amalgamated burnup data """
+    """ This function parses through a list containing the contents of a 
+    SERPENT2 burnup file and extracts the amalgamated burnup data """
     Sep()
     logging.debug( "Burn_Total_List" )
 # Here we try to extract various arrays from the serpent file
