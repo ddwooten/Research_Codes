@@ -25,9 +25,9 @@ Simply create the files above and then execute this program. It will generate
 all the desired files.
 """
 def Read_Setup():
-    """ This function reads in a file named "init_setup.txt". It stores this 
+    """ This function reads in a file named "post_setup.txt". It stores this 
     file as a list object from which the file's contents can be retrieved."""
-    input_file = open( "vol_setup.txt" , "r" )
+    input_file = open( "post_setup.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
     dictionary = {}
@@ -39,6 +39,50 @@ def Read_Setup():
         dictionary[ 'log_level' ] = int( dictionary[ 'log_level' ] )
     input_file.close()
     return( dictionary )
+
+def Nuclide_Dictionaries( Sep , Cep ):
+    """ This function reads in nuclide ZAIs and names from a static file, "nuclides.txt"
+        and creates a dictionary of name:ZAI and ZAI:name """
+    Sep()
+    logging.debug( "Nuclide_Dictionaries" )
+    logging.debug( "Choice is set to: " + str( choice ) )
+    input_file = open( "nuclides.txt" , "r" )
+    setup_file = input_file.readlines()
+    setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
+    dictionary_0 = {}
+    dictionary_1 = {}
+    num_lines = len( setup_file )
+    for i in range( num_lines ):
+        line = setup_file[ i ].split( ',' )
+        dictionary_0[ line[ 0 ] ] = line[ 1 ]
+        dictionary_1[ line[ 1 ] ] = line[ 0 ]
+    input_file.close()
+    output_list = [ dictionary_0 , dictionary_1 ]
+    return( output_list )
+
+def Read_Burn_File( base_name, Read_Input , Sep , Cep ):
+    """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file and stores
+    data as lists inside of a general list """
+    Sep()
+    logging.debug( "Read_Burn_File" )
+    burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
+
+def Burn_Totals_List( contents , Sep , Cep ):
+    """ This function parses through a list containing the contents of a SERPENT2 burnup file
+    and extracts the amalgamated burnup data """
+    Sep()
+    logging.debug( "Burn_Total_List" )
+# Here we try to extract various arrays from the serpent file
+    try:
+            T_vol_index = contents.index('')
+        except ValueError:
+            old_line_elements.append( 'vol' )
+            old_line_elements.append( str( volumes[ key ] ) )
+        else:
+            old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
+        logging.debug( "Inserted volume " + str( volumes[ key ] ) + \
+            " for " + str( key ) )
+    
 
 def Get_Mat_and_Vol( contents , Sep , Cep ):
     """ This function reads in a SERPENT2 .mvol file and extracts material
