@@ -56,25 +56,51 @@ def Nuclide_Dictionaries( Sep , Cep ):
     output_list = [ dictionary_0 , dictionary_1 ]
     return( output_list )
 
-def Read_Burn_File( base_name, Read_Input , Sep , Cep ):
+def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
+    Get_Nuclide_Indicies , Sep , Cep ):
     """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file
     and stores data as lists inside of a general list """
     Sep()
     logging.debug( "Read_Burn_File" )
     burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
+    materials = Get_Materials_List( burn_data , Sep , Cep )
+    nuclide_indicies = Get_Nuclide_Indicies( burn_data , options , Sep , Cep )
 
-def Get_Materials_List( contents , Sep , Cep ):
+
+def Get_Nuclide_Indicies( contents , options , Sep , Cep ):
+    """ This function reads through the burn file to get the matrix rows of
+    each nuclide ( the index in matricies where it's info can be found ) """
+    Sep()
+    logging.debug( "Get_Nuclide_Indicies" )
+    indicies = {}
+    pattern = re.compile( r'i(\d*) = (\d*)' )
+    for i in range( len( contents ) ):
+        match = pattern.match( contents[ i ] )
+        if match:
+            indicies[ int( match.group( 1 ) ) ] = int( match.group( 2 ) )
+    logging.debug
+    if 'log_level' in options:
+        if options[ 'log_level' ] < 10:
+            logging.debug( "The nuclide indicies dict is: " )
+            for keys,values in indicies.items():
+                logging.debug( str( keys ) + " : " + str( values ) )
+    return( indicies )
+
+def Get_Materials_List( contents , options , Sep , Cep ):
     """ This function generates a list of all the materials in the burn file"""
     Sep()
     logging.debug( "Get_Materials_List" )
     materials = []
     pattern = re.compile(r'MAT_\S*?_VOLUME')
-    for i in range( len( contents ) ):
-        match = pattern.match( contents[ i ] )
-        if match:
-            materials.append( match.group()[ 4 : len( match.group() ) - 7 ] )
+    material_strings = pattern.findall( contents )
+    for i in range( len( material_strings ) ):
+        materials.append( material_strings[ i ][ 4 : \
+           len( material_strings[ i ] ) - 7 ] )
     logging.debug( "The materials found in the burnup file are: " )
-    logging.debug( str( materials ) )
+    if 'log_level' in options:
+        if options[ 'log_level' ] < 10:
+            for i in range( len( materials ) ):
+                logging.debug( str( materials[ i ] ) )
     return( materials )
 
 
