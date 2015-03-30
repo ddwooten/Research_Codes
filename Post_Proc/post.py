@@ -62,19 +62,34 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     and stores data as lists inside of a general list """
     Sep()
     logging.debug( "Read_Burn_File" )
-    burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
-    materials = Get_Materials_List( burn_data , Sep , Cep )
-    nuclide_indicies = Get_Nuclide_Indicies( burn_data , options , Sep , Cep )
+    burn_data = []
+    data_indicies = {}
+    nuclide_indicies = {}
+    materials_list = []
+    raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
+    line = 0
+    index_pattern = re.compile( r'i(\d*) = (\d*)' )
+    bu_pattern = re.compile( r'BU' )
+    day_pattern = re.compile( r'DAYS' )
+    mat_pattern = re.compile( r'MAT\S*?' )
+    tot_pattern = re.compile( r'TOT\S*?' )
+    while ( line < len( raw_burn_data ) + 1 ):
+        index_match = index_pattern.match( raw_burn_data[ line ] )
+        bu_match = bu_pattern.match( raw_burn_data[ line ] )
+        day_match = day_pattern.match( raw_burn_data[ line ] )
+        mat_match = mat_pattern.match( raw_burn_data[ line ] )
+        tot_match = tot_pattern.match( raw_burn_data[ line ] )
+        if index_match:
+        nuclide_indicies = Get_Nuclide_Indicies( raw_burn_data , options ,Sep, Cep )
+    materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
 
-
-def Get_Nuclide_Indicies( contents , options , Sep , Cep ):
+def Read_Burn_Vector( contents , options , Sep , Cep ):
+    """ This function""" 
+def Get_Nuclide_Indicies( match_object , index_dict , options , Sep , Cep ):
     """ This function reads through the burn file to get the matrix rows of
     each nuclide ( the index in matricies where it's info can be found ) """
     Sep()
     logging.debug( "Get_Nuclide_Indicies" )
-    indicies = {}
-    pattern = re.compile( r'i(\d*) = (\d*)' )
-    for i in range( len( contents ) ):
         match = pattern.match( contents[ i ] )
         if match:
             indicies[ int( match.group( 1 ) ) ] = int( match.group( 2 ) )
