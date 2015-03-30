@@ -80,26 +80,26 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
         mat_match = mat_pattern.match( raw_burn_data[ line ] )
         tot_match = tot_pattern.match( raw_burn_data[ line ] )
         if index_match:
-        nuclide_indicies = Get_Nuclide_Indicies( raw_burn_data , options ,Sep, Cep )
+            nuclide_indicies = Get_Nuclide_Indicies( raw_burn_data[ line ] ,\
+                nuclide_indicies ,Sep, Cep )
     materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
 
 def Read_Burn_Vector( contents , options , Sep , Cep ):
     """ This function""" 
-def Get_Nuclide_Indicies( match_object , index_dict , options , Sep , Cep ):
+def Get_Nuclide_Indicies( string , index_dict , Sep , Cep ):
     """ This function reads through the burn file to get the matrix rows of
     each nuclide ( the index in matricies where it's info can be found ) """
     Sep()
     logging.debug( "Get_Nuclide_Indicies" )
-        match = pattern.match( contents[ i ] )
-        if match:
-            indicies[ int( match.group( 1 ) ) ] = int( match.group( 2 ) )
-    logging.debug
-    if 'log_level' in options:
-        if options[ 'log_level' ] < 10:
-            logging.debug( "The nuclide indicies dict is: " )
-            for keys,values in indicies.items():
-                logging.debug( str( keys ) + " : " + str( values ) )
-    return( indicies )
+    logging.debug( "The string being analyzed is:" )
+    logging.debug( string )
+    pattern = re.compile( r'i(\d*) = (\d*)' )
+    match = pattern.match( string )
+    if index_match:
+        index_dict[ int( match.group( 1 ) ) ] = int( match.group( 2 ) )
+    logging.debug( "The key value pair generated is: " )
+    logging.debug( match.group( 1 ) + " : " + match.group( 2 ) ) 
+    return( index_dict )
 
 def Get_Materials_List( contents , options , Sep , Cep ):
     """ This function generates a list of all the materials in the burn file"""
