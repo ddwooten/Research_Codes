@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # Creator: Daniel Wooten
 # Version 1.0.
-
+import time as time
 import logging as logging
 import copy as cp
 import re as re
+import math as math
 
 """ This is the SERPENT volume writter code. It requires a configuration
 file titled, exactly, "vol_setup.txt". This file must consist of two columns
@@ -22,9 +23,9 @@ Simply create the files above and then execute this program. It will generate
 all the desired files.
 """
 def Read_Setup():
-    """ This function reads in a file named "post_setup.txt". It stores this 
+    """ This function reads in a file named "init_setup.txt". It stores this 
     file as a list object from which the file's contents can be retrieved."""
-    input_file = open( "post_setup.txt" , "r" )
+    input_file = open( "vol_setup.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
     dictionary = {}
@@ -37,104 +38,74 @@ def Read_Setup():
     input_file.close()
     return( dictionary )
 
-def Nuclide_Dictionaries( Sep , Cep ):
-    """ This function reads in nuclide ZAIs and names from a static file,
-    "nuclides.txt" and creates a dictionary of name:ZAI and ZAI:name """
+def Get_Elements( Sep , Cep ):
     Sep()
-    logging.debug( "Nuclide_Dictionaries" )
-    input_file = open( "nuclide_ids.txt" , "r" )
+    logging.debug( "Get_Elements" )
+    input_file = open( "nuclides.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
-    dictionary_0 = {}
-    dictionary_1 = {}
-    num_lines = len( setup_file )
-    for i in range( num_lines ):
-        line = setup_file[ i ].split( ',' )
-        dictionary_0[ line[ 0 ] ] = line[ 1 ]
-        dictionary_1[ line[ 1 ] ] = line[ 0 ]
-    input_file.close()
-    output_list = [ dictionary_0 , dictionary_1 ]
-    return( output_list )
+    setup_file = [ x.strip() for x in setup_file ]
+    setup_file = [ x.strip( "," ) for x in setup_file ]
+    setup_file = [ x.strip('"') for x in setup_file ]
+    logging.debug( "An element sample: " + setup_file[ 2 ] )
+    elements_list=[]
+    for i in range( len( setup_file ) ):
+        elements_list.append( setup_file[ i ] )
+    return( elements_list )
 
-def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
-    Get_Nuclide_Indicies , Sep , Cep ):
-    """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file
-    and stores data as lists inside of a general list """
+def Get_ZAIs( Sep , Cep ):
     Sep()
-    logging.debug( "Read_Burn_File" )
-    burn_data = []
-    data_indicies = {}
-    nuclide_indicies = {}
-    materials_list = []
-    raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
-    line = 0
-    index_pattern = re.compile( r'i(\d*) = (\d*)' )
-    bu_pattern = re.compile( r'BU' )
-    day_pattern = re.compile( r'DAYS' )
-    mat_pattern = re.compile( r'MAT\S*?' )
-    tot_pattern = re.compile( r'TOT\S*?' )
-    while ( line < len( raw_burn_data ) + 1 ):
-        index_match = index_pattern.match( raw_burn_data[ line ] )
-        bu_match = bu_pattern.match( raw_burn_data[ line ] )
-        day_match = day_pattern.match( raw_burn_data[ line ] )
-        mat_match = mat_pattern.match( raw_burn_data[ line ] )
-        tot_match = tot_pattern.match( raw_burn_data[ line ] )
-        if index_match:
-            nuclide_indicies = Get_Nuclide_Indicies( raw_burn_data[ line ] ,\
-                nuclide_indicies ,Sep, Cep )
-    materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
+    logging.debug( "Get_ZAIs" )
+    input_file = open( "ZAIs.txt" , "r" )
+    setup_file = input_file.readlines()
+    setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
+    ZAIs = []
+    pattern = re.compile(r'{\s*(\d*),\s*[0-9.]*\s*},{\s*(\d*),\s*[0-9.]*\s*},{\s*(\d*),\s*[0-9.]*\s*},')
+    for i in range( len( setup_file ) ):
+        match = pattern.match( setup_file[ i ] )
+        if match:
+            ZAIs.append( match.group( 1 ) )
+            ZAIs.append( match.group( 2 ) )
+            ZAIs.append( match.group( 3 ) )
+    return( ZAIs )
 
-def Read_Burn_Vector( contents , options , Sep , Cep ):
-    """ This function""" 
-def Get_Nuclide_Indicies( string , index_dict , Sep , Cep ):
-    """ This function reads through the burn file to get the matrix rows of
-    each nuclide ( the index in matricies where it's info can be found ) """
+def Gen_File( Get_ZAIs , Get_Elements , Sep , Cep ):
+    pair_list = []
+    ZAIs = Get_ZAIs( Sep , Cep )[ : -2 ]
+    elements = Get_Elements( Sep , Cep )
     Sep()
-    logging.debug( "Get_Nuclide_Indicies" )
-    logging.debug( "The string being analyzed is:" )
-    logging.debug( string )
-    pattern = re.compile( r'i(\d*) = (\d*)' )
-    match = pattern.match( string )
-    if index_match:
-        index_dict[ int( match.group( 1 ) ) ] = int( match.group( 2 ) )
-    logging.debug( "The key value pair generated is: " )
-    logging.debug( match.group( 1 ) + " : " + match.group( 2 ) ) 
-    return( index_dict )
-
-def Get_Materials_List( contents , options , Sep , Cep ):
-    """ This function generates a list of all the materials in the burn file"""
+    logging.debug( "Gen_File" )
     Sep()
-    logging.debug( "Get_Materials_List" )
-    materials = []
-    pattern = re.compile(r'MAT_\S*?_VOLUME')
-    material_strings = pattern.findall( contents )
-    for i in range( len( material_strings ) ):
-        materials.append( material_strings[ i ][ 4 : \
-           len( material_strings[ i ] ) - 7 ] )
-    logging.debug( "The materials found in the burnup file are: " )
-    if 'log_level' in options:
-        if options[ 'log_level' ] < 10:
-            for i in range( len( materials ) ):
-                logging.debug( str( materials[ i ] ) )
-    return( materials )
-
-
-def Burn_Totals_List( contents , Sep , Cep ):
-    """ This function parses through a list containing the contents of a 
-    SERPENT2 burnup file and extracts the amalgamated burnup data """
+    logging.debug( "The elements are: ")
+    for i in range( len( elements ) ):
+        logging.debug( elements[ i ] )
+    pattern = re.compile( r'[1-9].*' )
     Sep()
-    logging.debug( "Burn_Total_List" )
-# Here we try to extract various arrays from the serpent file
-    try:
-            T_vol_index = contents.index('')
-        except ValueError:
-            old_line_elements.append( 'vol' )
-            old_line_elements.append( str( volumes[ key ] ) )
-        else:
-            old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
-        logging.debug( "Inserted volume " + str( volumes[ key ] ) + \
-            " for " + str( key ) )
-    
+    for i in range( len( ZAIs ) ):
+        Cep()
+        logging.debug( "The ZAI being worked on is: " + str( ZAIs[ i ] ) )
+        Z = int( math.floor( float( ZAIs[ i ] ) / 1000.0 ) )
+        logging.debug( "The Z is: " +str( Z) )
+        ele = elements[ Z - 1 ]
+        logging.debug( "The element is: " + ele )
+        tripple = str( ZAIs[ i ] )[ -3 : ]
+        logging.debug( "The tripple is: " + tripple )
+        match = pattern.search( tripple )
+        A = match.group()
+        logging.debug( "The A is: " + A )
+        isotope = ele + "-" + A
+        logging.debug( "The isotope is: " + isotope )
+        string = str( ZAIs[ i ] ) + ":" + isotope + "\n"
+        logging.debug( "The string is: " )
+        logging.debug( string )
+        pair_list.append( string )
+    logging.debug( "The pair_list is: ")
+    for i in range( len( pair_list ) ):
+        logging.debug( pair_list[ i ] )
+    destination_file = open( "nuclide_ids.txt" , "w" )
+    destination_file.writelines( pair_list )
+    destination_file.close()
+    return()
 
 def Get_Mat_and_Vol( contents , Sep , Cep ):
     """ This function reads in a SERPENT2 .mvol file and extracts material
@@ -287,28 +258,10 @@ def Read_Input( file_name , form , Sep ):
     return( file_contents )
 
 # Start the program
-print( "\nThe volume program is now running\n" )
+print( "\nThe indexer program is now running\n" )
 
-setup = Read_Setup()
+Start_Log( "nuclides" , 0 )
 
-try:
-    Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
-except:
-    Start_Log( 'volume_error' , 0 )
-    logging.debug( "ERROR!!: < log_level > or < log_name > was not found in \n \
-        vol_setup.txt and as such LogLevel was set to 0 and the base name \n \
-        to 'volume_error' " )
-
-if 'log_level' in setup:
-    if setup[ 'log_level' ] < 10:
-        Sep()
-        logging.debug( "The input dictionary is: " )
-        for keys,values in setup.items():
-            logging.debug( str( keys ) + " : " + str( values ) )
-
-files_list = Read_Input( setup[ 'names_list' ] , 'string' , Sep )
-
-Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input \
-    , Find_Mat_Lines , Get_Base_Name , setup , Sep , Cep )
+Gen_File( Get_ZAIs , Get_Elements , Sep , Cep )
 
 print( "The volume program has finished\n" )
