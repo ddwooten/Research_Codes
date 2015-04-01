@@ -64,28 +64,48 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     logging.debug( "Read_Burn_File" )
     burn_data = 
     nuclide_indicies = {}
-    materials_list = []
     raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
-    line = 0
+    materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
     index_pattern = re.compile( r'i(\d*) = (\d*)' )
     bu_pattern = re.compile( r'BU' )
     day_pattern = re.compile( r'DAYS' )
     mat_pattern = re.compile( r'MAT\S*?' )
     tot_pattern = re.compile( r'TOT\S*?' )
-    while ( line < len( raw_burn_data ) + 1 ):
-        index_match = index_pattern.match( raw_burn_data[ line ] )
-        bu_match = bu_pattern.match( raw_burn_data[ line ] )
-        day_match = day_pattern.match( raw_burn_data[ line ] )
-        mat_match = mat_pattern.match( raw_burn_data[ line ] )
-        tot_match = tot_pattern.match( raw_burn_data[ line ] )
+    mat_name_pattern = re.compile( r'\S*?' )
+    matrix_end_pattern = re.compile( r'\];' )
+    i = 0
+    while ( i < len( raw_burn_data ) + 1 ):
+        line = raw_burn_data[ i ]
+        index_match = index_pattern.match( line )
+        bu_match = bu_pattern.match( line )
+        day_match = day_pattern.match( line )
+        mat_match = mat_pattern.match( line )
+        tot_match = tot_pattern.match( line )
         if index_match:
-            nuclide_indicies = Get_Nuclide_Indicies( raw_burn_data[ line ] ,\
+            nuclide_indicies = Get_Nuclide_Indicies( line ,\
                 nuclide_indicies ,Sep, Cep )
-        if bu_match:
-            burn_data[ bu_match.group() ] = Parse_Mathlab_Vector( raw_burn_data[ line ] , Sep , Cep )
-                
-    materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
+            i += 1 
+        elif bu_match:
+            burn_data[ bu_match.group() ] = Parse_Matlab_Vector( \
+                line , Sep , Cep )
+            i += 1 
+        elif day_match:
+            burn_data[ day_match.group() ] = Parse_Matlab_Vector(\
+                line , Sep , Cep )
+            i += 1
+        elif mat_match:
+            field_name =  mat_name_pattern.match( line ).group()
+            chunk , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
+            burn_data[ field_name ] = Parse_Matlab_Matrix( \
+                chunk , Sep , Cep )
 
+def Get_Matlab_Matrix( contents , counter , Sep , Cep ):
+    """ This function searches through a serpent dep file and extracts
+    the currently selected matlab style matrix ( composing several lines
+    of the file ) returning this matrix as a list """
+    Sep()
+    logging.debug( "Get_Matlab_Matrix" )
+def Parse_Matlab_Matrix
 def Parse_Matlab_Vector( line , Sep , Cep ):
     """ This function extracts the numerical data from a mathlab vector format and returns a list """
     Sep()
