@@ -49,7 +49,7 @@ def Nuclide_Dictionaries( Sep , Cep ):
     dictionary_1 = {}
     num_lines = len( setup_file )
     for i in range( num_lines ):
-        line = setup_file[ i ].split( ',' )
+        line = setup_file[ i ].split( ':' )
         dictionary_0[ line[ 0 ] ] = line[ 1 ]
         dictionary_1[ line[ 1 ] ] = line[ 0 ]
     input_file.close()
@@ -62,8 +62,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     and stores data as lists inside of a general list """
     Sep()
     logging.debug( "Read_Burn_File" )
-    burn_data = []
-    data_indicies = {}
+    burn_data = 
     nuclide_indicies = {}
     materials_list = []
     raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
@@ -82,10 +81,30 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
         if index_match:
             nuclide_indicies = Get_Nuclide_Indicies( raw_burn_data[ line ] ,\
                 nuclide_indicies ,Sep, Cep )
+        if bu_match:
+            burn_data[ bu_match.group() ] = Parse_Mathlab_Vector( raw_burn_data[ line ] , Sep , Cep )
+                
     materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
 
-def Read_Burn_Vector( contents , options , Sep , Cep ):
-    """ This function""" 
+def Parse_Matlab_Vector( line , Sep , Cep ):
+    """ This function extracts the numerical data from a mathlab vector format and returns a list """
+    Sep()
+    logging.debug( "Parse_Matlab_Vector" )
+    pattern = re.compile( r'\[.*?\]' )
+    string = pattern.search( line ).group()[ 1 : -1 ].strip( " " )
+    logging.debug( "The string is: " )
+    try:
+        logging.debug( string[ : 10 ] + "..." + string[ -10 : ] )
+    except:
+        logging.debug( string )
+    nums = string.split( " " )
+    logging.debug( "The generated list is: " )
+    try:
+        logging.debug( str( nums[  : 5 ] ) + "..." + str( nums[ -5 : ] 
+    except:
+        logging.debug( str( nums ) )
+    return( nums )
+
 def Get_Nuclide_Indicies( string , index_dict , Sep , Cep ):
     """ This function reads through the burn file to get the matrix rows of
     each nuclide ( the index in matricies where it's info can be found ) """
