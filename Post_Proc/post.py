@@ -39,7 +39,7 @@ def Read_Setup():
 
 def Nuclide_Dictionaries( Sep , Cep ):
     """ This function reads in nuclide ZAIs and names from a static file,
-    "nuclides.txt" and creates a dictionary of name:ZAI and ZAI:name """
+    "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
     Sep()
     logging.debug( "Nuclide_Dictionaries" )
     input_file = open( "nuclide_ids.txt" , "r" )
@@ -72,7 +72,6 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     mat_pattern = re.compile( r'MAT\S*?' )
     tot_pattern = re.compile( r'TOT\S*?' )
     mat_name_pattern = re.compile( r'\S*?' )
-    matrix_end_pattern = re.compile( r'\];' )
     i = 0
     while ( i < len( raw_burn_data ) + 1 ):
         line = raw_burn_data[ i ]
@@ -95,9 +94,9 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
             i += 1
         elif mat_match:
             field_name =  mat_name_pattern.match( line ).group()
-            chunk , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
+            start , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
             burn_data[ field_name ] = Parse_Matlab_Matrix( \
-                chunk , Sep , Cep )
+                start, i , raw_burn_data , Sep , Cep )
 
 def Get_Matlab_Matrix( contents , counter , Sep , Cep ):
     """ This function searches through a serpent dep file and extracts
@@ -105,9 +104,35 @@ def Get_Matlab_Matrix( contents , counter , Sep , Cep ):
     of the file ) returning this matrix as a list """
     Sep()
     logging.debug( "Get_Matlab_Matrix" )
-def Parse_Matlab_Matrix
+    start = cp.deepcopy( counter )
+    pattern = re.compile( r'\];' )
+    match = None
+    while ( match is None ):
+        match = pattern.match( contents[ counter ] )
+        end = counter
+        counter += 1
+    output = [ start , counter ]
+    return( output ) 
+
+def Parse_Matlab_Matrix( begin , end , contents , Sep , Cep ):
+    """ This function extracts numerical data from a matlab matrix and returns
+        a nested list of the data"""
+    Sep()
+    logging.debug( "Parse_Matlab_Matrix" )
+    output = []
+    for i in range( begin + 1 , end ):
+        line = contents[ i ].split( " " )
+        try:
+            index = line.index( "%" )
+        except:
+            pass
+        else:
+            line = line[ : index - 1 ]
+        output.append( line )
+    return( output )
+
 def Parse_Matlab_Vector( line , Sep , Cep ):
-    """ This function extracts the numerical data from a mathlab vector format and returns a list """
+    """ This function extracts the numerical data from a matlab vector format and returns a list """
     Sep()
     logging.debug( "Parse_Matlab_Vector" )
     pattern = re.compile( r'\[.*?\]' )
@@ -156,24 +181,6 @@ def Get_Materials_List( contents , options , Sep , Cep ):
             for i in range( len( materials ) ):
                 logging.debug( str( materials[ i ] ) )
     return( materials )
-
-
-def Burn_Totals_List( contents , Sep , Cep ):
-    """ This function parses through a list containing the contents of a 
-    SERPENT2 burnup file and extracts the amalgamated burnup data """
-    Sep()
-    logging.debug( "Burn_Total_List" )
-# Here we try to extract various arrays from the serpent file
-    try:
-            T_vol_index = contents.index('')
-        except ValueError:
-            old_line_elements.append( 'vol' )
-            old_line_elements.append( str( volumes[ key ] ) )
-        else:
-            old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
-        logging.debug( "Inserted volume " + str( volumes[ key ] ) + \
-            " for " + str( key ) )
-    
 
 def Get_Mat_and_Vol( contents , Sep , Cep ):
     """ This function reads in a SERPENT2 .mvol file and extracts material
