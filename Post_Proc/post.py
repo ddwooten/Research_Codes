@@ -206,99 +206,18 @@ def Get_Materials_List( contents , options , Sep , Cep ):
                 logging.debug( str( materials[ i ] ) )
     return( materials )
 
-def Get_Mat_and_Vol( contents , Sep , Cep ):
-    """ This function reads in a SERPENT2 .mvol file and extracts material
-    names and volumes, assigning them to a dict with mat names as keys and
-    vols as values."""
+def Report_Output( output , file_name ):
+    """ This function is a debugging function to test the parse functions """
     Sep()
-    logging.debug( "Get_Mat_and_Vol" )
-    mat_and_vol_dict = {}
-    start_line = contents.index( 'set mvol' ) + 2
-    logging.debug( "The start line is: " + str( start_line ) )
-    for i in range( start_line , len( contents ) , 1 ):
-        string = contents[ i ].split()
-        logging.debug( "The string is: " )
-        logging.debug( contents[ i ] )
-        mat = string[ 0 ]
-        vol = float( string[ 2 ] )
-        mat_and_vol_dict[ mat ] = vol
-    for keys,values in mat_and_vol_dict.items():
-        logging.debug( str( keys ) + " : " + str( values ) )
-    return( mat_and_vol_dict )
+    logging.debug( "Report_Output" )
+    destination = open( file_name , "w" )
+    for key in output.keys():
+        destination.writeline( str( key ) + ": \n" )
+        destination.writelines( ouput[ key ] )
+    destination.writeline( "********************************************* \n" )
+    destination.writeline( "END!!" )
+    destination.close()
 
-def Insert_Vols( contents , lines , volumes , Sep , Cep ):
-    """ This function literally inserts the volume amount into the material
-    string"""
-    Sep()
-    logging.debug( "Insert_Vols" )
-    for key in lines.keys():
-        old_line = contents[ lines[ key ] ]
-        old_line_elements = old_line.split()
-        logging.debug( "The initial line is: " )
-        logging.debug( contents[ lines[ key ] ] )
-        try:
-            vol_index = old_line_elements.index('vol')
-        except ValueError:
-            old_line_elements.append( 'vol' )
-            old_line_elements.append( str( volumes[ key ] ) )
-        else:
-            old_line_elements[ vol_index + 1 ] = str( volumes[ key ] )
-        logging.debug( "Inserted volume " + str( volumes[ key ] ) + \
-            " for " + str( key ) )
-        new_line = "    ".join( old_line_elements ) + "\n" 
-        logging.debug( "The new line is: " )
-        logging.debug( new_line )
-        contents[ lines[ key ] ] = new_line
-    return( contents )
-            
-def Find_Mat_Lines( contents , Sep , Cep ):
-    """ This function scans through a file and finds SERPENT material lines
-    using regex. It looks for "mat WORD" and then extracts the line that this
-    occurs on as well as WORD. These are then paired in a dictionary that is
-    the output """
-    Sep()
-    logging.debug( "Find_Mat_Lines" )
-    line_dict = {}
-    line_finder = re.compile( r'\bmat\b.*' )
-    for i in range( len( contents ) ):
-        string = line_finder.match( contents[ i ] )
-        if string != None:
-           logging.debug( "The matched string is: " )
-           logging.debug( string.group() )
-           line_dict[ string.group().split()[ 1 ] ] = i
-    for keys,values in line_dict.items():
-        logging.debug( str( keys ) + " : " + str( values ) )
-    return( line_dict )
-
-def Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input ,\
-    Find_Mat_Lines , Get_Base_Name , options , Sep , Cep ):
-    """This function loops through the files list calling the appropriate
-    functions to determine the volumes and insert them"""
-    Sep()
-    logging.debug( "Volumize_Files" )
-    for i in range( len( files_list ) ):
-        logging.debug( "Reading in file: " + files_list[ i ] )
-        host_file = Read_Input( files_list[ i ] , 'raw' , Sep )
-        destination_name = Get_Base_Name( files_list[ i ] ) + \
-            "_vols.txt"
-        mat_file_name = files_list[ i ] + ".mvol"
-        logging.debug( "Reading in file: " + mat_file_name )
-        material_file = Read_Input( mat_file_name , 'string' , Sep )
-        mats_and_vols = Get_Mat_and_Vol( material_file , Sep , Cep )
-        if 'log_level' in options:
-            if options[ 'log_level' ] < 10:
-                Cep()
-                logging.debug( "The material and volume dict is: " )
-                for keys,values in mats_and_vols.items():
-                    logging.debug( str( keys ) + " : " + str( values ) )
-        lines = Find_Mat_Lines( host_file , Sep , Cep )
-        host_file = Insert_Vols( host_file , lines , mats_and_vols , \
-         Sep , Cep )
-        destination_file = open( destination_name , "w" )
-        destination_file.writelines( host_file )
-        destination_file.close()
-    return() 
-                               
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """
     end_index = file_name.rfind( "." )
@@ -357,17 +276,17 @@ def Read_Input( file_name , form , Sep ):
     return( file_contents )
 
 # Start the program
-print( "\nThe volume program is now running\n" )
+print( "\nThe post processing program is now running\n" )
 
 setup = Read_Setup()
 
 try:
     Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
 except:
-    Start_Log( 'volume_error' , 0 )
+    Start_Log( 'post_error' , 0 )
     logging.debug( "ERROR!!: < log_level > or < log_name > was not found in \n \
-        vol_setup.txt and as such LogLevel was set to 0 and the base name \n \
-        to 'volume_error' " )
+        post_setup.txt and as such LogLevel was set to 0 and the base name \n \
+        to 'post_error' " )
 
 if 'log_level' in setup:
     if setup[ 'log_level' ] < 10:
@@ -376,9 +295,9 @@ if 'log_level' in setup:
         for keys,values in setup.items():
             logging.debug( str( keys ) + " : " + str( values ) )
 
-files_list = Read_Input( setup[ 'names_list' ] , 'string' , Sep )
+output = Read_Burn_File( "2MWd.txt" , setup , Read_Input, Get_Materials_List , \
+                Get_Nuclide_Indicies , Sep , Cep )
 
-Volumize_Files( files_list , Get_Mat_and_Vol , Insert_Vols , Read_Input \
-    , Find_Mat_Lines , Get_Base_Name , setup , Sep , Cep )
+Report_Output( output , "report.txt" )
 
-print( "The volume program has finished\n" )
+print( "The post processing program has finished\n" )
