@@ -2,6 +2,7 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
+import time as time
 import logging as logging
 import copy as cp
 import re as re
@@ -65,7 +66,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     burn_data = {} 
     nuclide_indicies = {}
     raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
-    materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
+    materials_list = Get_Materials_List( raw_burn_data , options , Sep , Cep )
     index_pattern = re.compile( r'i(\d*) = (\d*)' )
     bu_pattern = re.compile( r'BU' )
     day_pattern = re.compile( r'DAYS' )
@@ -169,7 +170,7 @@ def Parse_Matlab_Vector( line , Sep , Cep ):
     nums = string.split( " " )
     logging.debug( "The generated list is: " )
     try:
-        logging.debug( str( nums[  : 5 ] ) + "..." + str( nums[ -5 : ] 
+        logging.debug( str( nums[  : 5 ] ) + "..." + str( nums[ -5 : ] ) )
     except:
         logging.debug( str( nums ) )
     return( nums )
