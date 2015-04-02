@@ -59,7 +59,7 @@ def Nuclide_Dictionaries( Sep , Cep ):
 def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     Get_Nuclide_Indicies , Sep , Cep ):
     """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file
-    and stores data as lists inside of a general list """
+        and stores data as lists inside of a general list """
     Sep()
     logging.debug( "Read_Burn_File" )
     burn_data = 
@@ -71,44 +71,60 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     day_pattern = re.compile( r'DAYS' )
     mat_pattern = re.compile( r'MAT\S*?' )
     tot_pattern = re.compile( r'TOT\S*?' )
-    mat_name_pattern = re.compile( r'\S*?' )
+    name_pattern = re.compile( r'\S*?' )
     i = 0
     while ( i < len( raw_burn_data ) + 1 ):
         line = raw_burn_data[ i ]
+        logging.debug( "The line being processes is: " )
+        logging.debug( line )
         index_match = index_pattern.match( line )
         bu_match = bu_pattern.match( line )
         day_match = day_pattern.match( line )
         mat_match = mat_pattern.match( line )
         tot_match = tot_pattern.match( line )
         if index_match:
+            logging.debug( "Index match!" )
             nuclide_indicies = Get_Nuclide_Indicies( line ,\
                 nuclide_indicies ,Sep, Cep )
             i += 1 
         elif bu_match:
+            logging.debug( "BU match!" )
             burn_data[ bu_match.group() ] = Parse_Matlab_Vector( \
                 line , Sep , Cep )
             i += 1 
         elif day_match:
+            logging.debug( "Day match!" )
             burn_data[ day_match.group() ] = Parse_Matlab_Vector(\
                 line , Sep , Cep )
             i += 1
-        elif mat_match:
-            field_name =  mat_name_pattern.match( line ).group()
+        elif mat_match or tot_match:
+            logging.debug( "Data match!" )
+            field_name =  name_pattern.match( line ).group()
+            logging.debug( "The field name is: " + field_name )
             start , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
             burn_data[ field_name ] = Parse_Matlab_Matrix( \
                 start, i , raw_burn_data , Sep , Cep )
+        else:
+            i += 1
 
 def Get_Matlab_Matrix( contents , counter , Sep , Cep ):
     """ This function searches through a serpent dep file and extracts
-    the currently selected matlab style matrix ( composing several lines
-    of the file ) returning this matrix as a list """
+        the currently selected matlab style matrix ( composing several lines
+        of the file ) returning this matrix as a list """
     Sep()
     logging.debug( "Get_Matlab_Matrix" )
     start = cp.deepcopy( counter )
     pattern = re.compile( r'\];' )
     match = None
     while ( match is None ):
+        logging.debug( "The line is: " )
+        try:
+            logging.debug( contents[ counter ][ : 10 ] + "..." + \
+                contents[ counter ] )
+        except:
+            logging.debug( contents[ counter ] )
         match = pattern.match( contents[ counter ] )
+        logging.debug( "The match is: " + str( match ) )
         end = counter
         counter += 1
     output = [ start , counter ]
@@ -128,11 +144,17 @@ def Parse_Matlab_Matrix( begin , end , contents , Sep , Cep ):
             pass
         else:
             line = line[ : index - 1 ]
+        logging.debug( "The line is: " )
+        try:
+            logging.debug( str( line[ : 5 ] ) + "..." + str( line[ -5 : ] ) )
+        except:
+            logging.debug( str( line ) )
         output.append( line )
     return( output )
 
 def Parse_Matlab_Vector( line , Sep , Cep ):
-    """ This function extracts the numerical data from a matlab vector format and returns a list """
+    """ This function extracts the numerical data from a matlab vector format
+        and returns a list """
     Sep()
     logging.debug( "Parse_Matlab_Vector" )
     pattern = re.compile( r'\[.*?\]' )
@@ -152,7 +174,7 @@ def Parse_Matlab_Vector( line , Sep , Cep ):
 
 def Get_Nuclide_Indicies( string , index_dict , Sep , Cep ):
     """ This function reads through the burn file to get the matrix rows of
-    each nuclide ( the index in matricies where it's info can be found ) """
+        each nuclide ( the index in matricies where it's info can be found ) """
     Sep()
     logging.debug( "Get_Nuclide_Indicies" )
     logging.debug( "The string being analyzed is:" )
