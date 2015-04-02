@@ -298,6 +298,6 @@ if 'log_level' in setup:
 output = Read_Burn_File( "2MWd.txt" , setup , Read_Input, Get_Materials_List , \
                 Get_Nuclide_Indicies , Sep , Cep )
 
-Report_Output( output , "report.txt" )
+Report_Output( output , "report.test" )
 
 print( "The post processing program has finished\n" )
