@@ -62,7 +62,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
         and stores data as lists inside of a general list """
     Sep()
     logging.debug( "Read_Burn_File" )
-    burn_data = 
+    burn_data = {} 
     nuclide_indicies = {}
     raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
     materials_list = Get_Materials_List( raw_burn_data , Sep , Cep )
@@ -106,6 +106,8 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
                 start, i , raw_burn_data , Sep , Cep )
         else:
             i += 1
+    output = [ burn_data , nuclide_indicies , materials_list ]
+    return( output )
 
 def Get_Matlab_Matrix( contents , counter , Sep , Cep ):
     """ This function searches through a serpent dep file and extracts
