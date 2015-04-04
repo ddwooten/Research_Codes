@@ -218,7 +218,7 @@ def Report_Output( output , file_name ):
     logging.debug( "Report_Output" )
     destination = open( file_name , "w" )
     for key in output.keys():
-        destination.writeline( str( key ) + ": \n" )
+        destination.write( str( key ) + ": \n" )
         destination.writelines( ouput[ key ] )
     destination.writeline( "********************************************* \n" )
     destination.writeline( "END!!" )
@@ -304,6 +304,6 @@ if 'log_level' in setup:
 output = Read_Burn_File( "2MWd.txt" , setup , Read_Input, Get_Materials_List , \
                 Get_Nuclide_Indicies , Sep , Cep )
 
-Report_Output( output , "report.test" )
+Report_Output( output[ 0 ] , "report.test" )
 
 print( "The post processing program has finished\n" )
