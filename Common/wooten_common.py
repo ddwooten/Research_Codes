@@ -21,6 +21,7 @@ import re as re
         [log_name] - the base name for the log file
    This file currently lives in...
    "/home/ddwooten/Documents/anaconda/lib/python2.7"
+   "/usr/lib/pymodules/Python2.7"
 """
 def Read_Setup( prefix ):
     """ This function reads in a setup file named "[something]_setup.txt".
@@ -77,11 +78,11 @@ def Sep():
     logging.debug( '//////////////////////////////////////////////////////' )
     return
 
-def Read_Input( file_name , form , Sep ):
+def Read_Input( file_name , form ):
     """ This function reads in a file whose name is given in file_name to the
     function. It's contents are saved in a list and stripped of new lines. 
     They are also converted to floats. """
-    Sep()
+    logging.debug( '//////////////////////////////////////////////////////' )
     logging.debug( "Read_Input" )
     logging.debug( "Reading in file: " + file_name )
     input_file = open( file_name , "r" )
