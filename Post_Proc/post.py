@@ -2,20 +2,22 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
+import os as os
 import time as time
 import logging as logging
 import copy as cp
 import re as re
 
-""" This is the SERPENT volume writter code. It requires a configuration
-file titled, exactly, "vol_setup.txt". This file must consist of two columns
+""" This is the SERPENT post processor. It requires a configuration
+file titled, exactly, "post_setup.txt". This file must consist of two columns
 of text arragned as
     [ key ],[ value ]
     [ key ],[ value ]
 with no missing rows though whitespace is tolerated.
 Keys are given below with pertinent notes
-    [names_list] - name of the txt file containing a list of files to be
-        modified
+    [host_file] - name of the SERPENT file that was run. i.e. there should
+        be a file in the executing directory titled "host_file_dep.m" for
+        burnup runs.
     [log_level] - the python logger utility logging level. If none is given
         it defaults to 0 but will print much less than if 0 is actually given
     [log_name] - the base name for the log file
@@ -60,7 +62,7 @@ def Nuclide_Dictionaries( Sep , Cep ):
 def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     Get_Nuclide_Indicies , Sep , Cep ):
     """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file
-        and stores data as lists inside of a general list """
+        and stores data as lists inside of a dictionary """
     Sep()
     logging.debug( "Read_Burn_File" )
     burn_data = {} 
@@ -137,7 +139,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
                     start, i , raw_burn_data , Sep , Cep )
         else:
             i += 1
-    logging.debug( "The number of vectors is: " + str( vectors ) )
+    logging.info( "The number of vectors is: " + str( vectors ) )
     output = [ burn_data , nuclide_indicies , materials_list ]
     return( output )
 
@@ -322,28 +324,35 @@ def Read_Input( file_name , form , Sep ):
     return( file_contents )
 
 # Start the program
-print( "\nThe post processing program is now running\n" )
 
-setup = Read_Setup()
+def Post_Main():
+    """ This function runs the program if it is called as an import """
+    setup = Read_Setup()
 
-try:
-    Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
-except:
-    Start_Log( 'post_error' , 0 )
-    logging.debug( "ERROR!!: < log_level > or < log_name > was not found in \n \
-        post_setup.txt and as such LogLevel was set to 0 and the base name \n \
-        to 'post_error' " )
+    try:
+        Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
+    except:
+        Start_Log( 'post_error' , 0 )
+        logging.debug( "ERROR!!: < log_level > or < log_name > was not \n \
+            found in post_setup.txt and as such LogLevel was set to 0 \n \
+            and the base name to 'post_error' " )
 
-if 'log_level' in setup:
-    if setup[ 'log_level' ] < 10:
-        Sep()
-        logging.debug( "The input dictionary is: " )
-        for keys,values in setup.items():
-            logging.debug( str( keys ) + " : " + str( values ) )
+    if 'log_level' in setup:
+        if setup[ 'log_level' ] < 10:
+            Sep()
+            logging.debug( "The input dictionary is: " )
+            for keys,values in setup.items():
+                logging.debug( str( keys ) + " : " + str( values ) )
 
-output = Read_Burn_File( "2MWd.txt" , setup , Read_Input, Get_Materials_List , \
-                Get_Nuclide_Indicies , Sep , Cep )
+    if os.path.isfile( setup[ host_file ] + "_dep.m" ): 
+        output = Read_Burn_File( setup[ host_file ] , setup , Read_Input, \
+                    Get_Materials_List , Get_Nuclide_Indicies , Sep , Cep )
 
-Report_Output( output[ 0 ] , "report.test" )
+    Report_Output( output[ 0 ] , "report.test" )
+    return( output )
 
-print( "The post processing program has finished\n" )
+print( "Begining the Post Processor program" )
+
+Post_Main()
+
+print( "Ending the Post Processor program" )
