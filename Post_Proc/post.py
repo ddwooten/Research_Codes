@@ -73,7 +73,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     day_pattern = re.compile( r'DAYS' )
     mat_pattern = re.compile( r'MAT\S*?' )
     tot_pattern = re.compile( r'TOT\S*?' )
-    name_pattern = re.compile( r'\S*?' )
+    name_pattern = re.compile( r'_(\S*?)_' )
     i = 0
     while ( i < len( raw_burn_data ) + 1 ):
         line = raw_burn_data[ i ]
@@ -104,7 +104,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
             i += 1
         elif mat_match or tot_match:
             logging.debug( "Data match!" )
-            field_name =  name_pattern.match( line ).group()
+            field_name =  name_pattern.search( line ).group( 1 )
             logging.debug( "The field name is: " + field_name )
             start , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
             burn_data[ field_name ] = Parse_Matlab_Matrix( \
