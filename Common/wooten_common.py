@@ -20,7 +20,6 @@ import re as re
             it defaults to 0 
         [log_name] - the base name for the log file
    This file currently lives in...
-   "/home/ddwooten/Documents/anaconda/lib/python2.7"
    "/usr/lib/pymodules/Python2.7"
 """
 def Read_Setup( prefix ):
