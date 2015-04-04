@@ -9,20 +9,18 @@ import copy as cp
 import re as re
 
 """ This is the SERPENT post processor. It requires a configuration
-file titled, exactly, "post_setup.txt". This file must consist of two columns
-of text arragned as
+    file titled, exactly, "post_setup.txt". 
+    This file must consist of two columns of text arragned as
     [ key ],[ value ]
     [ key ],[ value ]
-with no missing rows though whitespace is tolerated.
-Keys are given below with pertinent notes
-    [host_file] - name of the SERPENT file that was run. i.e. there should
-        be a file in the executing directory titled "host_file_dep.m" for
-        burnup runs.
-    [log_level] - the python logger utility logging level. If none is given
-        it defaults to 0 but will print much less than if 0 is actually given
-    [log_name] - the base name for the log file
-Simply create the files above and then execute this program. It will generate
-all the desired files.
+    with no missing rows though whitespace is tolerated.
+    Keys are given below with pertinent notes
+        [host_file] - name of the SERPENT file that was run. i.e. there should
+            be a file in the executing directory titled "host_file_dep.m" for
+            burnup runs.
+        [log_level] - the python logger utility logging level. If none is given
+            it defaults to 0 
+        [log_name] - the base name for the log file
 """
 def Read_Setup():
     """ This function reads in a file named "post_setup.txt". It stores this 
@@ -344,8 +342,8 @@ def Post_Main():
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
 
-    if os.path.isfile( setup[ host_file ] + "_dep.m" ): 
-        output = Read_Burn_File( setup[ host_file ] , setup , Read_Input, \
+    if os.path.isfile( setup[ "host_file" ] + "_dep.m" ): 
+        output = Read_Burn_File( setup[ "host_file" ] , setup , Read_Input, \
                     Get_Materials_List , Get_Nuclide_Indicies , Sep , Cep )
 
     Report_Output( output[ 0 ] , "report.test" )
