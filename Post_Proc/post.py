@@ -218,8 +218,22 @@ def Report_Output( output , file_name ):
     logging.debug( "Report_Output" )
     destination = open( file_name , "w" )
     for key in output.keys():
+        destination.write( "********************************************* \n" )
         destination.write( str( key ) + ": \n" )
-        destination.writelines( output[ key ] )
+        if isinstance( output[ key ][ 0 ] , list ):
+            for i in range( len( output[ key ] ) ):
+                string = str( output[ key ][ i ]
+                if len( string ) > 41:
+                    destination.write( string[ : 20 ] + "..." + \
+                        string[ -20 : ] )
+                else:
+                    destination.write( string )
+        else:
+            string = str( output[ key ] )
+            if len( string ) > 41:
+                destination.write( string[ : 20 ] + "..." + string[ -20 : ] )
+            else:
+                destination.write( string )
     destination.writeline( "********************************************* \n" )
     destination.writeline( "END!!" )
     destination.close()
