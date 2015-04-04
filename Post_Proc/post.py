@@ -219,7 +219,7 @@ def Report_Output( output , file_name ):
     destination = open( file_name , "w" )
     for key in output.keys():
         destination.write( str( key ) + ": \n" )
-        destination.writelines( ouput[ key ] )
+        destination.writelines( output[ key ] )
     destination.writeline( "********************************************* \n" )
     destination.writeline( "END!!" )
     destination.close()
