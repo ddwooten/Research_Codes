@@ -66,6 +66,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     burn_data = {} 
     nuclide_indicies = {}
     raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
+    raw_burn_data = [ x.strip( " " ) for x in raw_burn_data ]
     materials_list = Get_Materials_List( raw_burn_data , options , Sep , Cep )
     Cep()
     index_pattern = re.compile( r'i(\d*) = (\d*)' )
@@ -73,53 +74,70 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     day_pattern = re.compile( r'DAYS' )
     mat_pattern = re.compile( r'MAT\S*' )
     tot_pattern = re.compile( r'TOT\S*' )
+    vector_pattern = re.compile( r'\];$' )
     name_pattern = re.compile( r'_(\S*?)_' )
     i = 0
     vectors = 0
     while ( i < len( raw_burn_data ) ):
         line = raw_burn_data[ i ]
-        #logging.debug( "The iterator is on: " + str( i ) )
-        #logging.debug( "The line being processed is: " )
-        #if len( line ) > 41:
-        #    logging.debug( line[ : 20 ] + "..." + line[ -20 : ] )
-        #else:
-        #    logging.debug( line )
+        logging.debug( "The iterator is on: " + str( i ) )
+        logging.debug( "The line being processed is: " )
+        if len( line ) > 41:
+            logging.debug( line[ : 20 ] + "..." + line[ -20 : ] )
+        else:
+            logging.debug( line )
         index_match = index_pattern.match( line )
         bu_match = bu_pattern.match( line )
         day_match = day_pattern.match( line )
         mat_match = mat_pattern.match( line )
         tot_match = tot_pattern.match( line )
+        vector_match = vector_pattern.search( line )
         if index_match:
-            logging.debug( "Index match!" )
+            logging.info( "Index match!" )
             nuclide_indicies = Get_Nuclide_Indicies( line ,\
                 nuclide_indicies ,Sep, Cep )
             i += 1 
         elif bu_match:
             vectors += 1
-            logging.debug( "BU match!" )
-            burn_data[ bu_match.group() ] = Parse_Matlab_Vector( \
-                line , Sep , Cep )
-            i += 1 
+            logging.info( "BU match!" )
+            if vector_match:
+                burn_data[ bu_match.group() ] = Parse_Matlab_Vector( \
+                    line , Sep , Cep )
+                i += 1 
+            else:
+                start , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
+                burn_data[ bu_match.group() ] = Parse_Matlab_Matrix( \
+                    start, i , raw_burn_data , Sep , Cep )
         elif day_match:
             vectors += 1
-            logging.debug( "Day match!" )
-            burn_data[ day_match.group() ] = Parse_Matlab_Vector(\
-                line , Sep , Cep )
-            i += 1
+            logging.info( "Day match!" )
+            if vector_match:
+                burn_data[ day_match.group() ] = Parse_Matlab_Vector(\
+                    line , Sep , Cep )
+                i += 1
+            else:
+                start , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
+                burn_data[ day_match.group() ] = Parse_Matlab_Matrix( \
+                    start, i , raw_burn_data , Sep , Cep )
         elif mat_match or tot_match:
             vectors += 1
-            logging.debug( "Data match!" )
+            logging.info( "Data match!" )
             if mat_match:
                 field_name = mat_match.group()
             else:
                 field_name = tot_match.group() 
-            logging.debug( "Data is: " + field_name )
-            start , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
-            burn_data[ field_name ] = Parse_Matlab_Matrix( \
-                start, i , raw_burn_data , Sep , Cep )
+            logging.info( "Data is: " + field_name )
+            if vector_match:
+                burn_data[ field_name ] = Parse_Matlab_Vector(\
+                    line , Sep , Cep )
+                i += 1
+            else:
+                start , i = Get_Matlab_Matrix( raw_burn_data , i , Sep , Cep )
+                burn_data[ field_name ] = Parse_Matlab_Matrix( \
+                    start, i , raw_burn_data , Sep , Cep )
         else:
             i += 1
-    print( "The number of vectors is: " + str( vectors ) )
+    logging.debug( "The number of vectors is: " + str( vectors ) )
     output = [ burn_data , nuclide_indicies , materials_list ]
     return( output )
 
