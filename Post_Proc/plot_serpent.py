@@ -8,10 +8,9 @@ import logging as logging
 import copy as cp
 import re as re
 import wooten_common as wc
-import post_common as pc
 
-""" This is the SERPENT plotter. It requires a configuration
-    file titled, exactly, "plot_setup.txt". 
+""" This is the SERPENT post processor. It requires a configuration
+    file titled, exactly, "post_setup.txt". 
     This file must consist of two columns of text arragned as
     [ key ],[ value ]
     [ key ],[ value ]
@@ -30,14 +29,13 @@ def Nuclide_Dictionaries():
     "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
     wc.Sep()
     logging.debug( "Nuclide_Dictionaries" )
-    nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "r" )
+    nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "string" )
     dictionary_0 = {}
     dictionary_1 = {}
     for i in range( len( nuclide_file ) ):
-        line = setup_file[ i ].split( ':' )
+        line = nuclide_file[ i ].split( ':' )
         dictionary_0[ line[ 0 ] ] = line[ 1 ]
         dictionary_1[ line[ 1 ] ] = line[ 0 ]
-    input_file.close()
     output_list = [ dictionary_0 , dictionary_1 ]
     return( output_list )
 
@@ -275,6 +273,17 @@ def Post_Main():
                     Get_Materials_List , Get_Nuclide_Indicies )
 
     Report_Output( output[ 0 ] , "report.test" )
+    d_list = Nuclide_Dictionaries()
+    d_file = open( "d1.test" , "w" )
+    e_file = open( "d2.test" , "w" )
+    for key in d_list[ 0 ].keys():
+        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
+        d_file.write( string )
+    for key in d_list[ 1 ].keys():
+        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
+        e_file.write( string )
+    d_file.close()
+    e_file.close()
     return( output )
 
 print( "Begining the Post Processor program" )

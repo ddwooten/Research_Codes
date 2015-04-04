@@ -23,23 +23,6 @@ import wooten_common as wc
             it defaults to 0 
         [log_name] - the base name for the log file
 """
-
-def Nuclide_Dictionaries():
-    """ This function reads in nuclide ZAIs and names from a static file,
-    "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
-    wc.Sep()
-    logging.debug( "Nuclide_Dictionaries" )
-    nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "r" )
-    dictionary_0 = {}
-    dictionary_1 = {}
-    for i in range( len( nuclide_file ) ):
-        line = setup_file[ i ].split( ':' )
-        dictionary_0[ line[ 0 ] ] = line[ 1 ]
-        dictionary_1[ line[ 1 ] ] = line[ 0 ]
-    input_file.close()
-    output_list = [ dictionary_0 , dictionary_1 ]
-    return( output_list )
-
 def Read_Burn_File( base_name, options , Get_Materials_List , \
     Get_Nuclide_Indicies ):
     """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file

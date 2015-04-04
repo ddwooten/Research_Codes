@@ -23,22 +23,6 @@ import wooten_common as wc
             it defaults to 0 
         [log_name] - the base name for the log file
 """
-
-def Nuclide_Dictionaries():
-    """ This function reads in nuclide ZAIs and names from a static file,
-    "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
-    wc.Sep()
-    logging.debug( "Nuclide_Dictionaries" )
-    nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "string" )
-    dictionary_0 = {}
-    dictionary_1 = {}
-    for i in range( len( nuclide_file ) ):
-        line = nuclide_file[ i ].split( ':' )
-        dictionary_0[ line[ 0 ] ] = line[ 1 ]
-        dictionary_1[ line[ 1 ] ] = line[ 0 ]
-    output_list = [ dictionary_0 , dictionary_1 ]
-    return( output_list )
-
 def Read_Burn_File( base_name, options , Get_Materials_List , \
     Get_Nuclide_Indicies ):
     """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file
@@ -273,17 +257,6 @@ def Post_Main():
                     Get_Materials_List , Get_Nuclide_Indicies )
 
     Report_Output( output[ 0 ] , "report.test" )
-    d_list = Nuclide_Dictionaries()
-    d_file = open( "d1.txt" , "w" )
-    e_file = open( "d2.txt" , "w" )
-    for key in d_list[ 0 ].keys():
-        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
-        d_file.write( string )
-    for key in d_list[ 1 ].keys():
-        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
-        e_file.write( string )
-    d_file.close()
-    e_file.close()
     return( output )
 
 print( "Begining the Post Processor program" )
