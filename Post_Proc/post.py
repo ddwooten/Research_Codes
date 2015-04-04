@@ -67,6 +67,7 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     nuclide_indicies = {}
     raw_burn_data = Read_Input( base_name + "_dep.m" , "string" , Sep )
     materials_list = Get_Materials_List( raw_burn_data , options , Sep , Cep )
+    Cep()
     index_pattern = re.compile( r'i(\d*) = (\d*)' )
     bu_pattern = re.compile( r'BU' )
     day_pattern = re.compile( r'DAYS' )
@@ -76,8 +77,11 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     i = 0
     while ( i < len( raw_burn_data ) + 1 ):
         line = raw_burn_data[ i ]
-        logging.debug( "The line being processes is: " )
-        logging.debug( line )
+        logging.debug( "The line being processed is: " )
+        try:
+            logging.debug( line[ : 20 ] + "..." + line[ -20 : ] )
+        except:
+            logging.debug( line )
         index_match = index_pattern.match( line )
         bu_match = bu_pattern.match( line )
         day_match = day_pattern.match( line )
@@ -122,8 +126,8 @@ def Get_Matlab_Matrix( contents , counter , Sep , Cep ):
     while ( match is None ):
         logging.debug( "The line is: " )
         try:
-            logging.debug( contents[ counter ][ : 10 ] + "..." + \
-                contents[ counter ] )
+            logging.debug( contents[ counter ][ : 20 ] + "..." + \
+                contents[ counter ][ -20 : ] )
         except:
             logging.debug( contents[ counter ] )
         match = pattern.match( contents[ counter ] )
@@ -149,7 +153,7 @@ def Parse_Matlab_Matrix( begin , end , contents , Sep , Cep ):
             line = line[ : index - 1 ]
         logging.debug( "The line is: " )
         try:
-            logging.debug( str( line[ : 5 ] ) + "..." + str( line[ -5 : ] ) )
+            logging.debug( str( line[ : 3 ] ) + "..." + str( line[ -3 : ] ) )
         except:
             logging.debug( str( line ) )
         output.append( line )
@@ -164,7 +168,7 @@ def Parse_Matlab_Vector( line , Sep , Cep ):
     string = pattern.search( line ).group()[ 1 : -1 ].strip( " " )
     logging.debug( "The string is: " )
     try:
-        logging.debug( string[ : 10 ] + "..." + string[ -10 : ] )
+        logging.debug( string[ : 20 ] + "..." + string[ -20 : ] )
     except:
         logging.debug( string )
     nums = string.split( " " )
