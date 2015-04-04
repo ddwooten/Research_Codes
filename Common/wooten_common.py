@@ -27,8 +27,8 @@ def Read_Setup( prefix ):
         This file must consist of two columns of text arragned as
         [ key ],[ value ]
         [ key ],[ value ]
-    """
     with no missing rows though whitespace is tolerated.
+    """
     input_file = open( prefix + "_setup.txt" , "r" )
     setup_file = input_file.readlines()
     setup_file = [ x.rstrip( "\n" ) for x in setup_file ]
@@ -61,18 +61,19 @@ def Start_Log( base_name , level ):
     logging.warning( "This is the warning level reporting in" )
     logging.error( "This is the error level reporting in" )
     logging.critical( "This is the critical level reporting in" )
+    return
 
 def Cep():
 	''' A wrapper to place file seperators in a log file for the
 	debug level '''
 	logging.debug( "*****************************************************" )
-	return()
+	return
 
 #Function, refer to docstring for purpose
 def Sep():
     '''A wrapper to visually seperate functions in log files'''
     logging.debug( '//////////////////////////////////////////////////////' )
-    return()
+    return
 
 def Read_Input( file_name , form , Sep ):
     """ This function reads in a file whose name is given in file_name to the
@@ -98,3 +99,7 @@ def Read_Input( file_name , form , Sep ):
     logging.debug( "Closing file: " + file_name )
     input_file.close()
     return( file_contents )
+
+def Check_Import():
+    """ This function simply prints a statment to make sure the import worked"""
+    print( "<< wooten_common.py >> imported sucessfully" )
