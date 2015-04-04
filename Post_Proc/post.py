@@ -75,8 +75,9 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     tot_pattern = re.compile( r'TOT\S*?' )
     name_pattern = re.compile( r'_(\S*?)_' )
     i = 0
-    while ( i < len( raw_burn_data ) + 1 ):
+    while ( i < len( raw_burn_data ) ):
         line = raw_burn_data[ i ]
+        logging.debug( "The iterator is on: " + str( i ) )
         logging.debug( "The line being processed is: " )
         if len( line ) > 41:
             logging.debug( line[ : 20 ] + "..." + line[ -20 : ] )
