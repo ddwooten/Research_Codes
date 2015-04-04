@@ -103,3 +103,4 @@ def Read_Input( file_name , form , Sep ):
 def Check_Import():
     """ This function simply prints a statment to make sure the import worked"""
     print( "<< wooten_common.py >> imported sucessfully" )
+    return
