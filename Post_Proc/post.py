@@ -71,8 +71,8 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     index_pattern = re.compile( r'i(\d*) = (\d*)' )
     bu_pattern = re.compile( r'BU' )
     day_pattern = re.compile( r'DAYS' )
-    mat_pattern = re.compile( r'MAT\S*?' )
-    tot_pattern = re.compile( r'TOT\S*?' )
+    mat_pattern = re.compile( r'MAT\S*' )
+    tot_pattern = re.compile( r'TOT\S*' )
     name_pattern = re.compile( r'_(\S*?)_' )
     i = 0
     vectors = 0
