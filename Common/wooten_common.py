@@ -19,6 +19,8 @@ import re as re
         [log_level] - the python logger utility logging level. If none is given
             it defaults to 0 
         [log_name] - the base name for the log file
+   This file currently lives in...
+   "/home/ddwooten/Documents/anaconda/lib/python2.7"
 """
 def Read_Setup( prefix ):
     """ This function reads in a setup file named "[something]_setup.txt".
