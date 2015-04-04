@@ -78,9 +78,9 @@ def Read_Burn_File( base_name, options , Read_Input , Get_Materials_List , \
     while ( i < len( raw_burn_data ) + 1 ):
         line = raw_burn_data[ i ]
         logging.debug( "The line being processed is: " )
-        try:
+        if len( line ) > 41:
             logging.debug( line[ : 20 ] + "..." + line[ -20 : ] )
-        except:
+        else:
             logging.debug( line )
         index_match = index_pattern.match( line )
         bu_match = bu_pattern.match( line )
@@ -125,10 +125,10 @@ def Get_Matlab_Matrix( contents , counter , Sep , Cep ):
     match = None
     while ( match is None ):
         logging.debug( "The line is: " )
-        try:
+        if len( contents[ counter ] ) > 41:
             logging.debug( contents[ counter ][ : 20 ] + "..." + \
                 contents[ counter ][ -20 : ] )
-        except:
+        else:
             logging.debug( contents[ counter ] )
         match = pattern.match( contents[ counter ] )
         logging.debug( "The match is: " + str( match ) )
@@ -152,9 +152,9 @@ def Parse_Matlab_Matrix( begin , end , contents , Sep , Cep ):
         else:
             line = line[ : index - 1 ]
         logging.debug( "The line is: " )
-        try:
+        if len( str( line ) ) > 41:
             logging.debug( str( line[ : 3 ] ) + "..." + str( line[ -3 : ] ) )
-        except:
+        else:
             logging.debug( str( line ) )
         output.append( line )
     return( output )
@@ -167,15 +167,15 @@ def Parse_Matlab_Vector( line , Sep , Cep ):
     pattern = re.compile( r'\[.*?\]' )
     string = pattern.search( line ).group()[ 1 : -1 ].strip( " " )
     logging.debug( "The string is: " )
-    try:
+    if len( string ) > 41:
         logging.debug( string[ : 20 ] + "..." + string[ -20 : ] )
-    except:
+    else:
         logging.debug( string )
     nums = string.split( " " )
     logging.debug( "The generated list is: " )
-    try:
+    if len( str( nums ) ) > 41:
         logging.debug( str( nums[  : 5 ] ) + "..." + str( nums[ -5 : ] ) )
-    except:
+    else:
         logging.debug( str( nums ) )
     return( nums )
 
