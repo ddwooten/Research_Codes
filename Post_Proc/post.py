@@ -195,11 +195,11 @@ def Get_Materials_List( contents , options , Sep , Cep ):
     Sep()
     logging.debug( "Get_Materials_List" )
     materials = []
-    pattern = re.compile(r'MAT_\S*?_VOLUME')
-    material_strings = pattern.findall( contents )
-    for i in range( len( material_strings ) ):
-        materials.append( material_strings[ i ][ 4 : \
-           len( material_strings[ i ] ) - 7 ] )
+    pattern = re.compile(r'MAT_(\S*?)_VOLUME')
+    for i in range( len( contents ) ):
+        match = pattern.match( contents[ i ] )
+        if match:
+            materials.append( match.group( 1 ) )
     logging.debug( "The materials found in the burnup file are: " )
     if 'log_level' in options:
         if options[ 'log_level' ] < 10:
