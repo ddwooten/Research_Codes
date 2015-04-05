@@ -3,7 +3,6 @@
 # Version 1.0.
 
 import os as os
-import time as time
 import logging as logging
 import copy as cp
 import re as re
@@ -117,6 +116,7 @@ def Get_Matlab_Matrix( contents , counter ):
     pattern = re.compile( r'\];' )
     match = None
     while ( match is None ):
+        counter += 1
         logging.debug( "The line is: " )
         if len( contents[ counter ] ) > 41:
             logging.debug( contents[ counter ][ : 20 ] + "..." + \
@@ -125,8 +125,6 @@ def Get_Matlab_Matrix( contents , counter ):
             logging.debug( contents[ counter ] )
         match = pattern.match( contents[ counter ] )
         logging.debug( "The match is: " + str( match ) )
-        end = counter
-        counter += 1
     output = [ start , counter ]
     return( output ) 
 
@@ -145,10 +143,11 @@ def Parse_Matlab_Matrix( begin , end , contents ):
         else:
             line = line[ : index - 1 ]
         logging.debug( "The line is: " )
-        if len( str( line ) ) > 41:
-            logging.debug( str( line[ : 3 ] ) + "..." + str( line[ -3 : ] ) )
+        if len( line ) > 41:
+            logging.debug( line[ : 3 ] + "..." + line[ -3 : ] )
         else:
             logging.debug( str( line ) )
+        line = [ float( x ) for x in line ]
         output.append( line )
     return( output )
 
@@ -165,11 +164,18 @@ def Parse_Matlab_Vector( line ):
     else:
         logging.debug( string )
     nums = string.split( " " )
+    try:
+        index = nums.index( "%" )
+    except:
+        pass
+    else:
+        nums = nums[ : index - 1 ]
     logging.debug( "The generated list is: " )
     if len( str( nums ) ) > 41:
         logging.debug( str( nums[  : 5 ] ) + "..." + str( nums[ -5 : ] ) )
     else:
         logging.debug( str( nums ) )
+    nums = [ float( x ) for x in nums ]
     return( nums )
 
 def Get_Nuclide_Indicies( string , index_dict ):
