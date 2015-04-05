@@ -68,13 +68,13 @@ def Start_Log( base_name , level ):
 def Cep():
 	''' A wrapper to place file seperators in a log file for the
 	debug level '''
-	logging.debug( "*****************************************************" )
+	logging.info( "*****************************************************" )
 	return
 
 #Function, refer to docstring for purpose
 def Sep():
     '''A wrapper to visually seperate functions in log files'''
-    logging.debug( '//////////////////////////////////////////////////////' )
+    logging.info( '//////////////////////////////////////////////////////' )
     return
 
 def Read_Input( file_name , form ):
