@@ -28,7 +28,7 @@ def Nuclide_Dictionaries():
     """ This function reads in nuclide ZAIs and names from a static file,
         "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
     wc.Sep()
-    logging.debug( "Nuclide_Dictionaries" )
+    logging.Info( "Nuclide_Dictionaries" )
     nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "string" )
     dictionary_0 = {}
     dictionary_1 = {}
@@ -39,29 +39,79 @@ def Nuclide_Dictionaries():
     output_list = [ dictionary_0 , dictionary_1 ]
     return( output_list )
 
-def Get_Element_Burnup( burn_matrix , nuclide_indicies , Z ):
+def Get_Element_Data( matrix , nuclide_indicies , Z ):
     """ This function collapses isotopic burn vectors into a given
         elemental burn vector """
     wc.Sep()
-    logging.debug( "Get_Element_Burnup" )
+    logging.Info( "Get_Element_Data" )
     logging.debug( "Z is: " + str( Z ) )
-    size = len( burn_matrix[ 0 ] )
-    burn_vector = [ 0.0 ] * size 
+    size = len( matrix[ 0 ] )
+    vector = [ 0.0 ] * size 
     for key in nuclide_indicies.keys()
         cur_Z = int( math.floor( float( key ) / 1000.0 ) )
         if Z == cur_Z:
             logging.debug( "Isotope is: " + str( key ) )
             logging.debug( "End value before addition: " + \
-                str( burn_vector[ size ] ) )
+                str( vector[ size ] ) )
             logging.debug( "Value being added: " + \
-                str( burn_matrix[ nuclide_indicies[ key ] ][ size ] ) )
-            for i in range( size ):
-                value = burn_vector[ i ]
-                value += burn_matrix[ nuclide_indicies[ key ] ][ i ]
-                burn_vector.insert( i , value )
+                str( matrix[ nuclide_indicies[ key ] ][ size ] ) )
+            vector = map( lambda x , y : x + y , vector , \
+                matrix[ nuclide_indicies[ key ] ] )
             logging.debug( "End value after addition: " + \
-                str( burn_vector[ size ] ) )
-    return( burn_vector ) 
+                str( vector[ size ] ) )
+    return( vector ) 
+
+def Matrix_Or_Vector( target ):
+    """ This function determines if target is a list of values or a list
+        of lists and returns a list of equal dimension, empty """
+        wc.Sep()
+        logging.info( "Matrix_Or_Vector" )
+        if isinstance( target[ 0 ] , list ):
+            beast = "matrix"
+            rows = len( target )
+            columns = len( target[ 0 ] )
+            output = [ 0.0 ] * rows
+            output = [ [ 0.0 ] * columns for x in output ]
+        else:
+            beast = "vector"
+            columns = len( target )
+            output = [ 0.0 ] * columns 
+        send = [ beast , output ]
+        return( send )
+
+def Gather_Materials( dictionary , attribute , materials ):
+    """ This function gathers burn data across a given list of materials
+        or accross all materials ( mimics TOT in earlier SERPENT files ).
+    """
+    wc.Sep()
+    logging.info( "Gather_Materials" )
+# This little chunk here is to determine if we have a vector or a matrix
+# and builds the appropriate data storage
+    pattern = re.compile( "\\S*_" + attribute )
+    for key in dictionary.keys():
+        match = pattern.match( key )
+        if match:
+            beast , output = Matrix_Or_Vector( dictionary[ key ] )
+            break
+# This handles if you want all materials
+    for key in dictionary.keys():
+        match = pattern.match( key )
+        if isinstance( materials , list ):
+            for elemement in materials:
+                match = None
+                pattern = re.compile( "\\S*_" + element + \
+                    "_" + attribute )
+                match = pattern.match( key )
+                if match:
+                    break
+        if match:
+            if beast == "matrix":
+                output = [ map( sum , zip( *t ) ) for t in \
+                    zip( output , dictionary[ key ] ) ] 
+            else:
+                output = map( lambda x , y : x + y , output , \
+                    dictionary[ key ] )
+    return( output )
 
 def Plot_Main():
     """ This function runs the program if it is called as an import """
@@ -81,18 +131,6 @@ def Plot_Main():
             logging.debug( "The input dictionary is: " )
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
-
-    d_list = Nuclide_Dictionaries()
-    d_file = open( "d1.test" , "w" )
-    e_file = open( "d2.test" , "w" )
-    for key in d_list[ 0 ].keys():
-        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
-        d_file.write( string )
-    for key in d_list[ 1 ].keys():
-        string = str( key ) + " : " + str( d_list[ 1 ][ key ] ) + " \n"
-        e_file.write( string )
-    d_file.close()
-    e_file.close()
     return
 
 print( "Begining the Plotting program" )
