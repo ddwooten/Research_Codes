@@ -2,6 +2,7 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
+import math as math
 import logging as logging
 import copy as cp
 import re as re
@@ -25,7 +26,7 @@ import post_common as pc
 
 def Nuclide_Dictionaries():
     """ This function reads in nuclide ZAIs and names from a static file,
-    "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
+        "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
     wc.Sep()
     logging.debug( "Nuclide_Dictionaries" )
     nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "string" )
@@ -37,6 +38,30 @@ def Nuclide_Dictionaries():
         dictionary_1[ line[ 1 ] ] = line[ 0 ]
     output_list = [ dictionary_0 , dictionary_1 ]
     return( output_list )
+
+def Get_Element_Burnup( burn_matrix , nuclide_indicies , Z ):
+    """ This function collapses isotopic burn vectors into a given
+        elemental burn vector """
+    wc.Sep()
+    logging.debug( "Get_Element_Burnup" )
+    logging.debug( "Z is: " + str( Z ) )
+    size = len( burn_matrix[ 0 ] )
+    burn_vector = [ 0.0 ] * size 
+    for key in nuclide_indicies.keys()
+        cur_Z = int( math.floor( float( key ) / 1000.0 ) )
+        if Z == cur_Z:
+            logging.debug( "Isotope is: " + str( key ) )
+            logging.debug( "End value before addition: " + \
+                str( burn_vector[ size ] ) )
+            logging.debug( "Value being added: " + \
+                str( burn_matrix[ nuclide_indicies[ key ] ][ size ] ) )
+            for i in range( size ):
+                value = burn_vector[ i ]
+                value += burn_matrix[ nuclide_indicies[ key ] ][ i ]
+                burn_vector.insert( i , value )
+            logging.debug( "End value after addition: " + \
+                str( burn_vector[ size ] ) )
+    return( burn_vector ) 
 
 def Plot_Main():
     """ This function runs the program if it is called as an import """
