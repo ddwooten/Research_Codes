@@ -59,21 +59,4 @@ def Plot_Main():
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
 
-    d_list = Nuclide_Dictionaries()
-    d_file = open( "d1.test" , "w" )
-    e_file = open( "d2.test" , "w" )
-    for key in d_list[ 0 ].keys():
-        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
-        d_file.write( string )
-    for key in d_list[ 1 ].keys():
-        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
-        e_file.write( string )
-    d_file.close()
-    e_file.close()
-    return( output )
-
-print( "Begining the Plotting program" )
-
-Plot_Main()
-
-print( "Ending the Plotting program" )
+    return

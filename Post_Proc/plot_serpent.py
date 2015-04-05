@@ -66,11 +66,11 @@ def Plot_Main():
         string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
         d_file.write( string )
     for key in d_list[ 1 ].keys():
-        string = str( key ) + " : " + str( d_list[ 0 ][ key ] ) + " \n"
+        string = str( key ) + " : " + str( d_list[ 1 ][ key ] ) + " \n"
         e_file.write( string )
     d_file.close()
     e_file.close()
-    return( output )
+    return
 
 print( "Begining the Plotting program" )
 
