@@ -143,8 +143,8 @@ def Parse_Matlab_Matrix( begin , end , contents ):
         else:
             line = line[ : index - 1 ]
         logging.debug( "The line is: " )
-        if len( line ) > 41:
-            logging.debug( line[ : 3 ] + "..." + line[ -3 : ] )
+        if len( str( line ) ) > 41:
+            logging.debug( str( line[ : 3 ] ) + "..." + str( line[ -3 : ] ) )
         else:
             logging.debug( str( line ) )
         line = [ float( x ) for x in line ]
