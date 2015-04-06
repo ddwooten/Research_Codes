@@ -80,24 +80,6 @@ def Get_Element_Data( matrix , nuclide_indicies , Z ):
                 str( vector[ -1 ] ) )
     return( vector ) 
 
-def Matrix_Or_Vector( target ):
-    """ This function determines if target is a list of values or a list
-        of lists and returns a list of equal dimension, empty """
-        wc.Sep()
-        logging.info( "Matrix_Or_Vector" )
-        if isinstance( target[ 0 ] , list ):
-            beast = "matrix"
-            rows = len( target )
-            columns = len( target[ 0 ] )
-            output = [ 0.0 ] * rows
-            output = [ [ 0.0 ] * columns for x in output ]
-        else:
-            beast = "vector"
-            columns = len( target )
-            output = [ 0.0 ] * columns 
-        send = [ beast , output ]
-        return( send )
-
 def Gather_Materials( dictionary , attribute , materials ):
     """ This function gathers burn data across a given list of materials
         or accross all materials ( mimics TOT in earlier SERPENT files ).
@@ -126,6 +108,15 @@ def Gather_Materials( dictionary , attribute , materials ):
                output = np.zeros[ dictionary[ key ].shape ] 
            output = output + dictionary[ key ]
     return( output )
+
+def Get_Percent_Difference( vector ):
+    """ This function simply gets the percent change between an aspect's
+        first value and its last """
+        wc.Sep()
+        logging.info( "Get_Percent_Difference" )
+        diff = ( float( vector[ -1 ] ) - float( vector[ 0 ] ) ) * 100.0 / \
+            float( vector[ 0 ] )
+        return( diff )
 
 def Plot_Main():
     """ This function runs the program if it is called as an import """
