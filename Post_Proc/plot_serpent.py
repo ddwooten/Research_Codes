@@ -104,32 +104,27 @@ def Gather_Materials( dictionary , attribute , materials ):
     """
     wc.Sep()
     logging.info( "Gather_Materials" )
-# This little chunk here is to determine if we have a vector or a matrix
-# and builds the appropriate data storage
-    pattern = re.compile( "\\S*_" + attribute )
+    logging.debug( "The materials are: " )
+    logging.debug( str( materials ) )
+    pattern = re.compile( r'\S*_' + attribute )
+    output = None
     for key in dictionary.keys():
-        match = pattern.match( key )
-        if match:
-            beast , output = Matrix_Or_Vector( dictionary[ key ] )
-            break
-# This handles if you want all materials
-    for key in dictionary.keys():
-        match = pattern.match( key )
         if isinstance( materials , list ):
-            for elemement in materials:
+            for mat in materials:
                 match = None
-                pattern = re.compile( "\\S*_" + element + \
+                pattern = re.compile( "\\S*_" + mat + \
                     "_" + attribute )
                 match = pattern.match( key )
                 if match:
+                    logging.debug( "The match is: " + match.group() ) 
                     break
+        else:
+            match = pattern.match( key )
+            logging.debug( "The match is: " + match.group() ) 
         if match:
-            if beast == "matrix":
-                output = [ map( sum , zip( *t ) ) for t in \
-                    zip( output , dictionary[ key ] ) ] 
-            else:
-                output = map( lambda x , y : x + y , output , \
-                    dictionary[ key ] )
+           if output is None:
+               output = np.zeros[ dictionary[ key ].shape ] 
+           output = output + dictionary[ key ]
     return( output )
 
 def Plot_Main():
