@@ -6,6 +6,9 @@ import math as math
 import logging as logging
 import copy as cp
 import re as re
+import numpy as np
+# These are custom built python modules containing helpful and necessary
+#   functions.
 import wooten_common as wc
 import post_common as pc
 
@@ -39,26 +42,42 @@ def Nuclide_Dictionaries():
     output_list = [ dictionary_0 , dictionary_1 ]
     return( output_list )
 
+def List_To_Array( data ):
+    """ This function takes in classic python lists ( or a dictionary of lists )
+        and nested lists ( matricies ) and converts them to numpy arrays. """
+    wc.Sep()
+    logging.info( "List_To_Array" )
+    if isinstance( data , dict ):
+        for key in data.keys():
+            data[ key ] = np.array( data[ key ] )
+    elif isinstance( data , list ):
+        data = np.array( data )
+    else:
+        print( "ERROR!!!: Data passed to < List_To_Array > was not either \n \
+            of type < list > or < dict >." )
+        logging.critical( "ERROR!!!: Data passed to < List_To_Array > was \n \
+            not either of type < list > or < dict >." )
+        exit()
+    return( data )
+
 def Get_Element_Data( matrix , nuclide_indicies , Z ):
     """ This function collapses isotopic burn vectors into a given
         elemental burn vector """
     wc.Sep()
     logging.Info( "Get_Element_Data" )
     logging.debug( "Z is: " + str( Z ) )
-    size = len( matrix[ 0 ] )
-    vector = [ 0.0 ] * size 
+    vector = np.zeros( matrix.shape[ 1 ] )
     for key in nuclide_indicies.keys()
         cur_Z = int( math.floor( float( key ) / 1000.0 ) )
         if Z == cur_Z:
             logging.debug( "Isotope is: " + str( key ) )
             logging.debug( "End value before addition: " + \
-                str( vector[ size ] ) )
+                str( vector[ -1  ] ) )
             logging.debug( "Value being added: " + \
-                str( matrix[ nuclide_indicies[ key ] ][ size ] ) )
-            vector = map( lambda x , y : x + y , vector , \
-                matrix[ nuclide_indicies[ key ] ] )
+                str( matrix[ nuclide_indicies[ key ] : -1 ] ) )
+            vector = vector + matrix[ nuclide_indicies[ key ] 
             logging.debug( "End value after addition: " + \
-                str( vector[ size ] ) )
+                str( vector[ -1 ] ) )
     return( vector ) 
 
 def Matrix_Or_Vector( target ):
