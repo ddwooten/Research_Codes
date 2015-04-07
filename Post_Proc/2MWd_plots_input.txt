@@ -1,0 +1,12 @@
+{
+    "type" : "scatter"
+    "data" : [
+        {
+            "type" : "composition"
+            "element" : {
+                "name" : "U"
+                "Z" : 92
+                "Isotopes" : [
+                    235 
+                ]
+

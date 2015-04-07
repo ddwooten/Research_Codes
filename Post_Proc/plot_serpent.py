@@ -32,7 +32,7 @@ def Nuclide_Dictionaries():
     """ This function reads in nuclide ZAIs and names from a static file,
         "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
     wc.Sep()
-    logging.Info( "Nuclide_Dictionaries" )
+    logging.info( "Nuclide_Dictionaries" )
     nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "string" )
     dictionary_0 = {}
     dictionary_1 = {}
@@ -42,6 +42,13 @@ def Nuclide_Dictionaries():
         dictionary_1[ line[ 1 ] ] = line[ 0 ]
     output_list = [ dictionary_0 , dictionary_1 ]
     return( output_list )
+
+def Read_Plots( base_name ):
+    """ This function reads in the plotting command file, titled
+        [base_name]_plots_input.txt."""
+        wc.Sep()
+        logging.info( "Read_Plots" )
+
 
 def List_To_Array( data ):
     """ This function takes in classic python lists ( or a dictionary of lists )
@@ -118,6 +125,7 @@ def Get_Percent_Change( vector ):
         diff = ( float( vector[ -1 ] ) - float( vector[ 0 ] ) ) * 100.0 / \
             float( vector[ 0 ] )
         return( diff )
+
 def Percentage_Change_Plot( x_data , labels , params , base_name ):
     """ This function creates a vertical bar graph of the percentage change
         of values passed in with x_data and given labels in labels. params
@@ -163,6 +171,7 @@ def Percentage_Change_Plot( x_data , labels , params , base_name ):
             size = 1 ) ) + ".eps" , format = 'eps' , dpi = 1000 )
     plt.cla()
     return
+
 def Scatter_Plot( x_data , y_data , params , base_name ):
     """ This function plots a list of lists ( x_data ) against a list of
         y_data while params is a dictionary containing optional plotting
