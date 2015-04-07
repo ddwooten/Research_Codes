@@ -7,6 +7,7 @@ import logging as logging
 import copy as cp
 import re as re
 import numpy as np
+import matplotlib.pyplot as plt
 # These are custom built python modules containing helpful and necessary
 #   functions.
 import wooten_common as wc
@@ -109,7 +110,7 @@ def Gather_Materials( dictionary , attribute , materials ):
            output = output + dictionary[ key ]
     return( output )
 
-def Get_Percent_Difference( vector ):
+def Get_Percent_Change( vector ):
     """ This function simply gets the percent change between an aspect's
         first value and its last """
         wc.Sep()
@@ -118,6 +119,38 @@ def Get_Percent_Difference( vector ):
             float( vector[ 0 ] )
         return( diff )
 
+def Scatter_Plot( x_data , y_data , params ):
+    """ This function plots a list of lists ( x_data ) against a list of
+        y_data while params is a dictionary containing optional plotting
+        parameters """
+    wc.Sep()
+    logging.info( "Scatter_Plot" )
+    fig = plt.figure()
+    axes1 = fig.add_subplot( 111 )
+    for i in range( len( x_data ) ):
+        size = int( params[ 'size' ][ i ] ) if 'size' in params else size = 20
+        color = params[ 'color' ][ i ] if 'color' in params else color = 'b'
+        mark = params[ 'marker' ][ i ] if 'marker' in params else mark = 'o'
+        name = params[ 'label' ][ i ] if 'label' in params else name = str( i )
+        axes1.scatter( x_data[ i ] , y_data , s = size , c = color , \
+            marker = mark , label = name )
+    if 'title' in params:
+        axes1.set_title( params[ 'title' ] )
+    else:
+        axes1.set_title( 'Scatter Plot of y( x )' )
+    if 'y_label' in params:
+        axes1.set_ylabel( params[ 'y_label' ] )
+    else:
+        axes1.set_ylabel( 'y axis' )
+    if 'x_label' in params:
+        axes1.set_xlabel( params[ 'x_label' ] )
+    else:
+        axes1.set_xlabel( 'x axis' )
+    if 'legend_loc' in params:
+        plt.legend( loc = params[ 'legend_loc' ] )
+    else:
+        plt.legend( loc = 'upper left' )
+    
 def Plot_Main():
     """ This function runs the program if it is called as an import """
     setup = wc.Read_Setup( "plot" )
