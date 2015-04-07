@@ -118,8 +118,52 @@ def Get_Percent_Change( vector ):
         diff = ( float( vector[ -1 ] ) - float( vector[ 0 ] ) ) * 100.0 / \
             float( vector[ 0 ] )
         return( diff )
-
-def Scatter_Plot( x_data , y_data , params ):
+def Percentage_Change_Plot( x_data , labels , params , base_name ):
+    """ This function creates a vertical bar graph of the percentage change
+        of values passed in with x_data and given labels in labels. params
+        contain optional plotting options. """
+    wc.Sep()
+    logging.info( "Percentage_Change_Plot" )
+    fig = plt.figure()
+    axes1 = fig.add_subplot( 111 )
+    bar_list = []
+    legend_list = []
+    names_list = []
+    for i range( len( x_data ) ):
+        if 'width' in params:
+            width = float( params[ 'width' ] )
+        else:
+            width = 0.35
+        color = params[ 'color' ][ i ] if 'color' in params else color = 'b'
+        bar_list.append( axes1.bar( i , x_data[ i ] , width , c = color ) )
+        if 'label' in params:
+            legend_list.append( bar_list[ i ][ 0 ] )
+            names_list.append( params[ 'label' ] )
+    if 'title' in params:
+        axes1.set_title( params[ 'title' ] )
+    else:
+        axes1.set_title( 'Scatter Plot of y( x )' )
+    if 'y_label' in params:
+        axes1.set_ylabel( params[ 'y_label' ] )
+    else:
+        axes1.set_ylabel( 'y axis' )
+    if 'x_label' in params:
+        axes1.set_xlabel( params[ 'x_label' ] )
+    else:
+        axes1.set_xlabel( 'x axis' )
+    if 'label' in params:
+        ax.legend( legend_list , names_list )
+    if 'legend_loc' and 'label' in params:
+        plt.legend( loc = params[ 'legend_loc' ] )
+    if 'title' in params:
+        plt.savefig( base_name + "_" + params[ 'title' ] + ".eps" , \
+            format = 'eps' , dpi = 1000 )
+    else:
+        plt.savefig( base_name + "_bar_" + str( np.random.randint( 100 , \
+            size = 1 ) ) + ".eps" , format = 'eps' , dpi = 1000 )
+    plt.cla()
+    return
+def Scatter_Plot( x_data , y_data , params , base_name ):
     """ This function plots a list of lists ( x_data ) against a list of
         y_data while params is a dictionary containing optional plotting
         parameters """
@@ -150,6 +194,14 @@ def Scatter_Plot( x_data , y_data , params ):
         plt.legend( loc = params[ 'legend_loc' ] )
     else:
         plt.legend( loc = 'upper left' )
+    if 'title' in params:
+        plt.savefig( base_name + "_" + params[ 'title' ] + ".eps" , \
+            format = 'eps' , dpi = 1000 )
+    else:
+        plt.savefig( base_name + "_scatter_" + str( np.random.randint( 100 , \
+            size = 1 ) ) + ".eps" , format = 'eps' , dpi = 1000 )
+    plt.cla()
+    return
     
 def Plot_Main():
     """ This function runs the program if it is called as an import """
