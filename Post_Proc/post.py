@@ -103,7 +103,10 @@ def Read_Burn_File( base_name, options , Get_Materials_List , \
         else:
             i += 1
     logging.info( "The number of vectors is: " + str( vectors ) )
-    output = [ burn_data , nuclide_indicies , materials_list ]
+    output = { 'burn_data' :  burn_data ,
+        'indicies' : nuclide_indicies , 
+        'materials' :  materials_list
+        }
     return( output )
 
 def Get_Matlab_Matrix( contents , counter ):
