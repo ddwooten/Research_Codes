@@ -2,6 +2,7 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
+import os as os
 import time as time
 import logging as logging
 import copy as cp
