@@ -35,7 +35,7 @@ def Read_Burn_File( base_name, options , Get_Materials_List , \
     raw_burn_data = [ x.strip( " " ) for x in raw_burn_data ]
     materials_list = Get_Materials_List( raw_burn_data , options )
     wc.Cep()
-    index_pattern = re.compile( r'i(\d*) = (\d*)' )
+    index_pattern = re.compile( r'i(\d*)\s*=\s*(\d*)' )
     bu_pattern = re.compile( r'BU' )
     day_pattern = re.compile( r'DAYS' )
     mat_pattern = re.compile( r'MAT\S*' )
@@ -182,7 +182,7 @@ def Get_Nuclide_Indicies( string , index_dict ):
     logging.debug( "Get_Nuclide_Indicies" )
     logging.debug( "The string being analyzed is:" )
     logging.debug( string )
-    pattern = re.compile( r'i(\d*) = (\d*)' )
+    pattern = re.compile( r'i(\d*)\s*=\s*(\d*)' )
     match = pattern.match( string )
     if index_match:
         index_dict[ int( match.group( 1 ) ) ] = int( match.group( 2 ) )
