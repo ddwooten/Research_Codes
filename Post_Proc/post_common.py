@@ -120,6 +120,7 @@ def Get_Matlab_Matrix( contents , counter ):
     pattern = re.compile( r'\];' )
     match = None
     while ( match is None ):
+        counter += 1
         logging.debug( "The line is: " )
         if len( contents[ counter ] ) > 41:
             logging.debug( contents[ counter ][ : 20 ] + "..." + \
@@ -128,8 +129,6 @@ def Get_Matlab_Matrix( contents , counter ):
             logging.debug( contents[ counter ] )
         match = pattern.match( contents[ counter ] )
         logging.debug( "The match is: " + str( match ) )
-        end = counter
-        counter += 1
     output = [ start , counter ]
     return( output ) 
 
