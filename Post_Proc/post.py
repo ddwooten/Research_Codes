@@ -34,7 +34,7 @@ def Read_Burn_File( base_name, options , Get_Materials_List , \
     raw_burn_data = [ x.strip( " " ) for x in raw_burn_data ]
     materials_list = Get_Materials_List( raw_burn_data , options )
     wc.Cep()
-    index_pattern = re.compile( r'i(\d*) = (\d*)' )
+    index_pattern = re.compile( r'i(\d*)\s*=\s*(\d*)' )
     bu_pattern = re.compile( r'BU' )
     day_pattern = re.compile( r'DAYS' )
     mat_pattern = re.compile( r'MAT\S*' )
@@ -221,16 +221,16 @@ def Report_Output( output , file_name ):
     for key in output.keys():
         destination.write( "********************************************* \n" )
         destination.write( str( key ) + ": \n" )
-        if isinstance( output[ key ][ 0 ] , list ):
+        if isinstance( output[ key ] , list ):
             for i in range( len( output[ key ] ) ):
-                string = str( output[ key ][ i ] )
+                string = str( output[ key ][ i ] ) + "\n"
                 if len( string ) > 41:
                     destination.write( string[ : 20 ] + "..." + \
                         string[ -20 : ] )
                 else:
                     destination.write( string )
         else:
-            string = str( output[ key ] )
+            string = str( output[ key ] ) + "\n"
             if len( string ) > 41:
                 destination.write( string[ : 20 ] + "..." + string[ -20 : ] )
             else:
@@ -265,7 +265,7 @@ def Post_Main():
         output = Read_Burn_File( setup[ "host_file" ] , setup , \
                     Get_Materials_List , Get_Nuclide_Indicies )
 
-    Report_Output( output[ 0 ] , "report.test" )
+    Report_Output( output , "report.test" )
     return( output )
 
 print( "Begining the Post Processor program" )
