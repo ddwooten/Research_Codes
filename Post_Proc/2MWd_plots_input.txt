@@ -1,12 +1,41 @@
-{
-    "type" : "scatter"
-    "data" : [
-        {
-            "type" : "composition"
-            "element" : {
-                "name" : "U"
-                "Z" : 92
-                "Isotopes" : [
-                    235 
-                ]
-
+[
+    "type" : "scatter",
+    "data" : {
+        "type" : "composition",
+        "components" : { 
+            "fuel" : {
+                "members" : [
+                    "U-235" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            235,
+                            238
+                        ],
+                        "materials" : [
+                            "all"
+                        ],
+                    },
+                    "Pu-239" : {
+                        "element" : "Pu",
+                        "Z" : 94,
+                        "isotopes" : [
+                            "all"
+                        ],
+                        "materials" : [
+                            "fuel",
+                            "blanket"
+                        ],
+                    },
+                ],
+                "marker" : "o",
+                "label" : "fuel"
+                "color" : "g"
+            }
+        },
+        "x_label" : "Days",
+        "y_label" : "atoms/cc",
+        "title" : "Fuel Atom Density in atoms/cc Over Time in days",
+        "legend_loc" : "upper right"
+    }
+            
