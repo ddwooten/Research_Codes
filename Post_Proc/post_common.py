@@ -21,6 +21,7 @@ import wooten_common as wc
         [log_level] - the python logger utility logging level. If none is given
             it defaults to 0 
         [log_name] - the base name for the log file
+        [process_burn] - yes/no to process burnup data
 """
 def Read_Burn_File( base_name, options , Get_Materials_List , \
     Get_Nuclide_Indicies ):

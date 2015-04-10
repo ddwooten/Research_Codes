@@ -46,10 +46,15 @@ def Nuclide_Dictionaries():
 
 def Read_Plots( base_name ):
     """ This function reads in the plotting command file, titled
-        [base_name]_plots_input.txt."""
+        [base_name]_plots_input.json"""
         wc.Sep()
         logging.info( "Read_Plots" )
-        in
+        input_file = open( base_name + "_plots_input.json" , "r" )
+        plot_params = json.load( input_file , object_hook = decode.Decode_Dict )
+        for i in range( len( plot_params ) ):
+            if plot_params[ i ][ "type" ] = "composition":
+                plot_params[ i ][ "x_data" ] , plot_params[ i ][ "y_data" ] = \
+                    Get_Composition_XY( 
 
 
 def List_To_Array( data ):
