@@ -2,7 +2,6 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
-import os as os
 import logging as logging
 import copy as cp
 import re as re
@@ -21,6 +20,7 @@ import wooten_common as wc
         [log_level] - the python logger utility logging level. If none is given
             it defaults to 0 
         [log_name] - the base name for the log file
+        [process_burn] - yes/no to process burnup data
 """
 def Read_Burn_File( base_name, options , Get_Materials_List , \
     Get_Nuclide_Indicies ):
@@ -260,12 +260,16 @@ def Post_Main():
             logging.debug( "The input dictionary is: " )
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
+# Storage container for all output
+    output = {}
 
-    if os.path.isfile( setup[ "host_file" ] + "_dep.m" ): 
-        output = Read_Burn_File( setup[ "host_file" ] , setup , \
-                    Get_Materials_List , Get_Nuclide_Indicies )
+    if 'process_burn' in setup:
+        if setup[ 'process_burn' ] == "yes" or "Yes" or "YES" or "y" or "Y": 
+            burnup_data = Read_Burn_File( setup[ "host_file" ] , setup , \
+                        Get_Materials_List , Get_Nuclide_Indicies )
+            output[ 'burnup_data' ] = burnup_data
 
-    Report_Output( output , "report.test" )
+    Report_Output( burnup_data , "report.test" )
     return( output )
 
 print( "Begining the Post Processor program" )

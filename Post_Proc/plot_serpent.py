@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 # These are custom built python modules containing helpful and necessary
 #   functions.
 import wooten_common as wc
-import post_common as pc
+import post_common as post_common
+import decode as decode
 
 """ This is the SERPENT plotter. It requires a configuration
     file titled, exactly, "plot_setup.txt". 
@@ -48,6 +49,7 @@ def Read_Plots( base_name ):
         [base_name]_plots_input.txt."""
         wc.Sep()
         logging.info( "Read_Plots" )
+        in
 
 
 def List_To_Array( data ):

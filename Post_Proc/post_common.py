@@ -2,7 +2,6 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
-import os as os
 import time as time
 import logging as logging
 import copy as cp
@@ -254,7 +253,13 @@ def Post_Main():
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
 
-    if os.path.isfile( setup[ "host_file" ] + "_dep.m" ): 
-        output = Read_Burn_File( setup[ "host_file" ] , setup , \
-                    Get_Materials_List , Get_Nuclide_Indicies )
+# A container for all output data
+    output = {}
+
+    if 'process_burn' in setup:
+        if setup[ 'process_burn' ] == "yes" or "Yes" or "YES" or "y" or "Y": 
+            burnup_data = Read_Burn_File( setup[ "host_file" ] , setup , \
+                        Get_Materials_List , Get_Nuclide_Indicies )
+            output[ 'burnup_data' ] = burnup_data
+
     return( output )
