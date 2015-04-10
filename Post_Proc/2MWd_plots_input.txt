@@ -15,7 +15,7 @@
                             ],
                             "materials" : [
                                 "all"
-                            ],
+                            ]
                         },
                         "Pu-239" : {
                             "element" : "Pu",
@@ -26,11 +26,11 @@
                             "materials" : [
                                 "fuel",
                                 "blanket"
-                            ],
-                        },
+                            ]
+                        }
                     },
                     "marker" : "o",
-                    "label" : "fuel"
+                    "label" : "fuel",
                     "color" : "g"
                 }
             }
