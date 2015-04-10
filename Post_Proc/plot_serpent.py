@@ -42,44 +42,41 @@ import decode as decode
    <<<
     [
         {
-            "type" : "scatter",
-            "data" : {
-                "type" : "atom_burnup",
-                "y_range" : [
-                    0.0,
-                    10.5
-                    ],
-                "components" : { 
-                    "fuel" : {
-                        "members" : { 
-                            "U-235" : { 
-                                "element" : "U",
-                                "Z" : 92,
-                                "isotopes" : [
-                                    235,
-                                    238
-                                ],
-                                "materials" : [
-                                    "all"
-                                ]
-                            },
-                            "Pu-239" : {
-                                "element" : "Pu",
-                                "Z" : 94,
-                                "isotopes" : [
-                                    "all"
-                                ],
-                                "materials" : [
-                                    "fuel",
-                                    "blanket"
-                                ]
-                            }
+            "type" : "atom burnup",
+            "components" : { 
+                "fuel" : {
+                    "y_range" : [
+                        0.0,
+                        10.5
+                        ],
+                    "members" : { 
+                        "U-235" : { 
+                            "element" : "U",
+                            "Z" : 92,
+                            "isotopes" : [
+                                235,
+                                238
+                            ],
+                            "materials" : [
+                                "all"
+                            ]
                         },
-                        "marker" : "o",
-                        "label" : "fuel",
-                        "color" : "g",
-                        "size" : 20
-                    }
+                        "Pu-239" : {
+                            "element" : "Pu",
+                            "Z" : 94,
+                            "isotopes" : [
+                                "all"
+                            ],
+                            "materials" : [
+                                "fuel",
+                                "blanket"
+                            ]
+                        }
+                    },
+                    "marker" : "o",
+                    "label" : "fuel",
+                    "color" : "g",
+                    "size" : 20
                 }
             },
             "x_label" : "Days",
@@ -120,10 +117,23 @@ def Read_Plots( base_name ):
         input_file = open( base_name + "_plots_input.json" , "r" )
         plot_params = json.load( input_file , object_hook = decode.Decode_Dict )
         for i in range( len( plot_params ) ):
-            if plot_params[ i ][ "type" ] = "composition":
-                plot_params[ i ][ "x_data" ] , plot_params[ i ][ "y_data" ] = \
-                    Get_Composition_XY( 
-
+            if plot_params[ i ][ "type" ] = "atom burnup":
+                for key in plot_params[ i ][ "components" ]:
+                    plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
+                        Get_Atom_Burnup(plot_params[i][ "components" ][ key ] ) 
+                    plot_params[ i ][ "components"][ key ][ "x_data" ] = \
+                        Get_Time_Range(plot_params[i][ "components" ][ key ] )
+            elif plot_params[ i ][ "type" ] = "atom percent change":
+                for key in plot_params[ i ][ "components" ]:
+                    plot_params[ i ][ "components" ][ key ][ "p_change" ] = \
+                        Get_Percentage_Change( \
+                        plot_params[ i ][ "components" ][ key ] )
+            elif plot_params[ i ][ "type" ] = "k evolution":
+                for key in plot_params[ i ][ "components" ]:
+                    plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
+                        Get_K_Data( plot_params[ i ][ "components" ][ key ] )
+                    plot_params[ i ][ "components" ][ key ][ "x_data" ] = \
+                        Get_Time_Range( plot_params[i][ "components" ][ key ] )
 
 def List_To_Array( data ):
     """ This function takes in classic python lists ( or a dictionary of lists )
@@ -192,7 +202,7 @@ def Gather_Materials( dictionary , attribute , materials ):
            output = output + dictionary[ key ]
     return( output )
 
-def Get_Percent_Change( vector ):
+def Calculate_Percent_Change( vector ):
     """ This function simply gets the percent change between an aspect's
         first value and its last """
         wc.Sep()
