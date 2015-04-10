@@ -27,6 +27,74 @@ import decode as decode
         [log_level] - the python logger utility logging level. If none is given
             it defaults to 0 
         [log_name] - the base name for the log file
+   Additionally a plotting parameters file is required for plotting. This file
+   should be titled "[host_file]_plots_input.json" as it is formatted as a
+   json file. The primary container is a list, inside this list are
+   dictionaries ( in json jargon "objects" ), inside of these dictionaries
+   are parameters for the plots; i.e. each dictionary inside the list
+   represents a plot. A sample is given below. For atom_burnup plots each
+   componenet will become a line on the plot while each entry in members is
+   summed up to create the component it is hosted in. Additionally,
+   matplotlib has its own implemention of the TeX engine and TeX style strings
+   may be provided for any string argument given for display on a plot, most
+   notably titles and axis labels. The ability to use LaTeX explicitly with
+   all of its packages is also an option but requires advanced configuration.
+   <<<
+    [
+        {
+            "type" : "scatter",
+            "data" : {
+                "type" : "atom_burnup",
+                "y_range" : [
+                    0.0,
+                    10.5
+                    ],
+                "components" : { 
+                    "fuel" : {
+                        "members" : { 
+                            "U-235" : { 
+                                "element" : "U",
+                                "Z" : 92,
+                                "isotopes" : [
+                                    235,
+                                    238
+                                ],
+                                "materials" : [
+                                    "all"
+                                ]
+                            },
+                            "Pu-239" : {
+                                "element" : "Pu",
+                                "Z" : 94,
+                                "isotopes" : [
+                                    "all"
+                                ],
+                                "materials" : [
+                                    "fuel",
+                                    "blanket"
+                                ]
+                            }
+                        },
+                        "marker" : "o",
+                        "label" : "fuel",
+                        "color" : "g",
+                        "size" : 20
+                    }
+                }
+            },
+            "x_label" : "Days",
+            "y_label" : "atoms/$cm^3$",
+            "title" : "Fuel Atom Density in atoms/cc Over Time in days",
+            "legend_loc" : "upper right"
+        }
+    ]
+    >>>
+   Additionally the program "post_process.py" will be called, this program
+   has its own configuration file and requirements. Please see that file for
+   explanation.
+   Furthermore, the file "nuclide_ids.txt" must be in the local directory
+   of where the executable or this code or this code is run. The function
+   "Nuclide_Dictionaries" needs this file to do its job.
 """
 
 def Nuclide_Dictionaries():
@@ -133,7 +201,7 @@ def Get_Percent_Change( vector ):
             float( vector[ 0 ] )
         return( diff )
 
-def Percentage_Change_Plot( x_data , labels , params , base_name ):
+def Percentage_Change_Plot( params , base_name ):
     """ This function creates a vertical bar graph of the percentage change
         of values passed in with x_data and given labels in labels. params
         contain optional plotting options. """
@@ -144,33 +212,43 @@ def Percentage_Change_Plot( x_data , labels , params , base_name ):
     bar_list = []
     legend_list = []
     names_list = []
-    for i range( len( x_data ) ):
-        if 'width' in params:
-            width = float( params[ 'width' ] )
+    bar_number = 0
+    for key in params[ "components" ]:
+        if "width" in params[ "components" ][ key ]:
+            width = float( params[ "components"][ key ][ "width" ] )
         else:
             width = 0.35
-        color = params[ 'color' ][ i ] if 'color' in params else color = 'b'
-        bar_list.append( axes1.bar( i , x_data[ i ] , width , c = color ) )
-        if 'label' in params:
-            legend_list.append( bar_list[ i ][ 0 ] )
-            names_list.append( params[ 'label' ] )
-    if 'title' in params:
-        axes1.set_title( params[ 'title' ] )
+        if "color" in params[ "components" ][ key ]:
+            color = params[ "components" ][ key ][ "color" ]
+        else:
+             color = 'b'
+        bar_list.append( axes1.bar( bar_number , \
+            params[ "components" ][ key ][ "p_change" ] , \
+                width , c = color ) )
+        legend_list.append( bar_list[ bar_number ][ 0 ] )
+        if "label" in params:
+            names_list.append( params[ "components" ][ key ][ "label" ] )
+        else:
+            names_list.append( str( key ) )
+# This simply creates a legend for our plot
+    ax.legend( legend_list , names_list )
+    if "title" in params:
+        axes1.set_title( params[ "title" ] )
     else:
-        axes1.set_title( 'Scatter Plot of y( x )' )
-    if 'y_label' in params:
-        axes1.set_ylabel( params[ 'y_label' ] )
+        axes1.set_title( "Scatter Plot of y( x )" )
+    if "y_label" in params:
+        axes1.set_ylabel( params[ "y_label" ] )
     else:
-        axes1.set_ylabel( 'y axis' )
-    if 'x_label' in params:
-        axes1.set_xlabel( params[ 'x_label' ] )
+        axes1.set_ylabel( "y axis" )
+    if "x_label" in params:
+        axes1.set_xlabel( params[ "x_label" ] )
     else:
-        axes1.set_xlabel( 'x axis' )
-    if 'label' in params:
-        ax.legend( legend_list , names_list )
-    if 'legend_loc' and 'label' in params:
-        plt.legend( loc = params[ 'legend_loc' ] )
-    if 'title' in params:
+        axes1.set_xlabel( "x axis" )
+    if "legend_loc" params:
+        plt.legend( loc = params[ "legend_loc" ] )
+    else:
+        plt.legen( loc = "upper right" )
+    if "title" in params:
         plt.savefig( base_name + "_" + params[ 'title' ] + ".eps" , \
             format = 'eps' , dpi = 1000 )
     else:
@@ -179,20 +257,33 @@ def Percentage_Change_Plot( x_data , labels , params , base_name ):
     plt.cla()
     return
 
-def Scatter_Plot( x_data , y_data , params , base_name ):
-    """ This function plots a list of lists ( x_data ) against a list of
-        y_data while params is a dictionary containing optional plotting
+def Scatter_Plot( params , base_name ):
+    """ This function plots a dict of lists from params against a list of
+        y_data while params contains additional optional plotting
         parameters """
     wc.Sep()
     logging.info( "Scatter_Plot" )
     fig = plt.figure()
     axes1 = fig.add_subplot( 111 )
-    for i in range( len( x_data ) ):
-        size = int( params[ 'size' ][ i ] ) if 'size' in params else size = 20
-        color = params[ 'color' ][ i ] if 'color' in params else color = 'b'
-        mark = params[ 'marker' ][ i ] if 'marker' in params else mark = 'o'
-        name = params[ 'label' ][ i ] if 'label' in params else name = str( i )
-        axes1.scatter( x_data[ i ] , y_data , s = size , c = color , \
+    for key in params[ "components" ]:
+        if "size" in params[ "components" ][ key ]:
+            size = params[ "components" ][ key ][ "size" ]
+        else:
+             size = 20
+        if "color" in params[ "components" ][ key ]:
+            color = params[ "components" ][ key ][ "color" ]
+        else:
+             color = 'b'
+        if "marker" in params[ "components" ][ key ]:
+            mark = params[ 'marker' ][ i ]
+        else:
+             mark = 'o'
+        if "label" in params[ "components" ][ key ]:
+            name = params[ "components" ][ key ][ 'label' ]
+        else:
+             name = str( key )
+        axes1.scatter( params[ "components" ][ key ][ "x_data" ] , \
+            params[ "components" ][ key ][ "y_data" ] , s = size , c = color , \
             marker = mark , label = name )
     if 'title' in params:
         axes1.set_title( params[ 'title' ] )
@@ -214,7 +305,8 @@ def Scatter_Plot( x_data , y_data , params , base_name ):
         plt.savefig( base_name + "_" + params[ 'title' ] + ".eps" , \
             format = 'eps' , dpi = 1000 )
     else:
-        plt.savefig( base_name + "_scatter_" + str( np.random.randint( 100 , \
+        plt.savefig( base_name + "_" + params[ "type" ] + "_" + \
+            str( np.random.randint( 100 , \
             size = 1 ) ) + ".eps" , format = 'eps' , dpi = 1000 )
     plt.cla()
     return
