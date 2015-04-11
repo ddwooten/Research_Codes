@@ -164,20 +164,16 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     wc.Sep()
     logging.Info( "Get_Element_Data" )
     logging.debug( "Z is: " + str( Z ) )
-    for key in nuclide_indicies.keys()
-        cur_Z = int( math.floor( float( key ) / 1000.0 ) )
-        if Z == cur_Z:
-            logging.debug( "Isotope is: " + str( key ) )
-            logging.debug( "End value before addition: " + \
-                str( vector[ -1  ] ) )
-            logging.debug( "Value being added: " + \
-                str( matrix[ nuclide_indicies[ key ] : -1 ] ) )
-            vector = vector + matrix[ nuclide_indicies[ key ] 
-            logging.debug( "End value after addition: " + \
-                str( vector[ -1 ] ) )
-    return( vector ) 
+    nuclide_list = []
+    if isinstance( isotopes[ 0 ] , str ):
+        for key in nuclide_indicies:
+            cur_Z = int( math.floor( float( key ) / 1000.0 ) )
+            if Z == cur_Z:
+                logging.debug( "Isotope is: " + str( key ) )
+                nuclide_list.append( nuclide_indicies[ key ] )
+    return( nuclide_list ) 
 
-def Gather_Materials( dictionary , attribute , materials ):
+def Get_Material_Indicies( data , attribute , materials ):
     """ This function gathers burn data across a given list of materials
         or accross all materials ( mimics TOT in earlier SERPENT files ).
     """
@@ -186,9 +182,9 @@ def Gather_Materials( dictionary , attribute , materials ):
     logging.debug( "The materials are: " )
     logging.debug( str( materials ) )
     pattern = re.compile( r'\S*_' + attribute )
-    output = None
-    for key in dictionary.keys():
-        if isinstance( materials , list ):
+    material_keys = []
+    for key in data:
+        if materials[ 0 ] != "all" or "All" or "ALL":
             for mat in materials:
                 match = None
                 pattern = re.compile( "\\S*_" + mat + \
@@ -201,10 +197,8 @@ def Gather_Materials( dictionary , attribute , materials ):
             match = pattern.match( key )
             logging.debug( "The match is: " + match.group() ) 
         if match:
-           if output is None:
-               output = np.zeros[ dictionary[ key ].shape ] 
-           output = output + dictionary[ key ]
-    return( output )
+            material_keys.append( key )
+    return( material_keys )
 
 def Calculate_Percent_Change( vector ):
     """ This function simply gets the percent change between an aspect's
