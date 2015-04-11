@@ -109,32 +109,37 @@ def Nuclide_Dictionaries():
     output_list = [ dictionary_0 , dictionary_1 ]
     return( output_list )
 
-def Read_Plots( base_name ):
+def Make_Plots( data , base_name ):
     """ This function reads in the plotting command file, titled
         [base_name]_plots_input.json"""
-        wc.Sep()
-        logging.info( "Read_Plots" )
-        input_file = open( base_name + "_plots_input.json" , "r" )
-        plot_params = json.load( input_file , object_hook = decode.Decode_Dict )
-        for i in range( len( plot_params ) ):
-            if plot_params[ i ][ "type" ] = "atom burnup":
-                for key in plot_params[ i ][ "components" ]:
-                    plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
-                        Get_Atom_Burnup(plot_params[i][ "components" ][ key ] ) 
-                    plot_params[ i ][ "components"][ key ][ "x_data" ] = \
-                        Get_Time_Range(plot_params[i][ "components" ][ key ] )
-            elif plot_params[ i ][ "type" ] = "atom percent change":
-                for key in plot_params[ i ][ "components" ]:
-                    plot_params[ i ][ "components" ][ key ][ "p_change" ] = \
-                        Get_Percentage_Change( \
-                        plot_params[ i ][ "components" ][ key ] )
-            elif plot_params[ i ][ "type" ] = "k evolution":
-                for key in plot_params[ i ][ "components" ]:
-                    plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
-                        Get_K_Data( plot_params[ i ][ "components" ][ key ] )
-                    plot_params[ i ][ "components" ][ key ][ "x_data" ] = \
-                        Get_Time_Range( plot_params[i][ "components" ][ key ] )
+    wc.Sep()
+    logging.info( "Read_Plots" )
+    input_file = open( base_name + "_plots_input.json" , "r" )
+    plot_params = json.load( input_file , object_hook = decode.Decode_Dict )
+    for i in range( len( plot_params ) ):
+        if plot_params[ i ][ "type" ] = "atom burnup":
+            for key in plot_params[ i ][ "components" ]:
+                plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
+                    Get_Atom_Burnup(plot_params[i][ "components" ][ key ],data )
+                plot_params[ i ][ "components"][ key ][ "x_data" ] = \
+                    Get_Time_Range(plot_params[i][ "components" ][ key ] , data)
+        elif plot_params[ i ][ "type" ] = "atom percent change":
+            for key in plot_params[ i ][ "components" ]:
+                plot_params[ i ][ "components" ][ key ][ "p_change" ] = \
+                    Get_Percentage_Change( \
+                    plot_params[ i ][ "components" ][ key ] , data )
+        elif plot_params[ i ][ "type" ] = "k evolution":
+            for key in plot_params[ i ][ "components" ]:
+                plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
+                    Get_K_Data( plot_params[ i ][ "components" ][ key ] , data )
+                plot_params[ i ][ "components" ][ key ][ "x_data" ] = \
+                    Get_Time_Range( plot_params[i][ "components" ][ key ],data )
+    return
 
+def Get_Atom_Burnup( params , data ):
+    """ This function, using the information in params, gathers the data to form
+    the y_data for the desired plot """
+    
 def List_To_Array( data ):
     """ This function takes in classic python lists ( or a dictionary of lists )
         and nested lists ( matricies ) and converts them to numpy arrays. """
@@ -153,13 +158,12 @@ def List_To_Array( data ):
         exit()
     return( data )
 
-def Get_Element_Data( matrix , nuclide_indicies , Z ):
+def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     """ This function collapses isotopic burn vectors into a given
         elemental burn vector """
     wc.Sep()
     logging.Info( "Get_Element_Data" )
     logging.debug( "Z is: " + str( Z ) )
-    vector = np.zeros( matrix.shape[ 1 ] )
     for key in nuclide_indicies.keys()
         cur_Z = int( math.floor( float( key ) / 1000.0 ) )
         if Z == cur_Z:
