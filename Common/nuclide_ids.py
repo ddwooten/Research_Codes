@@ -3,7 +3,8 @@
 """ This file simply contains a function that returns two dictionaries
     in a dictionary ( keys are the dict names, values are the dicts )
     one of which has ZAI : Name key value pairs ( zai_name ) and one of which
-    has Name : ZAI key value paris ( name_zai ) """
+    has Name : ZAI key value paris ( name_zai )
+    This file also lives in /usr/lib/pymodules/python2.7 """
 
 def Nuclide_Dictionaries():
     """ This is the function which returns this dicts"""
