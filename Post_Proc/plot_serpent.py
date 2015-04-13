@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import wooten_common as wc
 import post_common as post_common
 import decode as decode
+import nuclide_ids as nid
 
 """ This is the SERPENT plotter. It requires a configuration
     file titled, exactly, "plot_setup.txt". 
@@ -89,26 +90,7 @@ import decode as decode
    Additionally the program "post_process.py" will be called, this program
    has its own configuration file and requirements. Please see that file for
    explanation.
-   Furthermore, the file "nuclide_ids.txt" must be in the local directory
-   of where the executable or this code or this code is run. The function
-   "Nuclide_Dictionaries" needs this file to do its job.
 """
-
-def Nuclide_Dictionaries():
-    """ This function reads in nuclide ZAIs and names from a static file,
-        "nuclide_ids.txt" and creates a dictionary of name:ZAI and ZAI:name """
-    wc.Sep()
-    logging.info( "Nuclide_Dictionaries" )
-    nuclide_file = wc.Read_Input( "nuclide_ids.txt" , "string" )
-    dictionary_0 = {}
-    dictionary_1 = {}
-    for i in range( len( nuclide_file ) ):
-        line = nuclide_file[ i ].split( ':' )
-        dictionary_0[ line[ 0 ] ] = line[ 1 ]
-        dictionary_1[ line[ 1 ] ] = line[ 0 ]
-    output_list = [ dictionary_0 , dictionary_1 ]
-    return( output_list )
-
 def Make_Plots( data , base_name ):
     """ This function reads in the plotting command file, titled
         [base_name]_plots_input.json"""
@@ -118,11 +100,8 @@ def Make_Plots( data , base_name ):
     plot_params = json.load( input_file , object_hook = decode.Decode_Dict )
     for i in range( len( plot_params ) ):
         if plot_params[ i ][ "type" ] = "atom burnup":
-            for key in plot_params[ i ][ "components" ]:
-                plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
-                    Get_Atom_Burnup(plot_params[i][ "components" ][ key ],data )
-                plot_params[ i ][ "components"][ key ][ "x_data" ] = \
-                    Get_Time_Range(plot_params[i][ "components" ][ key ] , data)
+            Prep_Atom_Burnup( plot_params[ i ][ "components" ] , data )
+            Plot_Atom_Burnup( plot_params[ i ] )
         elif plot_params[ i ][ "type" ] = "atom percent change":
             for key in plot_params[ i ][ "components" ]:
                 plot_params[ i ][ "components" ][ key ][ "p_change" ] = \
@@ -136,10 +115,20 @@ def Make_Plots( data , base_name ):
                     Get_Time_Range( plot_params[i][ "components" ][ key ],data )
     return
 
-def Get_Atom_Burnup( params , data ):
+def Prep_Atom_Burnup( components , data ):
     """ This function, using the information in params, gathers the data to form
     the y_data for the desired plot """
-    
+    wc.Sep()
+    logging.info( "Get_Atom_Burnup" )
+    for key in componenets:
+        x_data =
+        for item in key[ "members" ]:
+            mat_list = Get_Material_Keys( data[ "burn_data" ] , "ADENS" , \
+                item[ "materials" ] )
+            isos_list = Get_Isotope_Indicies( data[ "indicies" ] , \
+                item[ "Z" ] , item[ "isotopes" ] ):
+
+
 def List_To_Array( data ):
     """ This function takes in classic python lists ( or a dictionary of lists )
         and nested lists ( matricies ) and converts them to numpy arrays. """
@@ -162,7 +151,7 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     """ This function collapses isotopic burn vectors into a given
         elemental burn vector """
     wc.Sep()
-    logging.Info( "Get_Element_Data" )
+    logging.Info( "Get_Isotope_Indicies" )
     logging.debug( "Z is: " + str( Z ) )
     nuclide_list = []
     if isinstance( isotopes[ 0 ] , str ):
@@ -171,9 +160,13 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
             if Z == cur_Z:
                 logging.debug( "Isotope is: " + str( key ) )
                 nuclide_list.append( nuclide_indicies[ key ] )
+    else:
+        for item in isotopes:
+            A = str( item ).zfill( 3 )
+            nuclide_list.append(nuclide_indicies[ int( str( Z ) + str( A ) ) )])
     return( nuclide_list ) 
 
-def Get_Material_Indicies( data , attribute , materials ):
+def Get_Material_Keys( data , attribute , materials ):
     """ This function gathers burn data across a given list of materials
         or accross all materials ( mimics TOT in earlier SERPENT files ).
     """
@@ -308,7 +301,7 @@ def Scatter_Plot( params , base_name ):
     if 'legend_loc' in params:
         plt.legend( loc = params[ 'legend_loc' ] )
     else:
-        plt.legend( loc = 'upper left' )
+        plt.legend( loc = 'upper right' )
     if 'title' in params:
         plt.savefig( base_name + "_" + params[ 'title' ] + ".eps" , \
             format = 'eps' , dpi = 1000 )
