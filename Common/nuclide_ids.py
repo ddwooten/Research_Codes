@@ -3187,7 +3187,7 @@ def Nuclide_Dictionaries():
     117292:"Uus-292",
     118293:"Uuo-293" }
 
-    names_zai = { "H-1":1001,
+    name_zai = { "H-1":1001,
     "H-2":1002,
     "H-3":1003,
     "H-4":1004,
