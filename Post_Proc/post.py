@@ -109,6 +109,24 @@ def Read_Burn_File( base_name, options , Get_Materials_List , \
         }
     return( output )
 
+def List_To_Array( data ):
+    """ This function takes in classic python lists ( or a dictionary of lists )
+        and nested lists ( matricies ) and converts them to numpy arrays. """
+    wc.Sep()
+    logging.info( "List_To_Array" )
+    if isinstance( data , dict ):
+        for key in data.keys():
+            data[ key ] = np.array( data[ key ] )
+    elif isinstance( data , list ):
+        data = np.array( data )
+    else:
+        print( "ERROR!!!: Data passed to < List_To_Array > was not either \n \
+            of type < list > or < dict >." )
+        logging.critical( "ERROR!!!: Data passed to < List_To_Array > was \n \
+            not either of type < list > or < dict >." )
+        exit()
+    return( data )
+
 def Get_Matlab_Matrix( contents , counter ):
     """ This function searches through a serpent dep file and extracts
         the currently selected matlab style matrix ( composing several lines

@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 #   functions.
 import wooten_common as wc
 import post_common as post_common
-import decode as decode
 import nuclide_ids as nid
 
 """ This is the SERPENT plotter. It requires a configuration
@@ -97,7 +96,7 @@ def Make_Plots( data , base_name ):
     wc.Sep()
     logging.info( "Read_Plots" )
     input_file = open( base_name + "_plots_input.json" , "r" )
-    plot_params = json.load( input_file , object_hook = decode.Decode_Dict )
+    plot_params = json.load( input_file , object_hook = wc.Decode_Json_Dict )
     for i in range( len( plot_params ) ):
         if plot_params[ i ][ "type" ] = "atom_burnup":
             Prep_Atom_Burnup( plot_params[ i ][ "components" ] , \
@@ -125,7 +124,6 @@ def Prep_Atom_Burnup( components , burn_data ):
         y_data = np.zeros( len( burn_data[ "burn_data" ][ "BU" ] ) )
         span , x_type = Get_X_Info( components[ key ],burn_data[ "burn_data" ] )
         components[key]["x_data"] = burn_data[time_type][span[0],span[1]]
-        Check_X_Label( components[ key ] , x_type ) 
         for item in components[ key ][ "members" ]:
             mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , "ADENS" , \
                 components[ key ][ item ][ "materials" ] )
@@ -136,9 +134,8 @@ def Prep_Atom_Burnup( components , burn_data ):
                 for iso in isos_list: 
                     y_data += burn_data[ "burn_data" ][ mat ][ iso ]
         components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
+    return
 
-def Check_X_Label( constituent , time_type ):
-    """ This function"""
 def Get_X_Data( constituent , burn_data ):
     """ This function returns the correct key for the x_data as well as
         the range if
@@ -174,24 +171,6 @@ def Get_X_Data( constituent , burn_data ):
         splice = [ 0 , len( burn_data[ time_type ] ) - 1 ]
     output = [ splice , time_type ]
     return( output )
-                        
-def List_To_Array( data ):
-    """ This function takes in classic python lists ( or a dictionary of lists )
-        and nested lists ( matricies ) and converts them to numpy arrays. """
-    wc.Sep()
-    logging.info( "List_To_Array" )
-    if isinstance( data , dict ):
-        for key in data.keys():
-            data[ key ] = np.array( data[ key ] )
-    elif isinstance( data , list ):
-        data = np.array( data )
-    else:
-        print( "ERROR!!!: Data passed to < List_To_Array > was not either \n \
-            of type < list > or < dict >." )
-        logging.critical( "ERROR!!!: Data passed to < List_To_Array > was \n \
-            not either of type < list > or < dict >." )
-        exit()
-    return( data )
 
 def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     """ This function collapses isotopic burn vectors into a given
@@ -376,10 +355,7 @@ def Plot_Main():
             logging.debug( "The input dictionary is: " )
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
+
+    data = post_common.Post_Main()
+    data[ "burnup_data" ][ "burn_data"
     return
-
-print( "Begining the Plotting program" )
-
-Plot_Main()
-
-print( "Ending the Plotting program" )
