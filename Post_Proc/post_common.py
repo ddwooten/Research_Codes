@@ -2,10 +2,11 @@
 # Creator: Daniel Wooten
 # Version 1.0.
 
-import time as time
 import logging as logging
 import copy as cp
 import re as re
+import numpy as np
+# These import statements bring in custom modules
 import wooten_common as wc
 
 """ This is the SERPENT post processor. It requires a configuration
@@ -151,7 +152,9 @@ def Parse_Matlab_Matrix( begin , end , contents ):
             logging.debug( str( line[ : 3 ] ) + "..." + str( line[ -3 : ] ) )
         else:
             logging.debug( str( line ) )
+        line = [ float( x ) for x in line ]
         output.append( line )
+        output = np.matrix( output )
     return( output )
 
 def Parse_Matlab_Vector( line ):
@@ -167,11 +170,19 @@ def Parse_Matlab_Vector( line ):
     else:
         logging.debug( string )
     nums = string.split( " " )
+    try:
+        index = nums.index( "%" )
+    except:
+        pass
+    else:
+        nums = nums[ : index - 1 ]
     logging.debug( "The generated list is: " )
     if len( str( nums ) ) > 41:
         logging.debug( str( nums[  : 5 ] ) + "..." + str( nums[ -5 : ] ) )
     else:
         logging.debug( str( nums ) )
+    nums = [ float( x ) for x in nums ]
+    nums = np.array( nums )
     return( nums )
 
 def Get_Nuclide_Indicies( string , index_dict ):
@@ -214,16 +225,16 @@ def Report_Output( output , file_name ):
     for key in output.keys():
         destination.write( "********************************************* \n" )
         destination.write( str( key ) + ": \n" )
-        if isinstance( output[ key ][ 0 ] , list ):
+        if isinstance( output[ key ] , list ):
             for i in range( len( output[ key ] ) ):
-                string = str( output[ key ][ i ] )
+                string = str( output[ key ][ i ] ) + "\n"
                 if len( string ) > 41:
                     destination.write( string[ : 20 ] + "..." + \
                         string[ -20 : ] )
                 else:
                     destination.write( string )
         else:
-            string = str( output[ key ] )
+            string = str( output[ key ] ) + "\n"
             if len( string ) > 41:
                 destination.write( string[ : 20 ] + "..." + string[ -20 : ] )
             else:
@@ -253,8 +264,7 @@ def Post_Main():
             logging.debug( "The input dictionary is: " )
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
-
-# A container for all output data
+# Storage container for all output
     output = {}
 
     if 'process_burn' in setup:
@@ -263,4 +273,11 @@ def Post_Main():
                         Get_Materials_List , Get_Nuclide_Indicies )
             output[ 'burnup_data' ] = burnup_data
 
+    Report_Output( burnup_data , "report.test" )
     return( output )
+
+print( "Begining the Post Processor program" )
+
+Post_Main()
+
+print( "Ending the Post Processor program" )
