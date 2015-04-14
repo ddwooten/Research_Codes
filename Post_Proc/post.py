@@ -5,6 +5,8 @@
 import logging as logging
 import copy as cp
 import re as re
+import numpy as np
+# These import statements bring in custom modules
 import wooten_common as wc
 
 """ This is the SERPENT post processor. It requires a configuration
@@ -109,24 +111,6 @@ def Read_Burn_File( base_name, options , Get_Materials_List , \
         }
     return( output )
 
-def List_To_Array( data ):
-    """ This function takes in classic python lists ( or a dictionary of lists )
-        and nested lists ( matricies ) and converts them to numpy arrays. """
-    wc.Sep()
-    logging.info( "List_To_Array" )
-    if isinstance( data , dict ):
-        for key in data.keys():
-            data[ key ] = np.array( data[ key ] )
-    elif isinstance( data , list ):
-        data = np.array( data )
-    else:
-        print( "ERROR!!!: Data passed to < List_To_Array > was not either \n \
-            of type < list > or < dict >." )
-        logging.critical( "ERROR!!!: Data passed to < List_To_Array > was \n \
-            not either of type < list > or < dict >." )
-        exit()
-    return( data )
-
 def Get_Matlab_Matrix( contents , counter ):
     """ This function searches through a serpent dep file and extracts
         the currently selected matlab style matrix ( composing several lines
@@ -170,6 +154,7 @@ def Parse_Matlab_Matrix( begin , end , contents ):
             logging.debug( str( line ) )
         line = [ float( x ) for x in line ]
         output.append( line )
+        output = np.matrix( output )
     return( output )
 
 def Parse_Matlab_Vector( line ):
@@ -197,6 +182,7 @@ def Parse_Matlab_Vector( line ):
     else:
         logging.debug( str( nums ) )
     nums = [ float( x ) for x in nums ]
+    nums = np.array( nums )
     return( nums )
 
 def Get_Nuclide_Indicies( string , index_dict ):
