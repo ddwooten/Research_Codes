@@ -124,7 +124,8 @@ def Prep_Atom_Burnup( components , burn_data ):
     for key in componenets:
         y_data = np.zeros( len( burn_data[ "burn_data" ][ "BU" ] ) )
         span , x_type = Get_X_Info( components[ key ],burn_data[ "burn_data" ] )
-        components 
+        components[key]["x_data"] = burn_data[time_type][span[0],span[1]]
+        Check_X_Label( components[ key ] , x_type ) 
         for item in components[ key ][ "members" ]:
             mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , "ADENS" , \
                 components[ key ][ item ][ "materials" ] )
@@ -136,6 +137,8 @@ def Prep_Atom_Burnup( components , burn_data ):
                     y_data += burn_data[ "burn_data" ][ mat ][ iso ]
         components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
 
+def Check_X_Label( constituent , time_type ):
+    """ This function"""
 def Get_X_Data( constituent , burn_data ):
     """ This function returns the correct key for the x_data as well as
         the range if
@@ -144,10 +147,12 @@ def Get_X_Data( constituent , burn_data ):
         range"""
     wc.Sep()
     logging.info( "Get_X_Data" )
-    if constituent[ "x_type" ] == "day" or "days" or "Day" or "Days" or "d":
-        time_type = "DAYS"
+    if "x_type" in constituent:
+        if constituent[ "x_type" ] == "day" or "days" or "Day" or "Days" or "d":
+            time_type = "DAYS"
     else:
         time_type = "BU"
+        constituent[ "x_type" ] = "BU"
     if "x_range" in constituent:
         if len( constituent[ "x_range" ] ) > 1:
             splice = []
