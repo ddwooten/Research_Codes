@@ -132,7 +132,7 @@ def Prep_Atom_Burnup( components , burn_data ):
                 components[ key ][ item ][ "isotopes" ] ):
             for mat in mat_list:
                 for iso in isos_list: 
-                    y_data += burn_data[ "burn_data" ][ mat ][ iso ]
+                    y_data += np.array( burn_data[ "burn_data" ][ mat ][ iso ] )
         components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
     return
 
@@ -357,5 +357,7 @@ def Plot_Main():
                 logging.debug( str( keys ) + " : " + str( values ) )
 
     data = post_common.Post_Main()
-    data[ "burnup_data" ][ "burn_data"
+
+    Make_Plots( data , setup[ "base_name" ] )
+
     return
