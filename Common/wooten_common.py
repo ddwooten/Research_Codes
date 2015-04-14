@@ -12,24 +12,13 @@ import re as re
     Daniel Wooten. They should be ( and are ) utilized in other programs
     created by Daniel Wooten. This file must be in the current directory of
     execution for these programs or the system path
-    Keys are given below with pertinent notes
-        [host_file] - name of the SERPENT file that was run. i.e. there should
-            be a file in the executing directory titled "host_file_dep.m" for
-            burnup runs.
-        [log_level] - the python logger utility logging level. If none is given
-            it defaults to 0 
-        [log_name] - the base name for the log file
    This file currently lives in...
    "/usr/lib/pymodules/Python2.7"
 """
 def Read_Setup( prefix ):
-    """ This function reads in a setup file named "[something]_setup.txt".
-        It stores this file as a list object from which the file's contents
-        can be retrieved.
-        This file must consist of two columns of text arragned as
-        [ key ],[ value ]
-        [ key ],[ value ]
-    with no missing rows though whitespace is tolerated.
+    """ This function reads in a setup file named "[something]_setup.json".
+        Clearly the setup file must be formatted as a json file with a parent
+        dictionary. Any stadard json input is accepted.
     """
     input_file = open( prefix + "_setup.txt" , "r" )
     setup_file = input_file.readlines()
@@ -101,6 +90,81 @@ def Read_Input( file_name , form ):
     logging.debug( "Closing file: " + file_name )
     input_file.close()
     return( file_contents )
+
+def Decode_List( data , fun ):
+    """ These two functions ( Decode_List and Decode_Dict )
+    can be used to un-nest nested dicts and lists ( combined )
+    while applying "fun" to the items in these dicts and lists ( 
+    that are themselves not dicts or lists ). Keys in dicts
+    are always converted to ascii strings. """
+    output = []
+    for item in data:
+        if isinstance( item , list ):
+            item = Decode_List( item , fun )
+        elif isinstance( item , dict ):
+            item = Decode_Dict( item , fun )
+        else:
+            item = fun( item )
+        output.append( item )
+    return( output )
+
+def Decode_Dict( data , fun ):
+    """ These two functions ( Decode_List and Decode_Dict )
+    can be used to un-nest nested dicts and lists ( combined )
+    while applying "fun" to the items in these dicts and lists ( 
+    that are themselves not dicts or lists ). Keys in dicts
+    are always converted to ascii strings."""
+    output = {}
+    for key , value in data.iteritems():
+        key = key.encode( 'ascii' )
+        if isinstance( value , list ):
+            value = Decode_List( value , fun )
+        elif isinstance( value , dict ):
+            value = Decode_Dict( value, fun )
+        else:
+            value = fun( value )
+        output[ key ] = value
+    return( output )
+
+def Decode_Json_List( data ):
+    """These two functions can be used with the json module for python as
+    an object hook to prevent unicode encoding of strings. Simply pass
+    the Decode_Dict function like so
+    << a = json.load( file , object_hook = Decode_Dict ) >>
+    This will preserve all values but convert strings to ascii strings,
+    not unicode. If unicode is desired simply do not pass anything to
+    ojbect_hook. This function decodes lists for the json module """
+    output = []
+    for item in data:
+        if isinstance( item , unicode ):
+            item = item.encode( 'ascii' )
+        elif isinstance( item , list ):
+            item = Decode_List( item )
+        elif isinstance( item , dict ):
+            item = Decode_Dict( item )
+        output.append( item )
+    return( output )
+
+def Decode_Json_Dict( data ):
+    """These two functions can be used with the json module for python as
+    an object hook to prevent unicode encoding of strings. Simply pass
+    the Decode_Dict function like so
+    << a = json.load( file , object_hook = Decode_Dict ) >>
+    This will preserve all values but convert strings to ascii strings,
+    not unicode. If unicode is desired simply do not pass anything to
+    ojbect_hook. This function decodes dicts for the json module """
+    output = {}
+    for key , value in data.iteritems():
+        if isinstance( key , unicode ):
+            key = key.encode( 'ascii' )
+        if isinstance( value , unicode ):
+            value = value.encode( 'ascii' )
+        elif isinstance( value , list ):
+            value = Decode_List( value )
+        elif isinstance( value , dict ):
+            value = Decode_Dict( value )
+        output[ key ] = value
+    return( output )
 
 def Check_Import():
     """ This function simply prints a statment to make sure the import worked"""
