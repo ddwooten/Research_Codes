@@ -98,16 +98,16 @@ def Make_Plots( data , base_name ):
     input_file = open( base_name + "_plots_input.json" , "r" )
     plot_params = json.load( input_file , object_hook = wc.Decode_Json_Dict )
     for i in range( len( plot_params ) ):
-        if plot_params[ i ][ "type" ] = "atom_burnup":
+        if plot_params[ i ][ "type" ] == "atom_burnup":
             Prep_Atom_Burnup( plot_params[ i ][ "components" ] , \
                 data[ "burnup_data" ] )
             Plot_Atom_Burnup( plot_params[ i ] )
-        elif plot_params[ i ][ "type" ] = "atom_percent_change":
+        elif plot_params[ i ][ "type" ] == "atom_percent_change":
             for key in plot_params[ i ][ "components" ]:
                 plot_params[ i ][ "components" ][ key ][ "p_change" ] = \
                     Get_Percentage_Change( \
                     plot_params[ i ][ "components" ][ key ] , data )
-        elif plot_params[ i ][ "type" ] = "k_evolution":
+        elif plot_params[ i ][ "type" ] == "k_evolution":
             for key in plot_params[ i ][ "components" ]:
                 plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
                     Get_K_Data( plot_params[ i ][ "components" ][ key ] , data )
@@ -129,7 +129,7 @@ def Prep_Atom_Burnup( components , burn_data ):
                 components[ key ][ item ][ "materials" ] )
             isos_list = Get_Isotope_Indicies( burn_data[ "indicies" ] , \
                 components[ key ][ item ][ "Z" ] , \
-                components[ key ][ item ][ "isotopes" ] ):
+                components[ key ][ item ][ "isotopes" ] )
             for mat in mat_list:
                 for iso in isos_list: 
                     y_data += np.array( burn_data[ "burn_data" ][ mat ][ iso ] )
@@ -188,7 +188,7 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     else:
         for item in isotopes:
             A = str( item ).zfill( 3 )
-            nuclide_list.append(nuclide_indicies[ int( str( Z ) + str( A ) ) )])
+            nuclide_list.append(nuclide_indicies[ int( str( Z ) + str( A ) ) ])
     return( nuclide_list ) 
 
 def Get_Material_Keys( data , attribute , materials ):
@@ -221,11 +221,11 @@ def Get_Material_Keys( data , attribute , materials ):
 def Calculate_Percent_Change( vector ):
     """ This function simply gets the percent change between an aspect's
         first value and its last """
-        wc.Sep()
-        logging.info( "Get_Percent_Difference" )
-        diff = ( float( vector[ -1 ] ) - float( vector[ 0 ] ) ) * 100.0 / \
-            float( vector[ 0 ] )
-        return( diff )
+    wc.Sep()
+    logging.info( "Get_Percent_Difference" )
+    diff = ( float( vector[ -1 ] ) - float( vector[ 0 ] ) ) * 100.0 / \
+        float( vector[ 0 ] )
+    return( diff )
 
 def Percentage_Change_Plot( params , base_name ):
     """ This function creates a vertical bar graph of the percentage change
@@ -270,7 +270,7 @@ def Percentage_Change_Plot( params , base_name ):
         axes1.set_xlabel( params[ "x_label" ] )
     else:
         axes1.set_xlabel( "x axis" )
-    if "legend_loc" params:
+    if "legend_loc" in params:
         plt.legend( loc = params[ "legend_loc" ] )
     else:
         plt.legen( loc = "upper right" )
