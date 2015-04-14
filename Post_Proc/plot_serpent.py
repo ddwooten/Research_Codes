@@ -99,15 +99,16 @@ def Make_Plots( data , base_name ):
     input_file = open( base_name + "_plots_input.json" , "r" )
     plot_params = json.load( input_file , object_hook = decode.Decode_Dict )
     for i in range( len( plot_params ) ):
-        if plot_params[ i ][ "type" ] = "atom burnup":
-            Prep_Atom_Burnup( plot_params[ i ][ "components" ] , data )
+        if plot_params[ i ][ "type" ] = "atom_burnup":
+            Prep_Atom_Burnup( plot_params[ i ][ "components" ] , \
+                data[ "burnup_data" ] )
             Plot_Atom_Burnup( plot_params[ i ] )
-        elif plot_params[ i ][ "type" ] = "atom percent change":
+        elif plot_params[ i ][ "type" ] = "atom_percent_change":
             for key in plot_params[ i ][ "components" ]:
                 plot_params[ i ][ "components" ][ key ][ "p_change" ] = \
                     Get_Percentage_Change( \
                     plot_params[ i ][ "components" ][ key ] , data )
-        elif plot_params[ i ][ "type" ] = "k evolution":
+        elif plot_params[ i ][ "type" ] = "k_evolution":
             for key in plot_params[ i ][ "components" ]:
                 plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
                     Get_K_Data( plot_params[ i ][ "components" ][ key ] , data )
@@ -117,17 +118,37 @@ def Make_Plots( data , base_name ):
 
 def Prep_Atom_Burnup( components , data ):
     """ This function, using the information in params, gathers the data to form
-    the y_data for the desired plot """
+    the y_data for the desired plot as well as the x_data """
     wc.Sep()
     logging.info( "Get_Atom_Burnup" )
     for key in componenets:
-        x_data =
-        for item in key[ "members" ]:
+        y_data = np.zeros( len( data[ "burn_data" ][ "BU" ] ) )
+        span , x_type = Get_X_Info( components[ key ] )
+        components 
+        for item in components[ key ][ "members" ]:
             mat_list = Get_Material_Keys( data[ "burn_data" ] , "ADENS" , \
-                item[ "materials" ] )
+                components[ key ][ item ][ "materials" ] )
             isos_list = Get_Isotope_Indicies( data[ "indicies" ] , \
-                item[ "Z" ] , item[ "isotopes" ] ):
-
+                components[ key ][ item ][ "Z" ] , \
+                components[ key ][ item ][ "isotopes" ] ):
+            for mat in mat_list:
+                for iso in isos_list: 
+                    y_data += data[ "burn_data" ][ mat ][ iso ]
+        components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
+def Get_X_Data( constituent ):
+    """ This function returns the correct key for the x_data as well as
+        the range if
+        asked for. The given range does not need to be exact. The returned
+        range will be the smallest range that is inclusive of the desired
+        range"""
+        wc.Sep()
+        logging.info( "Get_X_Data" )
+        if constituent[ "x_type" ] == "day" or "days" or "Day" or "Days" or "d":
+            time_type = "DAYS"
+        else:
+            time_type = "BU"
+        if "x_range" in constituent:
+            given
 
 def List_To_Array( data ):
     """ This function takes in classic python lists ( or a dictionary of lists )
@@ -180,7 +201,7 @@ def Get_Material_Keys( data , attribute , materials ):
         if materials[ 0 ] != "all" or "All" or "ALL":
             for mat in materials:
                 match = None
-                pattern = re.compile( "\\S*_" + mat + \
+                pattern = re.compile( r"\S*_" + mat + \
                     "_" + attribute )
                 match = pattern.match( key )
                 if match:

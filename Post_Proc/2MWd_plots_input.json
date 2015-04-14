@@ -1,9 +1,10 @@
 [
     {
-        "type" : "atom burnup",
+        "type" : "atom_burnup",
         "components" : { 
             "fuel" : {
-                "y_range" : [
+                "x_type" : "days"
+                "x_range" : [
                     0.0,
                     10.5
                     ],
