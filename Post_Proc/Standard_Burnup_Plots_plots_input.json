@@ -1,0 +1,46 @@
+[
+    {
+        "type" : "atom_burnup",
+        "components" : { 
+            "fuel" : {
+                "x_type" : "days"
+                "x_range" : [
+                    0.0,
+                    10.5
+                    ],
+                "members" : { 
+                    "U-235" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            235,
+                            238
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    },
+                    "Pu-239" : {
+                        "element" : "Pu",
+                        "Z" : 94,
+                        "isotopes" : [
+                            "all"
+                        ],
+                        "materials" : [
+                            "fuel",
+                            "blanket"
+                        ]
+                    }
+                },
+                "marker" : "o",
+                "label" : "fuel",
+                "color" : "g",
+                "size" : 20
+            }
+        },
+        "x_label" : "Days",
+        "y_label" : "atoms/$cm^3$",
+        "title" : "Fuel Atom Density in atoms/cc Over Time in days",
+        "legend_loc" : "upper right"
+    }
+]
