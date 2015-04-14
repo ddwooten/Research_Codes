@@ -116,40 +116,60 @@ def Make_Plots( data , base_name ):
                     Get_Time_Range( plot_params[i][ "components" ][ key ],data )
     return
 
-def Prep_Atom_Burnup( components , data ):
+def Prep_Atom_Burnup( components , burn_data ):
     """ This function, using the information in params, gathers the data to form
     the y_data for the desired plot as well as the x_data """
     wc.Sep()
     logging.info( "Get_Atom_Burnup" )
     for key in componenets:
-        y_data = np.zeros( len( data[ "burn_data" ][ "BU" ] ) )
-        span , x_type = Get_X_Info( components[ key ] )
+        y_data = np.zeros( len( burn_data[ "burn_data" ][ "BU" ] ) )
+        span , x_type = Get_X_Info( components[ key ],burn_data[ "burn_data" ] )
         components 
         for item in components[ key ][ "members" ]:
-            mat_list = Get_Material_Keys( data[ "burn_data" ] , "ADENS" , \
+            mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , "ADENS" , \
                 components[ key ][ item ][ "materials" ] )
-            isos_list = Get_Isotope_Indicies( data[ "indicies" ] , \
+            isos_list = Get_Isotope_Indicies( burn_data[ "indicies" ] , \
                 components[ key ][ item ][ "Z" ] , \
                 components[ key ][ item ][ "isotopes" ] ):
             for mat in mat_list:
                 for iso in isos_list: 
-                    y_data += data[ "burn_data" ][ mat ][ iso ]
+                    y_data += burn_data[ "burn_data" ][ mat ][ iso ]
         components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
-def Get_X_Data( constituent ):
+
+def Get_X_Data( constituent , burn_data ):
     """ This function returns the correct key for the x_data as well as
         the range if
         asked for. The given range does not need to be exact. The returned
         range will be the smallest range that is inclusive of the desired
         range"""
-        wc.Sep()
-        logging.info( "Get_X_Data" )
-        if constituent[ "x_type" ] == "day" or "days" or "Day" or "Days" or "d":
-            time_type = "DAYS"
-        else:
-            time_type = "BU"
-        if "x_range" in constituent:
-            given
-
+    wc.Sep()
+    logging.info( "Get_X_Data" )
+    if constituent[ "x_type" ] == "day" or "days" or "Day" or "Days" or "d":
+        time_type = "DAYS"
+    else:
+        time_type = "BU"
+    if "x_range" in constituent:
+        if len( constituent[ "x_range" ] ) > 1:
+            splice = []
+            for i in range( len( burn_data[ time_type ] ) ):
+                if burn_data[time_type][i] == constituent["x_range "][ 0 ]:
+                    splice.append( burn_data[ time_type ][ i ] )
+                    break
+                if burn_data[time_type][i] > constituent["x_range "][ 0 ]:
+                    splice.append( burn_data[ time_type ][ i - 1 ] )
+                    break
+            for i in range( len( burn_data[ time_type ] ) ):
+                if burn_data[time_type][i] == constituent["x_range "][ 1 ]:
+                    splice.append( burn_data[ time_type ][ i ] )
+                    break
+                if burn_data[time_type][i] > constituent["x_range "][ 1 ]:
+                    splice.append( burn_data[ time_type ][ i - 1 ] )
+                    break
+    else:
+        splice = [ 0 , len( burn_data[ time_type ] ) - 1 ]
+    output = [ splice , time_type ]
+    return( output )
+                        
 def List_To_Array( data ):
     """ This function takes in classic python lists ( or a dictionary of lists )
         and nested lists ( matricies ) and converts them to numpy arrays. """
