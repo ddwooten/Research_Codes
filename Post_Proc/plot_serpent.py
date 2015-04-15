@@ -343,10 +343,10 @@ def Plot_Main():
     try:
         wc.Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
     except:
-        wc.Start_Log( 'post_error' , 0 )
+        wc.Start_Log( 'plot_error' , 0 )
         logging.debug( "ERROR!!: < log_level > or < log_name > was not \n \
-            found in post_setup.txt and as such LogLevel was set to 0 \n \
-            and the base name to 'post_error' " )
+            found in plot_setup.txt and as such LogLevel was set to 0 \n \
+            and the base name to 'plot_error' " )
 
     if 'log_level' in setup:
         if setup[ 'log_level' ] < 10:
@@ -360,3 +360,9 @@ def Plot_Main():
     Make_Plots( data , setup[ "base_name" ] )
 
     return
+
+print( "Beginning the plotting program \n " )
+
+Plot_Main()
+
+print( "Ending the plotting program \n " )
