@@ -98,15 +98,13 @@ def Make_Plots( data , base_name ):
     input_file = open( base_name + "_plots_input.json" , "r" )
     plot_params = json.load( input_file , object_hook = wc.Decode_Json_Dict )
     for i in range( len( plot_params ) ):
-        if plot_params[ i ][ "type" ] == "atom_burnup":
-            Prep_Atom_Burnup( plot_params[ i ][ "components" ] , \
+        if plot_params[ i ][ "type" ] == "attribute_burnup":
+            Prep_Attribute_Burnup( plot_params[ i ][ "components" ] , \
                 data[ "burnup_data" ] )
-            Plot_Atom_Burnup( plot_params[ i ] )
-        elif plot_params[ i ][ "type" ] == "atom_percent_change":
-            for key in plot_params[ i ][ "components" ]:
-                plot_params[ i ][ "components" ][ key ][ "p_change" ] = \
-                    Get_Percentage_Change( \
-                    plot_params[ i ][ "components" ][ key ] , data )
+            Plot_Attribute_Burnup( plot_params[ i ] )
+        elif plot_params[ i ][ "type" ] == "attribute_percent_change":
+            Prep_Attribute_Percent_Change( plot_params[ i ][ "components" ] , \
+                data[ "burnup_data" ] )
         elif plot_params[ i ][ "type" ] == "k_evolution":
             for key in plot_params[ i ][ "components" ]:
                 plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
@@ -115,7 +113,7 @@ def Make_Plots( data , base_name ):
                     Get_Time_Range( plot_params[i][ "components" ][ key ],data )
     return
 
-def Prep_Atom_Burnup( components , burn_data ):
+def Prep_Attribute_Burnup( components , burn_data ):
     """ This function, using the information in params, gathers the data to form
     the y_data for the desired plot as well as the x_data """
     wc.Sep()
@@ -125,7 +123,8 @@ def Prep_Atom_Burnup( components , burn_data ):
         span , x_type = Get_X_Info( components[ key ],burn_data[ "burn_data" ] )
         components[key]["x_data"] = burn_data[time_type][span[0],span[1]]
         for item in components[ key ][ "members" ]:
-            mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , "ADENS" , \
+            mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , \
+                components[ key ][ "attribute" ] , \
                 components[ key ][ item ][ "materials" ] )
             isos_list = Get_Isotope_Indicies( burn_data[ "indicies" ] , \
                 components[ key ][ item ][ "Z" ] , \
