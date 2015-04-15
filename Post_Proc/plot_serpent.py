@@ -8,6 +8,7 @@ import copy as cp
 import re as re
 import numpy as np
 import matplotlib.pyplot as plt
+import json as json
 # These are custom built python modules containing helpful and necessary
 #   functions.
 import wooten_common as wc
@@ -357,7 +358,7 @@ def Plot_Main():
 
     data = post_common.Post_Main()
 
-    Make_Plots( data , setup[ "base_name" ] )
+    Make_Plots( data , wc.Get_Base_Name( setup[ "base_name" ] ) )
 
     return
 
