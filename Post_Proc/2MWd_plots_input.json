@@ -1,9 +1,10 @@
 [
     {
-        "type" : "atom_burnup",
+        "type" : "attribute",
         "components" : { 
             "fuel" : {
-                "x_type" : "days"
+                "attribute" : "ADENS",
+                "x_type" : "days",
                 "x_range" : [
                     0.0,
                     10.5
