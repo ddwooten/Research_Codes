@@ -153,20 +153,26 @@ def Get_X_Data( constituent , burn_data ):
     if "x_range" in constituent:
         if len( constituent[ "x_range" ] ) > 1:
             splice = []
-            for i in range( len( burn_data[ time_type ] ) ):
-                if burn_data[time_type][i] == constituent["x_range "][ 0 ]:
-                    splice.append( burn_data[ time_type ][ i ] )
-                    break
-                if burn_data[time_type][i] > constituent["x_range "][ 0 ]:
-                    splice.append( burn_data[ time_type ][ i - 1 ] )
-                    break
-            for i in range( len( burn_data[ time_type ] ) ):
-                if burn_data[time_type][i] == constituent["x_range "][ 1 ]:
-                    splice.append( burn_data[ time_type ][ i ] )
-                    break
-                if burn_data[time_type][i] > constituent["x_range "][ 1 ]:
-                    splice.append( burn_data[ time_type ][ i - 1 ] )
-                    break
+            if constituent[ "x_range" ][ 0 ] <= burn_data[ time_type ][ 0 ]:
+                splice.append( burn_data[ time_type ][ 0 ] )
+            else:
+                for i in range( len( burn_data[ time_type ] ) ):
+                    if burn_data[time_type][i] == constituent["x_range "][ 0 ]:
+                        splice.append( burn_data[ time_type ][ i ] )
+                        break
+                    if burn_data[time_type][i] > constituent["x_range "][ 0 ]:
+                        splice.append( burn_data[ time_type ][ i - 1 ] )
+                        break
+            if constituent[ "x_range" ][ 1 ] >= burn_data[ time_type ][ -1 ]:
+                splice.append( burn_data[ time_type ][ -1 ] )
+            else:
+                for i in range( len( burn_data[ time_type ] ) ):
+                    if burn_data[time_type][i] == constituent["x_range "][ 1 ]:
+                        splice.append( burn_data[ time_type ][ i ] )
+                        break
+                    if burn_data[time_type][i] > constituent["x_range "][ 1 ]:
+                        splice.append( burn_data[ time_type ][ i - 1 ] )
+                        break
     else:
         splice = [ 0 , len( burn_data[ time_type ] ) - 1 ]
     output = [ splice , time_type ]
