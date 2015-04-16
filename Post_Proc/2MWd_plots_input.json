@@ -73,7 +73,7 @@
                 "label" : "U-233",
                 "color" : "b",
                 "size" : 20
-            },
+            }
         },
         "x_label" : "MWD",
         "y_label" : "atoms/$cm^3$",
