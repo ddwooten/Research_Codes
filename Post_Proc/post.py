@@ -135,7 +135,7 @@ def Get_Matlab_Matrix( contents , counter ):
 
 def Parse_Matlab_Matrix( begin , end , contents ):
     """ This function extracts numerical data from a matlab matrix and returns
-        a nested list of the data"""
+        a numpy matrix of the data"""
     wc.Sep()
     logging.debug( "Parse_Matlab_Matrix" )
     output = []
@@ -154,12 +154,11 @@ def Parse_Matlab_Matrix( begin , end , contents ):
             logging.debug( str( line ) )
         line = [ float( x ) for x in line ]
         output.append( line )
-    output = np.matrix( output )
-    return( output )
+    return( np.matrix( output ) )
 
 def Parse_Matlab_Vector( line ):
     """ This function extracts the numerical data from a matlab vector format
-        and returns a list """
+        and returns a numpy vector """
     wc.Sep()
     logging.debug( "Parse_Matlab_Vector" )
     pattern = re.compile( r'\[.*?\]' )

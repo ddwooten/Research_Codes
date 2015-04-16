@@ -348,8 +348,10 @@ def Plot_Main():
     setup = wc.Read_Setup( "plot" )
 
     try:
+        print( "Trying to open plot log file! \n " )
         wc.Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
     except:
+        print( "Failed to open plot log file in try statement\n" )
         wc.Start_Log( 'plot_error' , 0 )
         logging.debug( "ERROR!!: < log_level > or < log_name > was not \n \
             found in plot_setup.txt and as such LogLevel was set to 0 \n \
@@ -361,9 +363,9 @@ def Plot_Main():
             logging.debug( "The input dictionary is: " )
             for keys,values in setup.items():
                 logging.debug( str( keys ) + " : " + str( values ) )
-
+    print( "Calling post processor!\n " )
     data = post_common.Post_Main()
-
+    print( "Making plots!\n " )
     Make_Plots( data , wc.Get_Base_Name( setup[ "base_name" ] ) )
 
     return
