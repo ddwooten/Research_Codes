@@ -154,9 +154,8 @@ def Parse_Matlab_Matrix( begin , end , contents ):
             logging.debug( str( line ) )
         line = [ float( x ) for x in line ]
         output.append( line )
-        logging.debug( "Output type: " + str( type( output ) ) )
-        logging.debug( "Output is: " + str( output ) )
-    return( np.matrix( output ) )
+    output = np.matrix( output )
+    return( output )
 
 def Parse_Matlab_Vector( line ):
     """ This function extracts the numerical data from a matlab vector format
