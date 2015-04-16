@@ -122,14 +122,15 @@ def Prep_Attribute_Burnup( components , burn_data ):
     for key in components:
         y_data = np.zeros( len( burn_data[ "burn_data" ][ "BU" ] ) )
         span , x_type = Get_X_Data( components[ key ],burn_data[ "burn_data" ] )
-        components[ key ][ "x_data" ] = burn_data[ x_type ][ span[0] , span[1] ]
+        components[ key ][ "x_data" ] = \
+            burn_data[ "burn_data" ][ x_type ][ span[ 0 ] : span[ 1 ] ]
         for item in components[ key ][ "members" ]:
             mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , \
                 components[ key ][ "attribute" ] , \
-                components[ key ][ item ][ "materials" ] )
+                components[ key ][ "members" ][ item ][ "materials" ] )
             isos_list = Get_Isotope_Indicies( burn_data[ "indicies" ] , \
-                components[ key ][ item ][ "Z" ] , \
-                components[ key ][ item ][ "isotopes" ] )
+                components[ key ][ "members" ][ item ][ "Z" ] , \
+                components[ key ][ "members" ][ item ][ "isotopes" ] )
             for mat in mat_list:
                 for iso in isos_list: 
                     y_data += np.array( burn_data[ "burn_data" ][ mat ][ iso ] )
@@ -182,10 +183,10 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     """ This function collapses isotopic burn vectors into a given
         elemental burn vector """
     wc.Sep()
-    logging.Info( "Get_Isotope_Indicies" )
+    logging.info( "Get_Isotope_Indicies" )
     logging.debug( "Z is: " + str( Z ) )
     nuclide_list = []
-    if isinstance( isotopes[ 0 ] , str ):
+    if istopes[ 0 ] == "All" or "ALL" or "all":
         for key in nuclide_indicies:
             cur_Z = int( math.floor( float( key ) / 1000.0 ) )
             if Z == cur_Z:
@@ -193,8 +194,12 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
                 nuclide_list.append( nuclide_indicies[ key ] )
     else:
         for item in isotopes:
-            A = str( item ).zfill( 3 )
-            nuclide_list.append(nuclide_indicies[ int( str( Z ) + str( A ) ) ])
+            if str( item )[ -1 ] == "m":
+                A = str( item )[ : -1 ].zfill( 3 ) + '1'
+                nuclide_list.append(nuclide_indicies[int(str(Z)+str(A))])
+            else:
+                A = str( item ).zfill( 3 ) + '0'
+                nuclide_list.append(nuclide_indicies[int(str(Z)+str(A))])
     return( nuclide_list ) 
 
 def Get_Material_Keys( data , attribute , materials ):
