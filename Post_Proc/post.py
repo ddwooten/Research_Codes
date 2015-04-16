@@ -138,7 +138,7 @@ def Parse_Matlab_Matrix( begin , end , contents ):
         a numpy matrix of the data"""
     wc.Sep()
     logging.debug( "Parse_Matlab_Matrix" )
-    output = []
+    output = list() 
     for i in range( begin + 1 , end ):
         line = contents[ i ].split( " " )
         try:
@@ -154,6 +154,8 @@ def Parse_Matlab_Matrix( begin , end , contents ):
             logging.debug( str( line ) )
         line = [ float( x ) for x in line ]
         output.append( line )
+        logging.debug( "Output type: " + str( type( output ) ) )
+        logging.debug( "Output is: " + str( output ) )
     return( np.matrix( output ) )
 
 def Parse_Matlab_Vector( line ):

@@ -345,8 +345,9 @@ def Scatter_Plot( params , base_name ):
     
 def Plot_Main():
     """ This function runs the program if it is called as an import """
+    print( "REading setup! \n" )
     setup = wc.Read_Setup( "plot" )
-
+    print( "Right before the try statement!" )
     try:
         print( "Trying to open plot log file! \n " )
         wc.Start_Log( setup[ 'log_name' ] ,  setup[ "log_level" ] )
