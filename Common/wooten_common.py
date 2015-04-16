@@ -139,9 +139,9 @@ def Decode_Json_List( data ):
         if isinstance( item , unicode ):
             item = item.encode( 'ascii' )
         elif isinstance( item , list ):
-            item = Decode_List( item )
+            item = Decode_Json_List( item )
         elif isinstance( item , dict ):
-            item = Decode_Dict( item )
+            item = Decode_Json_Dict( item )
         output.append( item )
     return( output )
 
@@ -160,9 +160,9 @@ def Decode_Json_Dict( data ):
         if isinstance( value , unicode ):
             value = value.encode( 'ascii' )
         elif isinstance( value , list ):
-            value = Decode_List( value )
+            value = Decode_Json_List( value )
         elif isinstance( value , dict ):
-            value = Decode_Dict( value )
+            value = Decode_Json_Dict( value )
         output[ key ] = value
     return( output )
 
