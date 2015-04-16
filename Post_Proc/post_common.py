@@ -275,9 +275,3 @@ def Post_Main():
 
     Report_Output( burnup_data , "report.test" )
     return( output )
-
-print( "Begining the Post Processor program" )
-
-Post_Main()
-
-print( "Ending the Post Processor program" )
