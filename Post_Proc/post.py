@@ -154,7 +154,7 @@ def Parse_Matlab_Matrix( begin , end , contents ):
             logging.debug( str( line ) )
         line = [ float( x ) for x in line ]
         output.append( line )
-        output = np.matrix( output )
+    output = np.matrix( output )
     return( output )
 
 def Parse_Matlab_Vector( line ):
