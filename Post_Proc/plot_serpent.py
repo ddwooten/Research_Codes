@@ -119,10 +119,10 @@ def Prep_Attribute_Burnup( components , burn_data ):
     the y_data for the desired plot as well as the x_data """
     wc.Sep()
     logging.info( "Get_Atom_Burnup" )
-    for key in componenets:
+    for key in components:
         y_data = np.zeros( len( burn_data[ "burn_data" ][ "BU" ] ) )
-        span , x_type = Get_X_Info( components[ key ],burn_data[ "burn_data" ] )
-        components[key]["x_data"] = burn_data[time_type][span[0],span[1]]
+        span , x_type = Get_X_Data( components[ key ],burn_data[ "burn_data" ] )
+        components[ key ][ "x_data" ] = burn_data[ x_type ][ span[0] , span[1] ]
         for item in components[ key ][ "members" ]:
             mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , \
                 components[ key ][ "attribute" ] , \
@@ -157,20 +157,20 @@ def Get_X_Data( constituent , burn_data ):
                 splice.append( burn_data[ time_type ][ 0 ] )
             else:
                 for i in range( len( burn_data[ time_type ] ) ):
-                    if burn_data[time_type][i] == constituent["x_range "][ 0 ]:
+                    if burn_data[time_type][i] == constituent["x_range"][ 0 ]:
                         splice.append( burn_data[ time_type ][ i ] )
                         break
-                    if burn_data[time_type][i] > constituent["x_range "][ 0 ]:
+                    if burn_data[time_type][i] > constituent["x_range"][ 0 ]:
                         splice.append( burn_data[ time_type ][ i - 1 ] )
                         break
             if constituent[ "x_range" ][ 1 ] >= burn_data[ time_type ][ -1 ]:
                 splice.append( burn_data[ time_type ][ -1 ] )
             else:
                 for i in range( len( burn_data[ time_type ] ) ):
-                    if burn_data[time_type][i] == constituent["x_range "][ 1 ]:
+                    if burn_data[time_type][i] == constituent["x_range"][ 1 ]:
                         splice.append( burn_data[ time_type ][ i ] )
                         break
-                    if burn_data[time_type][i] > constituent["x_range "][ 1 ]:
+                    if burn_data[time_type][i] > constituent["x_range"][ 1 ]:
                         splice.append( burn_data[ time_type ][ i - 1 ] )
                         break
     else:

@@ -1,6 +1,6 @@
 [
     {
-        "type" : "attribute",
+        "type" : "attribute_burnup",
         "components" : { 
             "U-235" : {
                 "attribute" : "ADENS",
