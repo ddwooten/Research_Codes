@@ -91,18 +91,20 @@ import nuclide_ids as nid
    has its own configuration file and requirements. Please see that file for
    explanation.
 """
-def Make_Plots( data , base_name ):
+def Make_Plots( data , options ):
     """ This function reads in the plotting command file, titled
         [base_name]_plots_input.json"""
     wc.Sep()
     logging.info( "Read_Plots" )
-    input_file = open( base_name + "_plots_input.json" , "r" )
+    input_file = open( wc.Get_Base_Name( options[ "host_name" ] ) + \
+        "_plots_input.json" , "r" )
     plot_params = json.load( input_file , object_hook = wc.Decode_Json_Dict )
     for i in range( len( plot_params ) ):
         if plot_params[ i ][ "type" ] == "attribute_burnup":
             Prep_Attribute_Burnup( plot_params[ i ][ "components" ] , \
                 data[ "burnup_data" ] )
-            Plot_Attribute_Burnup( plot_params[ i ] )
+            Scatter_Plot( plot_params[ i ] , wc.Get_Base_Name( \
+                options[ "host_name" ] ) )
         elif plot_params[ i ][ "type" ] == "attribute_percent_change":
             Prep_Attribute_Percent_Change( plot_params[ i ][ "components" ] , \
                 data[ "burnup_data" ] )
@@ -186,7 +188,7 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     logging.info( "Get_Isotope_Indicies" )
     logging.debug( "Z is: " + str( Z ) )
     nuclide_list = []
-    if istopes[ 0 ] == "All" or "ALL" or "all":
+    if isotopes[ 0 ] == "All" or "ALL" or "all":
         for key in nuclide_indicies:
             cur_Z = int( math.floor( float( key ) / 1000.0 ) )
             if Z == cur_Z:
@@ -372,7 +374,7 @@ def Plot_Main():
     print( "Calling post processor!\n " )
     data = post_common.Post_Main()
     print( "Making plots!\n " )
-    Make_Plots( data , wc.Get_Base_Name( setup[ "base_name" ] ) )
+    Make_Plots( data , setup )
 
     return
 
