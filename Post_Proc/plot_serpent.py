@@ -340,10 +340,18 @@ def Scatter_Plot( params , base_name ):
         axes1.set_ylabel( params[ 'y_label' ] )
     else:
         axes1.set_ylabel( 'y axis' )
+    if "y_min" in params:
+        axes1.set_ylim( bottom = params[ "y_min" ]
+    if "y_max" in params:
+        axes1.set_ylim( top = params[ "y_max" ]
     if "x_label" in params:
         axes1.set_xlabel( params[ 'x_label' ] )
     else:
         axes1.set_xlabel( 'x axis' )
+    if "x_min" in params:
+        axes1.set_xlim( top = params[ "x_min" ]
+    if "x_max" in params:
+        axes1.set_xlim( top = params[ "x_max" ]
     if "legend_loc" in params:
         plt.legend( loc = params[ 'legend_loc' ] )
     else:
