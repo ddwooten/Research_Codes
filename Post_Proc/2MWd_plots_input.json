@@ -45,7 +45,7 @@
                         ]
                     }
                 },
-                "marker" : "V",
+                "marker" : "v",
                 "label" : "Uranium",
                 "color" : "r",
                 "size" : 20

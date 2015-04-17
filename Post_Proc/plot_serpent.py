@@ -314,33 +314,34 @@ def Scatter_Plot( params , base_name ):
         else:
              color = 'b'
         if "marker" in params[ "components" ][ key ]:
-            mark = params[ 'marker' ][ i ]
+            mark = params[ "components"][ key ][ "marker" ]
         else:
              mark = 'o'
         if "label" in params[ "components" ][ key ]:
-            name = params[ "components" ][ key ][ 'label' ]
+            name = params[ "components" ][ key ][ "label" ]
         else:
              name = str( key )
         axes1.scatter( params[ "components" ][ key ][ "x_data" ] , \
             params[ "components" ][ key ][ "y_data" ] , s = size , c = color , \
             marker = mark , label = name )
-    if 'title' in params:
+    if "title" in params:
         axes1.set_title( params[ 'title' ] )
     else:
         axes1.set_title( 'Scatter Plot of y( x )' )
-    if 'y_label' in params:
+    if "y_label" in params:
         axes1.set_ylabel( params[ 'y_label' ] )
     else:
         axes1.set_ylabel( 'y axis' )
-    if 'x_label' in params:
+    if "x_label" in params:
         axes1.set_xlabel( params[ 'x_label' ] )
     else:
         axes1.set_xlabel( 'x axis' )
-    if 'legend_loc' in params:
+    if "legend_loc" in params:
         plt.legend( loc = params[ 'legend_loc' ] )
     else:
         plt.legend( loc = 'upper right' )
-    if 'title' in params:
+    if "title" in params:
+        title = params[ "title" ].replace( " " , "_" )
         plt.savefig( base_name + "_" + params[ 'title' ] + ".eps" , \
             format = 'eps' , dpi = 1000 )
     else:
