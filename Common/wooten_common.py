@@ -182,6 +182,9 @@ def File_Name_Conditioner( string ):
     string = string.replace( "*" , "_asterisk_" )
     string = string.replace( "<" , "_left_arrow_" )
     string = string.replace( ">" , "_right_arrow_" )
+    string = string.replace( "^" , "_carrot_" )
+    string = string.replace( "$" , "_dollar_sign_" )
+    string = string.replace( "/" , "_forward_slash_" )
     return( string )
 
 def Check_Import():
