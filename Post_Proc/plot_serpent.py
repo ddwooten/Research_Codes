@@ -342,7 +342,7 @@ def Scatter_Plot( params , base_name ):
         plt.legend( loc = 'upper right' )
     if "title" in params:
         title = params[ "title" ].replace( " " , "_" )
-        plt.savefig( base_name + "_" + params[ 'title' ] + ".eps" , \
+        plt.savefig( base_name + "_" + title + ".eps" , \
             format = 'eps' , dpi = 1000 )
     else:
         plt.savefig( base_name + "_" + params[ "type" ] + "_" + \
