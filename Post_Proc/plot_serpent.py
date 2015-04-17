@@ -326,8 +326,16 @@ def Scatter_Plot( params , base_name ):
             marker = mark , label = name )
     if "title" in params:
         axes1.set_title( params[ 'title' ] )
+        if "save_name" not in params:
+            fig_name = base_name + "_" + params[ "title" ] + \
+               "_" + ".eps" 
+            fig_name = wc.File_Name_Conditioner( fig_name )
     else:
         axes1.set_title( 'Scatter Plot of y( x )' )
+        if "save_name" not in params:
+            fig_name = base_name + "_" + params[ "type" ] + \
+               "_" + str( np.random.randint( 100 , size = 1 ) ) + ".eps" 
+            fig_name = wc.File_Name_Conditioner( fig_name )
     if "y_label" in params:
         axes1.set_ylabel( params[ 'y_label' ] )
     else:
@@ -340,18 +348,15 @@ def Scatter_Plot( params , base_name ):
         plt.legend( loc = params[ 'legend_loc' ] )
     else:
         plt.legend( loc = 'upper right' )
-    if "title" in params:
-        fig_name = base_name + "_" + params[ "title" ].replace( " " , "_" ) + \
-           "_" + ".eps" 
-    else:
-        fig_name = base_name + "_" + params[ "type" ].replace( " " , "_" ) + \
-           "_" + str( np.random.randint( 100 , size = 1 ) ) + ".eps" 
+    if "save_name" in params:
+        fig_name = base_name + "_" + params[ "save_name" ] + "_"  + ".eps" 
     fig_file = open( fig_name , "w" )
     plt.savefig( fig_name , format = 'eps' , dpi = 1000 , bbox_inches = \
         "tight" )
     plt.cla()
+    fig_file.close()
     return
-    
+
 def Plot_Main():
     """ This function runs the program if it is called as an import """
     print( "REading setup! \n" )
