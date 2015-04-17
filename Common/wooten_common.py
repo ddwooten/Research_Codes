@@ -175,7 +175,6 @@ def File_Name_Conditioner( string ):
     string = string.replace( "&" , "_and_" )
     string = string.replace( ":" , "_" )
     string = string.replace( "." , "_" )
-    string = string.replace( "^" , "_carrot_" )
     string = string.replace( "," , "_" )
     string = string.replace( "?" , "_question_mark_" )
     string = string.replace( "!" , "_exclamation_mark_" )
