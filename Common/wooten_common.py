@@ -166,6 +166,25 @@ def Decode_Json_Dict( data ):
         output[ key ] = value
     return( output )
 
+def File_Name_Conditioner( string ):
+    """ This function removes any undesirable characters in a file string
+        and replaces them with a desired substitute. """
+    string = string.replace( " " , "_" )
+    string = string.replace( "-" , "_" )
+    string = string.replace( "\\" , "_backslash" )
+    string = string.replace( "&" , "_and_" )
+    string = string.replace( ":" , "_" )
+    string = string.replace( "." , "_" )
+    string = string.replace( "^" , "_carrot_" )
+    string = string.replace( "," , "_" )
+    string = string.replace( "?" , "_question_mark_" )
+    string = string.repalce( "!" , "_exclamation_mark_" )
+    string = string.replace( "~" , "_tilde_" )
+    string = string.replace( "*" , "_asterisk_" )
+    string = string.replace( "<" , "_left_arrow_" )
+    string = string.replace( ">" , "_right_arrow_" )
+    return( string )
+
 def Check_Import():
     """ This function simply prints a statment to make sure the import worked"""
     print( "<< wooten_common.py >> imported sucessfully" )
