@@ -341,13 +341,14 @@ def Scatter_Plot( params , base_name ):
     else:
         plt.legend( loc = 'upper right' )
     if "title" in params:
-        title = params[ "title" ].replace( " " , "_" )
-        plt.savefig( base_name + "_" + title + ".eps" , \
-            format = 'eps' , dpi = 1000 )
+        fig_name = base_name + "_" + params[ "title" ].replace( " " , "_" ) + \
+           "_" + ".eps" 
     else:
-        plt.savefig( base_name + "_" + params[ "type" ] + "_" + \
-            str( np.random.randint( 100 , \
-            size = 1 ) ) + ".eps" , format = 'eps' , dpi = 1000 )
+        fig_name = base_name + "_" + params[ "type" ].replace( " " , "_" ) + \
+           "_" + str( np.random.randint( 100 , size = 1 ) ) + ".eps" 
+    fig_file = open( fig_name , "w" )
+    plt.savefig( fig_name , format = 'eps' , dpi = 1000 , bbox_inches = \
+        "tight" )
     plt.cla()
     return
     
