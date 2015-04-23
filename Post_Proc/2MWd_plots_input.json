@@ -80,6 +80,6 @@
         "y_min" : 0,
         "title" : "Uranium Concentration in atoms/$cm^3$ Over Burn-up in MWD",
         "save_name" : "Uranium Concentration in atoms per cc Over Burn-up in MWD",
-        "legend_loc" : "upper right"
+        "legend_loc" : "upper left"
     }
 ]
