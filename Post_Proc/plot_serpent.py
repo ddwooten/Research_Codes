@@ -161,7 +161,7 @@ def Get_X_Data( constituent , burn_data ):
     wc.Sep()
     logging.info( "Get_X_Data" )
     if "x_type" in constituent:
-        if constituent["x_type"]==( "day" or "days" or "Day" or "Days" or "d" ):
+        if constituent["x_type"] in ( "day" , "days" , "Day" , "Days" , "d" ):
             time_type = "DAYS"
         else:
             time_type = "BU"
@@ -205,7 +205,7 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     logging.debug( "Isotopes requested are: " )
     logging.debug( str( isotopes ) )
     nuclide_list = list()
-    if str( isotopes[ 0 ] ) == ( "All" or "ALL" or "all" ):
+    if str( isotopes[ 0 ] ) in ( "All" , "ALL" , "all" ):
         logging.debug( "Isotopes for " + str( Z ) + " are ALL" )
         for key in nuclide_indicies:
             cur_Z = int( math.floor( float( key ) / 1000.0 ) )
@@ -238,7 +238,7 @@ def Get_Material_Keys( data , attribute , materials ):
     pattern = re.compile( r'\S*_' + attribute )
     material_keys = list() 
     for key in data:
-        if materials[ 0 ] != ( "all" or "All" or "ALL" ):
+        if materials[ 0 ] not in ( "all" , "All" , "ALL" ):
             for mat in materials:
                 match = None
                 pattern = re.compile( r"\S*_" + mat + \
