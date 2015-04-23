@@ -160,6 +160,8 @@ def Get_X_Data( constituent , burn_data ):
     if "x_type" in constituent:
         if constituent["x_type"]==( "day" or "days" or "Day" or "Days" or "d" ):
             time_type = "DAYS"
+        else:
+            time_type = "BU"
     else:
         time_type = "BU"
         constituent[ "x_type" ] = "BU"
