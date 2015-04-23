@@ -146,7 +146,7 @@ def Parse_Matlab_Matrix( begin , end , contents ):
         except:
             pass
         else:
-            line = line[ : index - 1 ]
+            line = line[ : index ]
         logging.debug( "The line is: " )
         if len( str( line ) ) > 41:
             logging.debug( str( line[ : 3 ] ) + "..." + str( line[ -3 : ] ) )

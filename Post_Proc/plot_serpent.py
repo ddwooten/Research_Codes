@@ -127,7 +127,7 @@ def Prep_Attribute_Burnup( components , burn_data ):
     logging.info( "Get_Atom_Burnup" )
     for key in components:
         logging.debug( "member is: " + str( key ) )
-        y_data = np.zeros( len( burn_data[ "burn_data" ][ "BU" ] ) )
+        y_data = np.zeros( burn_data[ "burn_data" ][ "BU" ].shape[ 0 ] )
         span , x_type = Get_X_Data( components[ key ],burn_data[ "burn_data" ] )
         components[ key ][ "x_data" ] = \
             burn_data[ "burn_data" ][ x_type ][ span[ 0 ] : span[ 1 ] ]
@@ -144,8 +144,11 @@ def Prep_Attribute_Burnup( components , burn_data ):
             for mat in mat_list:
                 for iso in isos_list: 
                     logging.debug( "The array to be added is: " + \
-                        str( np.appray( burn_data[ "burn_data" ][mat][iso] ) ) )
-                    y_data += np.array( burn_data[ "burn_data" ][ mat ][ iso ] )
+                        str( np.array( burn_data[ "burn_data" ][mat][iso] ) ) )
+                    y_data += np.array(burn_data["burn_data"][mat][iso])[ 0 ]
+                    logging.debug( "y_data shape: " + str( y_data.shape ) )
+                    logging.debug( "np.array shape: " + \
+                        str( np.array( burn_data[ "burn_data" ][mat][iso][0])))
         components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
     return
 
@@ -213,7 +216,6 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
         logging.debug( "Specific Isotopes are requested, they are: " )
         logging.debug( str( isotopes ) )
         for item in isotopes:
-            lo
             if str( item )[ -1 ] == "m":
                 A = str( item )[ : -1 ].zfill( 3 ) + '1'
                 nuclide_list.append(nuclide_indicies[int(str(Z)+str(A))])
