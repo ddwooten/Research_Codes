@@ -2,6 +2,30 @@
     {
         "type" : "attribute_burnup",
         "components" : { 
+            "Uranium" : {
+                "attribute" : "ADENS",
+                "x_type" : "BU",
+                "x_range" : [
+                    0.0,
+                    50
+                    ],
+                "members" : { 
+                    "U-235" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            "all"
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "v",
+                "label" : "Uranium",
+                "color" : "m",
+                "size" : 20
+            },
             "U-235" : {
                 "attribute" : "ADENS",
                 "x_type" : "BU",
@@ -26,7 +50,7 @@
                 "color" : "g",
                 "size" : 20
             },
-            "U" : {
+            "U-232" : {
                 "attribute" : "ADENS",
                 "x_type" : "BU",
                 "x_range" : [
@@ -34,11 +58,83 @@
                     50
                     ],
                 "members" : { 
-                    "U" : { 
+                    "U-232" : { 
                         "element" : "U",
                         "Z" : 92,
                         "isotopes" : [
-                           "all" 
+                            232
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "o",
+                "label" : "U-232",
+                "color" : "m",
+                "size" : 20
+            },
+            "U-234" : {
+                "attribute" : "ADENS",
+                "x_type" : "BU",
+                "x_range" : [
+                    0.0,
+                    50
+                    ],
+                "members" : { 
+                    "U-234" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            234
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "o",
+                "label" : "U-234",
+                "color" : "k",
+                "size" : 20
+            },
+            "U-236" : {
+                "attribute" : "ADENS",
+                "x_type" : "BU",
+                "x_range" : [
+                    0.0,
+                    50
+                    ],
+                "members" : { 
+                    "U-236" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            236
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "o",
+                "label" : "U-236",
+                "color" : "c",
+                "size" : 20
+            },
+            "U-238" : {
+                "attribute" : "ADENS",
+                "x_type" : "BU",
+                "x_range" : [
+                    0.0,
+                    50
+                    ],
+                "members" : { 
+                    "U-238" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                           238 
                         ],
                         "materials" : [
                             "all"
@@ -46,7 +142,7 @@
                     }
                 },
                 "marker" : "v",
-                "label" : "Uranium",
+                "label" : "U-238",
                 "color" : "r",
                 "size" : 20
             },
@@ -73,13 +169,88 @@
                 "label" : "U-233",
                 "color" : "b",
                 "size" : 20
+            },
+            "U-239" : {
+                "attribute" : "ADENS",
+                "x_type" : "BU",
+                "x_range" : [
+                    0.0,
+                    50
+                    ],
+                "members" : { 
+                    "U-239" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            239
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "v",
+                "label" : "U-239",
+                "color" : "g",
+                "size" : 20
+            },
+            "U-237" : {
+                "attribute" : "ADENS",
+                "x_type" : "BU",
+                "x_range" : [
+                    0.0,
+                    50
+                    ],
+                "members" : { 
+                    "U-237" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            237
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "v",
+                "label" : "U-237",
+                "color" : "k",
+                "size" : 20
+            },
+            "U-241" : {
+                "attribute" : "ADENS",
+                "x_type" : "BU",
+                "x_range" : [
+                    0.0,
+                    50
+                    ],
+                "members" : { 
+                    "U-236" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            241
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "v",
+                "label" : "U-241",
+                "color" : "y",
+                "size" : 20
             }
         },
         "x_label" : "MWD",
         "y_label" : "atoms/$cm^3$",
         "y_min" : 0,
+        "x_min" : 0,
         "title" : "Uranium Concentration in atoms/$cm^3$ Over Burn-up in MWD",
         "save_name" : "Uranium Concentration in atoms per cc Over Burn-up in MWD",
-        "legend_loc" : "upper left"
+        "legend_loc" : "upper left",
+        "y_auto_scale" : "yes",
+        "x_auto_scale" : "yes"
     }
 ]

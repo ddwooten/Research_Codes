@@ -208,7 +208,7 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     if str( isotopes[ 0 ] ) in ( "All" , "ALL" , "all" ):
         logging.debug( "Isotopes for " + str( Z ) + " are ALL" )
         for key in nuclide_indicies:
-            cur_Z = int( math.floor( float( key ) / 1000.0 ) )
+            cur_Z = int( math.floor( float( key ) / 10000.0 ) )
             if Z == cur_Z:
                 logging.debug( "Isotope is: " + str( key ) )
                 nuclide_list.append( nuclide_indicies[ key ] )
@@ -373,9 +373,9 @@ def Scatter_Plot( params , base_name ):
     else:
         axes1.set_xlabel( 'x axis' )
     if "x_min" in params:
-        axes1.set_xlim( top = params[ "x_min" ] )
+        axes1.set_xlim( left = params[ "x_min" ] )
     if "x_max" in params:
-        axes1.set_xlim( top = params[ "x_max" ] )
+        axes1.set_xlim( right = params[ "x_max" ] )
     if "legend_loc" in params:
         plt.legend( loc = params[ 'legend_loc' ] )
     else:

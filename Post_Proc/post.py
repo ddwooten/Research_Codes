@@ -195,7 +195,7 @@ def Get_Nuclide_Indicies( string , index_dict ):
     pattern = re.compile( r'i(\d*)\s*=\s*(\d*)' )
     match = pattern.match( string )
     if match:
-        index_dict[ int( match.group( 1 ) ) ] = int( match.group( 2 ) )
+        index_dict[ int( match.group( 1 ) ) ] = int( match.group( 2 ) ) - 1
     logging.debug( "The key value pair generated is: " )
     logging.debug( match.group( 1 ) + " : " + match.group( 2 ) ) 
     return( index_dict )
