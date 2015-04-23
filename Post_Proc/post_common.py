@@ -273,5 +273,4 @@ def Post_Main():
                         Get_Materials_List , Get_Nuclide_Indicies )
             output[ 'burnup_data' ] = burnup_data
 
-    Report_Output( burnup_data , "report.test" )
     return( output )

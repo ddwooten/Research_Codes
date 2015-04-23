@@ -99,6 +99,10 @@ def Make_Plots( data , options ):
     input_file = open( wc.Get_Base_Name( options[ "host_name" ] ) + \
         "_plots_input.json" , "r" )
     plot_params = json.load( input_file , object_hook = wc.Decode_Json_Dict )
+    wc.Cep()
+    logging.debug( "The plot parameters are: " )
+    logging.debug( str( plot_params ) )
+    wc.Cep()
     for i in range( len( plot_params ) ):
         if plot_params[ i ][ "type" ] == "attribute_burnup":
             Prep_Attribute_Burnup( plot_params[ i ][ "components" ] , \
@@ -122,19 +126,25 @@ def Prep_Attribute_Burnup( components , burn_data ):
     wc.Sep()
     logging.info( "Get_Atom_Burnup" )
     for key in components:
+        logging.debug( "member is: " + str( key ) )
         y_data = np.zeros( len( burn_data[ "burn_data" ][ "BU" ] ) )
         span , x_type = Get_X_Data( components[ key ],burn_data[ "burn_data" ] )
         components[ key ][ "x_data" ] = \
             burn_data[ "burn_data" ][ x_type ][ span[ 0 ] : span[ 1 ] ]
         for item in components[ key ][ "members" ]:
+            logging.debug( "Item is: " + str( item ) )
             mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , \
                 components[ key ][ "attribute" ] , \
                 components[ key ][ "members" ][ item ][ "materials" ] )
+            logging.debug( "mat_list is: " + str( mat_list ) )
             isos_list = Get_Isotope_Indicies( burn_data[ "indicies" ] , \
                 components[ key ][ "members" ][ item ][ "Z" ] , \
                 components[ key ][ "members" ][ item ][ "isotopes" ] )
+            logging.debug( "isos_list is: " + str( isos_list ) )
             for mat in mat_list:
                 for iso in isos_list: 
+                    logging.debug( "The array to be added is: " + \
+                        str( np.appray( burn_data[ "burn_data" ][mat][iso] ) ) )
                     y_data += np.array( burn_data[ "burn_data" ][ mat ][ iso ] )
         components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
     return
@@ -148,7 +158,7 @@ def Get_X_Data( constituent , burn_data ):
     wc.Sep()
     logging.info( "Get_X_Data" )
     if "x_type" in constituent:
-        if constituent[ "x_type" ] == "day" or "days" or "Day" or "Days" or "d":
+        if constituent["x_type"]==( "day" or "days" or "Day" or "Days" or "d" ):
             time_type = "DAYS"
     else:
         time_type = "BU"
@@ -187,21 +197,29 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
     wc.Sep()
     logging.info( "Get_Isotope_Indicies" )
     logging.debug( "Z is: " + str( Z ) )
-    nuclide_list = []
-    if isotopes[ 0 ] == "All" or "ALL" or "all":
+    logging.debug( "Isotopes requested are: " )
+    logging.debug( str( isotopes ) )
+    nuclide_list = list()
+    if str( isotopes[ 0 ] ) == ( "All" or "ALL" or "all" ):
+        logging.debug( "Isotopes for " + str( Z ) + " are ALL" )
         for key in nuclide_indicies:
             cur_Z = int( math.floor( float( key ) / 1000.0 ) )
             if Z == cur_Z:
                 logging.debug( "Isotope is: " + str( key ) )
                 nuclide_list.append( nuclide_indicies[ key ] )
     else:
+        logging.debug( "Specific Isotopes are requested, they are: " )
+        logging.debug( str( isotopes ) )
         for item in isotopes:
+            lo
             if str( item )[ -1 ] == "m":
                 A = str( item )[ : -1 ].zfill( 3 ) + '1'
                 nuclide_list.append(nuclide_indicies[int(str(Z)+str(A))])
             else:
                 A = str( item ).zfill( 3 ) + '0'
                 nuclide_list.append(nuclide_indicies[int(str(Z)+str(A))])
+    logging.debug( "The nuclide_list is: " )
+    logging.debug( str( nuclide_list ) )
     return( nuclide_list ) 
 
 def Get_Material_Keys( data , attribute , materials ):
@@ -212,10 +230,11 @@ def Get_Material_Keys( data , attribute , materials ):
     logging.info( "Gather_Materials" )
     logging.debug( "The materials are: " )
     logging.debug( str( materials ) )
+    logging.debug( "The attribute is:'" + str( attribute ) + "'" )
     pattern = re.compile( r'\S*_' + attribute )
-    material_keys = []
+    material_keys = list() 
     for key in data:
-        if materials[ 0 ] != "all" or "All" or "ALL":
+        if materials[ 0 ] != ( "all" or "All" or "ALL" ):
             for mat in materials:
                 match = None
                 pattern = re.compile( r"\S*_" + mat + \
@@ -226,9 +245,10 @@ def Get_Material_Keys( data , attribute , materials ):
                     break
         else:
             match = pattern.match( key )
-            logging.debug( "The match is: " + match.group() ) 
         if match:
             material_keys.append( key )
+    logging.debug( "The material_keys list is: " )
+    logging.debug( str( material_keys ) )
     return( material_keys )
 
 def Calculate_Percent_Change( vector ):
@@ -341,17 +361,17 @@ def Scatter_Plot( params , base_name ):
     else:
         axes1.set_ylabel( 'y axis' )
     if "y_min" in params:
-        axes1.set_ylim( bottom = params[ "y_min" ]
+        axes1.set_ylim( bottom = params[ "y_min" ] )
     if "y_max" in params:
-        axes1.set_ylim( top = params[ "y_max" ]
+        axes1.set_ylim( top = params[ "y_max" ] )
     if "x_label" in params:
         axes1.set_xlabel( params[ 'x_label' ] )
     else:
         axes1.set_xlabel( 'x axis' )
     if "x_min" in params:
-        axes1.set_xlim( top = params[ "x_min" ]
+        axes1.set_xlim( top = params[ "x_min" ] )
     if "x_max" in params:
-        axes1.set_xlim( top = params[ "x_max" ]
+        axes1.set_xlim( top = params[ "x_max" ] )
     if "legend_loc" in params:
         plt.legend( loc = params[ 'legend_loc' ] )
     else:

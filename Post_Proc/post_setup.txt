@@ -1,4 +1,4 @@
-log_level,0
+log_level,11
 log_name,post
 host_file,2MWd.txt
 process_burn,yes
