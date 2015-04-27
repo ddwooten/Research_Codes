@@ -7,6 +7,8 @@ import time as time
 import logging as logging
 import copy as cp
 import re as re
+import sys
+import json
 
 """ This is a collection of commonly used functions in programs created by
     Daniel Wooten. They should be ( and are ) utilized in other programs
@@ -32,6 +34,23 @@ def Read_Setup( prefix ):
         dictionary[ 'log_level' ] = int( dictionary[ 'log_level' ] )
     input_file.close()
     return( dictionary )
+
+def Read_Json_Setup( selection ):
+    """ This function reads in a json formatted setup file. The file
+        <<[ selection ]_setup.json>> takes precedence followed by the generic
+        <<setup.json>>.
+    """
+    if os.path.isfile( selection + "_setup.json" ):
+        setup_file = open( selection + "_setup.json" , "r" )
+    elif os.path.isfile( "setup.json" ):
+        setup_file = open( "setup.json" , "r" ) 
+    else:
+        print( "ERROR!! No setup file found in \n <<<" + os.getcwd() + \
+        ">>> \n for Read_Json_Setup. The program will now die. " )
+        sys.exit()
+    setup = json.load( setup_file , object_hook = Decode_Json_Dict )
+    setup_file.close()
+    return( setup )
 
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """
