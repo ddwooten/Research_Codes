@@ -58,11 +58,43 @@ def Get_Base_Name( file_name ):
     base_name = file_name[ 0 : end_index ]
     return( base_name )
 
-def Start_Log( base_name , level ): 
-    log_file_name = "Log_" + base_name + "_" + time.strftime( "%d_%m_%Y" ) \
-        + ".log"
+def Start_Log( options ):
+    """ This function initiates a logger instance with some common formatting
+        and output. It takes setup from options which should be of dict
+        form and should be passed to this function though it does have default
+        behavior. Options should be the setup dict for the calling module. 
+        It should have a key called "log_options" which contains options for
+        the logger. Should none be given, there are defaults.
+    """
+    
+    if "host_name" in options:     
+        log_file_name = "Log_" + __name__ +  wc.Get_Base_Name( \
+            options[ "host_name" ] ) +"_" + time.strftime( "%m_%d_%Y" ) + ".log"
+    else:
+        log_file_name = "Log_" + __name__ + "_" + time.strftime( "%m_%d_%Y" ) \
+            + ".log"
 
-    LogLevel = level 
+    if "log_level" in options[ "log_options" ]:
+        log_level = options[ "log_options" ][ "log_level" ]
+    else:
+        log_level = 0
+
+    if "log_name" in options[ "log_options" ]:
+        logger = logging.getLogger( options[ "log_options" ][ "log_name" ] )
+    else:
+        logger = logging.getLogger()
+
+    if "inheritance" in options[ "log_options" ]:
+        if not options[ "log_options" ][ "inheritance" ]:
+
+
+    handler = logging.FileHandler( log_file_name , mode = "w" )
+
+    handler.setLevel( log_level )
+
+    formatter = logging.Formatter( "%(name)10s - %(levelname)8s - %(message)s" )
+
+    handler.setFormatter( formatter )
 
     logging.basicConfig( filename = log_file_name , format = \
         "[%(levelname)8s] %(message)s" , filemode = 'w' , level = LogLevel )
