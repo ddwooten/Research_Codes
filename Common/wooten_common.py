@@ -205,6 +205,20 @@ def File_Name_Conditioner( string ):
     string = string.replace( "/" , "_forward_slash_" )
     return( string )
 
+def Save_Output_As_Json( options , data ):
+    """ This function saves given data as a json formated file in the
+        current directory
+    """
+    Sep()
+    if "output_save_name" in options:
+        output_save_name = options[ "output_save_name" ]
+    else:
+        output_save_name = Get_Base_Name( options[ "host_file" ] ) + \
+            ".txt_dep.json"
+    save_file = open( output_save_name , "w" )
+    json.dump( data , save_file )
+    return 
+
 def Check_Import():
     """ This function simply prints a statment to make sure the import worked"""
     print( "<< wooten_common.py >> imported sucessfully" )
