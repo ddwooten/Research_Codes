@@ -109,6 +109,18 @@ def Make_Plots( data , options ):
                 data[ "burnup_data" ] )
             Scatter_Plot( plot_params[ i ] , wc.Get_Base_Name( \
                 options[ "host_name" ] ) )
+        elif plot_params[ i ][ "type" ] == "attribute_burnup_forward_diff":
+            Prep_Attribute_Burnup( plot_params[ i ][ "components" ] , \
+                data[ "burnup_data" ] )
+            Prep_Forward_Difference( plot_params[ i ][ "components" ] )
+            Scatter_Plot( plot_params[ i ] , wc.Get_Base_Name( \
+                options[ "host_name" ] ) )
+        elif plot_params[ i ][ "type" ] == "attribute_burnup_equilibrium":
+            Prep_Attribute_Burnup( plot_params[ i ][ "components" ] , \
+                data[ "burnup_data" ] )
+            Prep_Equilibrium( plot_params[ i ][ "components" ] )
+            Scatter_Plot( plot_params[ i ] , wc.Get_Base_Name( \
+                options[ "host_name" ] ) )
         elif plot_params[ i ][ "type" ] == "attribute_percent_change":
             Prep_Attribute_Percent_Change( plot_params[ i ][ "components" ] , \
                 data[ "burnup_data" ] )
@@ -150,6 +162,68 @@ def Prep_Attribute_Burnup( components , burn_data ):
                     logging.debug( "np.array shape: " + \
                         str( np.array( burn_data[ "burn_data" ][mat][iso][0])))
         components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
+    return
+
+def Prep_Forward_Difference( components ):
+    """ This function takes in components ( objects to graph ) and replaces
+        their y_data with the forward difference calculation of the derivative.
+        It also approprietly trims the x_data vector to match in length ( i.e.
+        one index short as the last won't have a forward differnce ). y_data
+        must be of numpy array type as must x_data.
+    """
+    wc.Sep()
+    logging.info( "Prep_Foward_Difference" )
+    for key in components:
+        for i in range( components[ key ][ "y_data" ].shape[ 0 ] - 1 ):
+            components[ key ][ "y_data" ][ i ] = \
+                ( float( components[ key ][ "y_data" ][ i + 1 ] ) - \
+                float( components[ key ][ "y_data" ][ i ] ) ) / \
+                ( float( components[ key ][ "x_data" ][ i + 1 ] ) - \
+                float( components[ key ][ "x_data" ][ i ] ) )
+        components[ key ][ "y_data" ] = components[ key ][ "y_data" ][ : -1 ]
+        components[ key ][ "x_data" ] = components[ key ][ "x_data" ][ : -1 ]
+    return
+
+def Prep_Equilibrium( components ):
+    """ This function will return the y and x value at which equilibrium
+        occurs as defined as equilibrium start being the point for which the
+        y value of the next two points does not differ by more than 1%. If this
+        does not accur a NaN will be returned. These values will be returned
+        as a list of lists
+    """
+    wc.Sep()
+    logging.info( "Get_Equilibrium_Time" )
+    for key in components:
+        for i in range( components[ key ][ "y_data" ].shape[ 0 ] - 2 ):
+            try:
+                diff_1 = abs((float(components[ key ][ "y_data" ][ i + 1 ] ) - \
+                    float( components[ key ][ "y_data" ][ i ] ) ) / \
+                    float( components[ key ][ "y_data" ][ i ] ) )
+            except:
+                if ( float( components[ key ][ "y_data" ][ i + 1 ] ) - \
+                    float( components[ key ][ "y_data" ][ i ] ) ) == 0.0:
+                    diff_1 = 0
+                else: 
+                    diff_1 = float( "inf" )
+            try:
+                diff_2 = abs((float(components[ key ][ "y_data" ][ i + 2 ] ) - \
+                    float( components[ key ][ "y_data" ][ i ] ) ) / \
+                    float( components[ key ][ "y_data" ][ i ] ) )
+            except:
+                if ( float( components[ key ][ "y_data" ][ i + 2 ] ) - \
+                    float( components[ key ][ "y_data" ][ i ] ) ) == 0.0:
+                    diff_2 = 0
+                else: 
+                    diff_2 = float( "inf" )
+            if diff_1 <= 0.01 and diff_2 <= 0.01:
+                components[ key ][ "y_data" ]=components[ key ][ "y_data" ][ i ]
+                components[ key ][ "x_data" ]=components[ key ][ "x_data" ][ i ]
+                break
+            if diff_1 > 0.01 and diff_2 > 0.01 and i == \
+                components[ key ][ "y_data" ].shape[ 0 ] - 2:
+                components[ key ][ "y_data" ] = None
+                components[ key ][ "x_data" ] = None
+
     return
 
 def Get_X_Data( constituent , burn_data ):
@@ -264,6 +338,29 @@ def Calculate_Percent_Change( vector ):
         float( vector[ 0 ] )
     return( diff )
 
+def Get_Auto_Scale( params , data_type ):
+    """ This function scans through params[ components ][ key ][ data_type ]
+        and pulls the max and min from data_type against all keys. It then
+        increments and decrements, respectively, by 10% of the range and
+        returns this list
+    """
+    wc.Sep()
+    logging.info( "Get_Auto_Scale" )
+    overall_min = float( "inf" ) 
+    overall_max = None
+    for key in params[ "components" ]:
+        cur_min = np.amin( params[ "components" ][ key ][ data_type ] )
+        cur_max = np.amax( params[ "components" ][ key ][ data_type ] )
+        if cur_min < overall_min:
+            overall_min = cp.deepcopy( cur_min )
+        if cur_max > overall_max:
+            overall_max = cp.deepcopy( cur_max )
+    rng = overall_max - overall_min
+    overall_min = overall_min - 0.1 * rng
+    overall_max = overall_max + 0.1 * rng
+    output = [ overall_min , overall_max ]
+    return( output )
+
 def Percentage_Change_Plot( params , base_name ):
     """ This function creates a vertical bar graph of the percentage change
         of values passed in with x_data and given labels in labels. params
@@ -298,7 +395,7 @@ def Percentage_Change_Plot( params , base_name ):
     if "title" in params:
         axes1.set_title( params[ "title" ] )
     else:
-        axes1.set_title( "Scatter Plot of y( x )" )
+        axes1.set_title( "Percentage Diff Plot " )
     if "y_label" in params:
         axes1.set_ylabel( params[ "y_label" ] )
     else:
@@ -319,6 +416,32 @@ def Percentage_Change_Plot( params , base_name ):
             size = 1 ) ) + ".eps" , format = 'eps' , dpi = 1000 )
     plt.cla()
     return
+
+def Print_Values( params , base_name ):
+    """ This function prints to file the x and y data given in params
+    """
+    wc.Sep()
+    logging.info( "Print_Values" )
+    out_matrix = list()
+    if "title" in params:
+        if "save_name" not in params:
+            file_name = base_name + "_" + params[ "title" ] + \
+               "_" + ".eps" 
+            file_name = wc.File_Name_Conditioner( file_name )
+    else:
+        if "save_name" not in params:
+            file_name = base_name + "_" + params[ "type" ] + \
+               "_" + str( np.random.randint( 100 , size = 1 ) ) + ".eps" 
+            file_name = wc.File_Name_Conditioner( file_name )
+    if "save_name" in params:
+        file_name = base_name + "_" + params[ "save_name" ] + "_"  + ".eps" 
+    for key in params[ "componets" ]:
+        out_matrix.append( [ params[ "components" ][ key ][ "x_data" ] , \
+            params[ "components" ][ key ][ "y_data" ] ] )
+    out_file = open( file_name , "w" )
+    np.savetxt( out_file , np.matrix( out_matrix ) )
+    out_file.close()
+    return  
 
 def Scatter_Plot( params , base_name ):
     """ This function plots a dict of lists from params against a list of
@@ -364,6 +487,11 @@ def Scatter_Plot( params , base_name ):
         axes1.set_ylabel( params[ 'y_label' ] )
     else:
         axes1.set_ylabel( 'y axis' )
+    if "y_auto_scale" in params:
+        if params[ "y_auto_scale" ] in ( "yes" , "Yes" , "y" , "YES" , ):
+            y_min , y_max = Get_Auto_Scale( params , "y_data" )
+            axes1.set_ylim( bottom = y_min )
+            axes1.set_ylim( top = y_max )
     if "y_min" in params:
         axes1.set_ylim( bottom = params[ "y_min" ] )
     if "y_max" in params:
@@ -372,12 +500,20 @@ def Scatter_Plot( params , base_name ):
         axes1.set_xlabel( params[ 'x_label' ] )
     else:
         axes1.set_xlabel( 'x axis' )
+    if "x_auto_scale" in params:
+        if params[ "x_auto_scale" ] in ( "yes" , "Yes" , "y" , "YES" , ):
+            x_min , x_max = Get_Auto_Scale( params , "x_data" )
+            axes1.set_xlim( left = x_min )
+            axes1.set_xlim( right = x_max )
     if "x_min" in params:
         axes1.set_xlim( left = params[ "x_min" ] )
     if "x_max" in params:
         axes1.set_xlim( right = params[ "x_max" ] )
     if "legend_loc" in params:
-        plt.legend( loc = params[ 'legend_loc' ] )
+        if params[ "legend_loc" ] == "off right":
+            plt.legend( loc = "upper left" , bbox_to_anchor = ( 1 , 1 ) )
+        else:
+            plt.legend( loc = params[ 'legend_loc' ] )
     else:
         plt.legend( loc = 'upper right' )
     if "save_name" in params:
