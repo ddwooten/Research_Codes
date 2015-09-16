@@ -1,0 +1,60 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\renewcommand{\familydefault}{\rmdefault}
+%\usepackage[left=1in,right=1in,top=1in,bottom=1in]
+\title{2\textsuperscript{nd} Report \\ {\small \date{\today}}}
+\author{Daniel Wooten}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+The introduction! The primary purpose of this section is to state that I can't exactly
+recall if these reports should be written more for you or for myself. I know they are to
+assist me later, but I mean in terms of tone and content. I'm going to start off assuming
+they are really more for me, so I will likely include some mundane information that isn't
+really ground breaking, but good for me to know.
+
+\section{RSICC Codes}
+I have successfully managed to install MCNP6.1, SERPENT, ORIGEN2.2, MOCUP, and
+MONTEBURNS on my laptop. I have managed to compile all of them and have successfully
+tested MCNP, SERPENT, MONTEBURNS, and ORIGEN2.2 (via testing of MONTEBURNS, which uses
+the ORIGEN2.2 files).
+Additionally, I registered on the SERPENT user forums and between them and google managed
+to install and update the gd graphics library on my laptop; an issue that was preventing
+successful compilation of SERPENT for several days. Also got the latest updates for
+SERPENT installed and compiled.
+In terms of projects, I've created a highly simplistic spherical reactor in SERPENT
+that uses a very detailed material composition for the reactor vessel (Hastelloy N
+modified with Ti, Nb, and W) and a basic material composition for the fuel salt used
+by the MSBR. This was really just to test SERPENT.
+Through this file though I discovered that something was amiss with my bk account as I
+have since learned that I didn't have permissions to submit batch files to run jobs. Additionally,
+if I simply were to log into a node and try and run SERPENT I got a seg fault. Ryan and I
+believe we have diagnosed the issues. For starters, I was not given SLURM permissions
+in the original creation of my account; this accounts for not being able to submit jobs.
+Through the issues with SERPENT Ryan found that the new MPI compilation of SERPENT
+was corrupt and I believe he is working on this currently.
+
+\section{General Computational Knowledge}
+In addition to working on the nuclear specific codes, I have, of course, had to become
+more acquainted with vim, scripts, and in my creation of this document here, \LaTeX.
+I've learned some basics of how to configure a vimrc file, as well as dependencies. I've
+learned the very rudimentary basics of script files, but at least enough to write simple
+ones and to understand those which we submit to Berkelium. Currently, and I suspect
+through several iterations of this document I am learning more and more of how to use
+\LaTeX. I opted to go without Lynx for now if for no other reason than this will help
+me to understand Lynx down the road and what it does exactly. I intend for this document
+to be simple; I'm happy with getting the title to work, \LaTeX{} to print out correctly, and the
+sections to be correct. As I expected, this is something akin to the sixth major revision of this
+document.
+
+\section{Coming Work}
+While the above concludes my work for the past 2 weeks, now that I have the codes installed
+and working and now that, soon, I should be able to run things on BK, my next project
+is to read into the Russian work on the new salt with supposedly high solubility of
+actinides. This will probably spawn quite a bit of investigations into chemistry and
+related literature. Either way, from there I intend to look into the MIT team's work.
+
+\end{document}
