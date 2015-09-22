@@ -58,19 +58,20 @@ for the removal or addition component of both the "increasing" and "decreasing"
 reactivity groups. If both addition and removal options are specified for
 both the "increasing" and "decreasing" groups then the net change in the number
 of mols of material adjusted by the reactive feed operation will be sought to
-be zero. For example, if reactivity increase is desired feed from the addition
+be zero. For example, if reactivity increase is desired, feed from the addition
 portion of the "increasing" group would be added while material from the
 removal portion of the "decreasing" group would be removed in an equal amount.
 \subsection{Composition Control}
-ADER shall allow for the specification of groups of elements within a material
+ADER shall allow for the specification of groups of elements, which may also
+have isotopic compositions specified, within a material
 to be "controlled" for their fraction of that material's composition. For
 example, a group could be specified containing Li, F, Na, and K in a given
 ratio, and could
 be specified to constitue 80\% of the given material's composition
-throughout the simulation. Additionally, each element in a group may be given
-an isotopic composition. All compositions, from the fraction of a group in a
-material
-to the fraction of an isotope in an element,
+throughout the simulation. Furthermore, a ratio with respect to another group
+of elements could be stipulated. 
+an isotopic composition. All compositions and ratios, from the fraction of a
+ group in a material to the fraction of an isotope in an element,
 may be specified as a range with a minimum
 and a maximum bound. A given element or isotope may be specified to be a part
 of more than 1 group. That component's total amount in the material will be
@@ -81,7 +82,8 @@ with elements having a fraction of the composition and the option to specify
 isotopic concentrations for elements. Even if a group is specified and has a
 non-zero minimum composition target it is not required to have a feed vector.
 If the group is depeleted below its minimum composition target the simulation
-will error out. The same behavior is seen for the removal vector. Additionally,
+will error out. The same behavior is seen for the removal vector. \par
+ Additionally,
 removal for a group may be done in two ways if it is specified to have removal.
 For the first method a removal vector may be specified from which batch
 removal of the
@@ -91,6 +93,8 @@ will rely on the continuous removal constants defined for the continuous
 removal function. In this second method ADER will solve for the volume fraction
 of the material to be reprocessed, per day, in order for the groups to meet
 their composition targets.
+Furthermore ADER shall allow the user to specify a single group who's
+concentration should be maximized or minimized within its specified bounds.
 \subsection{Valance Control}
 ADER shall provide means through which the REDOX potential of a material may
 be controlled. While this aspect of ADER does not directly model the REDOX
@@ -110,10 +114,14 @@ valance state and elements with a negative average valance state. Each of these
 groups has two lists, one of elements that can be added, one of elements that
 can be removed. \par
 During the composition control stage, if valance control is enabled,
-ADER will calculate the average valance of the material. 
-If the material
-requires the addition of positive valance and both an addition list for
-positive valance elements is specified and a removal list for negative valance
-elements is specified 
-
+ADER will impose as an addiitional constraint on the material's composition
+that said composition satisfy the valance target using the given oxidation
+state list.
+\section{Additional Components}
+Because the composition control operations involve optimizing a linear set
+of equations it is the current intention to employ the Coin-OR LP solver
+library as the work horse for finding such an optimization. This library
+is written in C++ and is licenced under the Common Public Licence which
+allows for its incoorporation into other software packages using
+more restrictive licences. 
 \end{document}
