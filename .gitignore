@@ -20,3 +20,4 @@
 *.pyc
 *dep.m
 *.eps
+*.aux
