@@ -12,32 +12,31 @@
 
 \section{Introduction}
 The ADER modification to the SERPENT2 code shall enable the code user, via
-inputs to the standard SERPENT2 input, to model the burnup of materials which
+inputs incorporated into the standard SERPENT2 input, to model the burnup of materials which
 undergo discrete and/or continous modifications to their composition throughout
 the simulation. It is the goal of this modification to be as general as
-possible. Many of the changes to material composition which may be modeled
+possible. Many of the changes to material composition which can be modeled
 with ADER do not represent a current physical reality. Rather than reflect
 the limits of today's technology the goal of this modification is to allow
-the user to model arbitrary removal, addition, and chemistry control
-scenarios. Additionally, ADER will not seek to enforce "resonable" input. It
+the user to model arbitrary removal, addition, and chemistry control scenarios.
+\section{Requirements}
+\subsection{Input}
+The inputs required for ADER shall be part of the standard SERPENT2 input. No
+user inputs shall require recompilation of the code.
+Additionally, ADER will not seek to enforce "resonable" input. It
 will be entirely possible for a user to provide input which will prevent
 the simulation from running; however, in such cases it is the goal of ADER
 to not only error out of the simulation but to provide an insightful and
 hopefully helpful error message which may provide clarity to the user as to
 the nature of their input which caused the simulation to error out. A key
 philosophy of this modification will be to crash easily but with clarity.
-\section{Requirements}
-\subsection{Input}
-The inputs required for ADER shall be part of the standard SERPENT2 input. No
-user inputs shall require recompilation of the code.
 \subsection{Continuous Removal}
-ADER shall allow for the modeling of continuous fractional removal of isotopes,
-elements, and groups of elements with the specification of
-fractional removal constants that shall not vary over the simulation. An
-exception to this is that for isotopes, if they are specified, they may be given
-either their own fractional removal rates that will override the elemental
-fractional removal rate or they may be given as a fraction of the total
-elemental removal. 
+ADER shall allow for the modeling of continuous and discreet removal of isotopes,
+elements, and groups of elements. Continuous removal may be modeled as both
+a fractional extraction process, similar to radioactive decay, and a continuous
+mass removal process. Specific removal constants for isotopes may be specified
+on an isotope by isotope basis, or, they may be specified as a desired fraction
+of an overall elemental removal.
 For example, while
 Nb may have a removal fraction of 0.1 per day, it may be specified that
 \ce{^{93}_{41}Nb} has a removal fraction of 0.5 per day. \ce{^{93}_{41}Nb}
@@ -48,19 +47,13 @@ if possible, of the Nb rmeoved at its fractional rate of 0.1 per day would be
 composed of \ce{^{93}_{41}Nb}.  
 \subsection{Reactive Feed}
 ADER shall allow for the modeling of reactivity control via addition or
-removal of two groups of elements. One group should be supplied such that its
-addition would increase reactivity while the other group should be supplied
-such that its addition would decrease reactivity. These groups can be
+removal, continuous or discreet, of an arbitrary number of groups of elements.
+These groups can be
 specified to hold a certain collection of elements which themselves
-may be specified to be of a specific isotopic composition. Removal or addition
-of either group is made possible by specifiying the elemental composition
-for the removal or addition component of both the "increasing" and "decreasing"
-reactivity groups. If both addition and removal options are specified for
-both the "increasing" and "decreasing" groups then the net change in the number
-of mols of material adjusted by the reactive feed operation will be sought to
-be zero. For example, if reactivity increase is desired, feed from the addition
-portion of the "increasing" group would be added while material from the
-removal portion of the "decreasing" group would be removed in an equal amount.
+may be specified to be of a specific isotopic composition. Additionally,
+groups may be flagged as only specifying elements to be added, removed, or both.The amount of reactive feed or removal is determined in conjunction with
+chemistry control at each burnup sub-step and relies on a k_{\infty} estimator
+as well as a leakage estimator corrector value.
 \subsection{Composition Control}
 ADER shall allow for the specification of groups of elements, which may also
 have isotopic compositions specified, within a material
@@ -68,51 +61,29 @@ to be "controlled" for their fraction of that material's composition. For
 example, a group could be specified containing Li, F, Na, and K in a given
 ratio, and could
 be specified to constitue 80\% of the given material's composition
-throughout the simulation. Furthermore, a ratio with respect to another group
+throughout the simulation. Furthermore, ratios with respect to other groups
 of elements could be stipulated. 
-an isotopic composition. All compositions and ratios, from the fraction of a
+All compositions and ratios, from the fraction of a
  group in a material to the fraction of an isotope in an element,
 may be specified as a range with a minimum
-and a maximum bound. A given element or isotope may be specified to be a part
-of more than 1 group. That component's total amount in the material will be
-the sum of its presence in all the groups to which it belongs. \par
-Each group in a material may be given a corresponding feed and removal
-vector. Each of these is built in the same fashion as the groups themselves
-with elements having a fraction of the composition and the option to specify
-isotopic concentrations for elements. Even if a group is specified and has a
-non-zero minimum composition target it is not required to have a feed vector.
-If the group is depeleted below its minimum composition target the simulation
-will error out. The same behavior is seen for the removal vector. \par
- Additionally,
-removal for a group may be done in two ways if it is specified to have removal.
-For the first method a removal vector may be specified from which batch
-removal of the
-constituents of a group, found in its removal vector, will occur at burnup 
-steps to bring the group within its composition target. The second method
-will rely on the continuous removal constants defined for the continuous
-removal function. In this second method ADER will solve for the volume fraction
-of the material to be reprocessed, per day, in order for the groups to meet
-their composition targets.
-Furthermore ADER shall allow the user to specify a single group who's
-concentration should be maximized or minimized within its specified bounds.
+and a maximum bound, as well as one child per parent being specified to fill
+the "remainder" of the parent.
+A given element or isotope may be specified to be a part
+of more than 1 group.\par
+Each material may be given a set of feed and removal
+groups. Each of these groups may have the same level of detail as the
+material composition groups; ratios, ranges, and isotopic specifications.
 \subsection{Valance Control}
 ADER shall provide means through which the REDOX potential of a material may
 be controlled. While this aspect of ADER does not directly model the REDOX
 potential evolution of a material it allows the user to set the oxidation
 state of elements in the material as well as provide a means by which ADER
-can maintain an average oxidation state in the material. This method takes up
-to five inputs. The first input is required if the other possible
- four inputs are
-desired to be used. The first input is a list of all elements and their
-average oxidation state in the material.
- The following four inputs are four lists
-of elements and their fraction of the composition of the list they are in.
-These elements may, like the other inputs, be given isotopic compositions as
-well.
-These four lists are broken into two groups, elements with a positive average
-valance state and elements with a negative average valance state. Each of these
-groups has two lists, one of elements that can be added, one of elements that
-can be removed. \par
+can maintain an average oxidation state in the material.
+The required inputs for valance control are an average oxidation state
+target value and a list of all elements, their average oxidation state
+in the material, and an optional weighting factor for each element.
+Additionally, feed and removal groups for valance control may be
+specified. \par
 During the composition control stage, if valance control is enabled,
 ADER will impose as an addiitional constraint on the material's composition
 that said composition satisfy the valance target using the given oxidation
