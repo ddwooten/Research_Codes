@@ -23,4 +23,4 @@
 *.aux
 *.xml
 *.ini
-*.project
+.metadata
