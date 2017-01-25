@@ -102,6 +102,8 @@ def Make_Plots( data , options ):
     input_file = open( wc.Get_Base_Name( options[ "host_name" ] ) + \
     "_plots_input.json" , "r" )
 
+# Read in the plot input file
+
     plot_params = json.load( input_file , object_hook = wc.Decode_Json_Dict )
 
     wc.Cep()
@@ -112,9 +114,13 @@ def Make_Plots( data , options ):
 
     wc.Cep()
 
+# Read through the plots requested
     for i in range( len( plot_params ) ):
 
         if plot_params[ i ][ "type" ] == "attribute_burnup":
+
+# Components contains the information about the data series to be plotted
+# for each graph
 
             Prep_Attribute_Burnup( plot_params[ i ][ "components" ] , \
                 data[ "burnup_data" ] )
@@ -166,33 +172,54 @@ def Prep_Attribute_Burnup( components , burn_data ):
 
     logging.info( "Get_Atom_Burnup" )
 
+# Read through the elements of the requested plot. Each element is 
+# a data series to be ploted.
+
     for key in components:
 
         logging.debug( "member is: " + str( key ) )
 
+# Create an empty vector to store the actual y-axis data in
+
         y_data = np.zeros( burn_data[ "burn_data" ][ "BU" ].shape[ 0 ] )
 
+# Get the type of the x-axis range, usually time or burnup, and get the range
+# of its values
+
         span , x_type = Get_X_Data( components[ key ],burn_data[ "burn_data" ] )
+
+# Set the x-axis data
         
         components[ key ][ "x_data" ] = \
             burn_data[ "burn_data" ][ x_type ][ span[ 0 ] : span[ 1 ] ]
-       
+
+# Loop through the parts of each member. A member is a data group whose
+# data will be combined with any other member in this same list to create a
+# single data series to be plotted. Think of this, one member could be U-235
+# another could be Pu-239 and you might be trying to plot fissile atom
+# concentration
+         
         for item in components[ key ][ "members" ]:
       
             logging.debug( "Item is: " + str( item ) )
+
+# Get the list of the materials whose data should be minned for this member
      
             mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , \
                 components[ key ][ "attribute" ] , \
                 components[ key ][ "members" ][ item ][ "materials" ] )
            
             logging.debug( "mat_list is: " + str( mat_list ) )
-          
+
+# Get the list of the isotopes whose data should be minned for this member         
             isos_list = Get_Isotope_Indicies( burn_data[ "indicies" ] , \
                 components[ key ][ "members" ][ item ][ "Z" ] , \
                 components[ key ][ "members" ][ item ][ "isotopes" ] )
          
             logging.debug( "isos_list is: " + str( isos_list ) )
-        
+
+# Combine all the data which is to used for this series 
+
             for mat in mat_list:
        
                 for iso in isos_list: 
@@ -221,6 +248,8 @@ def Prep_Forward_Difference( components ):
     wc.Sep()
 
     logging.info( "Prep_Foward_Difference" )
+
+# Calculate the forward difference for each data series in the component
 
     for key in components:
 
@@ -315,6 +344,8 @@ def Get_X_Data( constituent , burn_data ):
 
     logging.info( "Get_X_Data" )
 
+# Determine the time_type of the x-data.
+
     if "x_type" in constituent:
 
         if constituent["x_type"] in ( "day" , "days" , "Day" , "Days" , "d" ):
@@ -331,17 +362,26 @@ def Get_X_Data( constituent , burn_data ):
 
         constituent[ "x_type" ] = "BU"
 
+# Get the array indices which are inclusive of the requested x data range
+
     if "x_range" in constituent:
 
         if len( constituent[ "x_range" ] ) > 1:
 
             splice = []
 
+# If the requested range starts with a smaller value than the data series, just
+# start with the first point in the series
+
             if constituent[ "x_range" ][ 0 ] <= burn_data[ time_type ][ 0 ]:
 
                 splice.append( 0 )
 
             else:
+
+# Otherwise find the closest undershoot value in the data series to the
+# requested range. I.e., if the data series is [0 , 1, 2, 3] and the range lower
+# boudn requested is 1.5, start with index 1
 
                 for i in range( len( burn_data[ time_type ] ) ):
 
@@ -357,11 +397,17 @@ def Get_X_Data( constituent , burn_data ):
 
                         break
 
+# If the x range max value requested is larger than the largest value in the
+# series, simply end with that value.
+
             if constituent[ "x_range" ][ 1 ] >= burn_data[ time_type ][ -1 ]:
 
                 splice.append( len( burn_data[ time_type ] ) - 1 )
 
             else:
+
+# Otherwise, pick the closest overshoot value to the requested value. I.e., if
+# the data series is [0, 1, 2, 3, 4] and the max requested is 3.5, pick index 5
 
                 for i in range( len( burn_data[ time_type ] ) ):
 
@@ -392,9 +438,14 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
 
     logging.debug( str( isotopes ) )
 
+# Set a blank list for the desired nuclide indices
+
     nuclide_list = list()
 
     if str( isotopes[ 0 ] ) in ( "All" , "ALL" , "all" ):
+
+# If all isotopes for an element are requested, find all isotopes in the data
+# which belong to that element and add them to the list
 
         logging.debug( "Isotopes for " + str( Z ) + " are ALL" )
 
@@ -410,15 +461,22 @@ def Get_Isotope_Indicies( nuclide_indicies , Z , isotopes ):
 
     else:
 
+# Otherwise, retreive the specific isotopes requested
+
         logging.debug( "Specific Isotopes are requested, they are: " )
 
         logging.debug( str( isotopes ) )
 
         for item in isotopes:
 
+# Convert the standard metastable notation to the ZAI metastable notation
+
             if str( item )[ -1 ] == "m":
 
                 A = str( item )[ : -1 ].zfill( 3 ) + '1'
+
+# This here uses the power of dictionaries. We look the isotope up by its
+# ZAI dict key and append its index to the list in the below manner
 
                 nuclide_list.append(nuclide_indicies[int(str(Z)+str(A))])
 
@@ -448,22 +506,35 @@ def Get_Material_Keys( data , attribute , materials ):
 
     logging.debug( "The attribute is:'" + str( attribute ) + "'" )
 
-    pattern = re.compile( r'\S*_' + attribute )
+# This pattern here searches for any data entries related to the requeted
+# attribute 
+
+    pattern = re.compile( r'MAT_\S*_' + attribute )
 
     material_keys = list() 
+
+# Search through all the data
 
     for key in data:
 
         if materials[ 0 ] not in ( "all" , "All" , "ALL" ):
 
+# Go through the list of requested mateirals
+
             for mat in materials:
 
                 match = None
 
-                pattern = re.compile( r"\S*_" + mat + \
+# This pattern finds the requested material with the requested attribute
+
+                pattern = re.compile( r"MAT_" + mat + \
                     "_" + attribute )
 
                 match = pattern.match( key )
+
+# If a match is found the current key can fit no other material as the key
+# contains the material's name. As such, break the current material loop and
+# save the key
 
                 if match:
 
@@ -512,11 +583,18 @@ def Get_Auto_Scale( params , data_type ):
 
     overall_max = None
 
+# Loop over the options for the passed in componenet ( desired graph ) and
+# 
+
     for key in params[ "components" ]:
+
+# Grab the min and max value for the current input data type
 
         cur_min = np.amin( params[ "components" ][ key ][ data_type ] )
 
         cur_max = np.amax( params[ "components" ][ key ][ data_type ] )
+
+# Compare to existing limits
 
         if cur_min < overall_min:
 
@@ -525,6 +603,8 @@ def Get_Auto_Scale( params , data_type ):
         if cur_max > overall_max:
 
             overall_max = cp.deepcopy( cur_max )
+
+# Preform the auto scale
 
     rng = overall_max - overall_min
 
