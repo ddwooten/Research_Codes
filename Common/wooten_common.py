@@ -136,6 +136,12 @@ def Decode_Dict( data , fun ):
     output = {}
     for key , value in data.iteritems():
         key = key.encode( 'ascii' )
+        # Try to convert key to integer in case integer keys were input as
+        # strings
+        try:
+            key = int(key)
+        except ValueError:
+            pass
         if isinstance( value , list ):
             value = Decode_List( value , fun )
         elif isinstance( value , dict ):
