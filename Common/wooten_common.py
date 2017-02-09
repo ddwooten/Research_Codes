@@ -55,7 +55,13 @@ def Read_Json_Setup( selection ):
 def Read_Json_Data( file_name ):
     """ This function reads in a json formatted data file. 
     """
-    setup_file = open( file_name , "r" ) 
+    if os.path.isfile(file_name):
+        setup_file = open( file_name , "r" )
+    else:
+        print( "ERROR!! File <<<" + file_name + ">>> not found in \n \
+            <<<" + os.getcwd() + \
+            ">>> \n for Read_Json_Setup. The program will now die.\n" )
+        sys.exit()
     setup = json.load( setup_file , object_hook = Decode_Json_Dict )
     setup_file.close()
     return( setup )
@@ -144,12 +150,6 @@ def Decode_Dict( data , fun ):
     output = {}
     for key , value in data.iteritems():
         key = key.encode( 'ascii' )
-        # Try to convert key to integer in case integer keys were input as
-        # strings
-        try:
-            key = int(key)
-        except ValueError:
-            pass
         if isinstance( value , list ):
             value = Decode_List( value , fun )
         elif isinstance( value , dict ):
@@ -190,6 +190,12 @@ def Decode_Json_Dict( data ):
     for key , value in data.iteritems():
         if isinstance( key , unicode ):
             key = key.encode( 'ascii' )
+        # Try to convert key to integer in case integer keys were input as
+        # strings
+        try:
+            key = int(key)
+        except ValueError:
+            pass
         if isinstance( value , unicode ):
             value = value.encode( 'ascii' )
         elif isinstance( value , list ):
