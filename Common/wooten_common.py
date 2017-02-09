@@ -52,6 +52,14 @@ def Read_Json_Setup( selection ):
     setup_file.close()
     return( setup )
 
+def Read_Json_Data( file_name ):
+    """ This function reads in a json formatted data file. 
+    """
+    setup_file = open( file_name , "r" ) 
+    setup = json.load( setup_file , object_hook = Decode_Json_Dict )
+    setup_file.close()
+    return( setup )
+
 def Get_Base_Name( file_name ):
     """ This function gets a base name from the host file name """
     end_index = file_name.rfind( "." )
