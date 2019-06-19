@@ -24,8 +24,7 @@ import wooten_common as wc
         [log_name] - the base name for the log file
         [process_burn] - yes/no to process burnup data
 """
-def Read_Burn_File( base_name, options , Get_Materials_List , \
-    Get_Nuclide_Indicies ):
+def Read_Burn_File( base_name, options):
     """ This function reads in a SERPENT2 ( Aufiero and later mod ) burnup file
         and stores data as lists inside of a dictionary """
     
@@ -565,8 +564,7 @@ def Post_Main():
 
         if setup[ 'process_burn' ] == "yes" or "Yes" or "YES" or "y" or "Y": 
 
-            burnup_data = Read_Burn_File( setup[ "host_file" ] , setup , \
-                        Get_Materials_List , Get_Nuclide_Indicies )
+            burnup_data = Read_Burn_File( setup[ "host_file" ] , setup) 
 
             output[ 'burnup_data' ] = burnup_data
 

@@ -14,7 +14,7 @@ import json as json
 import wooten_common as wc
 import post_common as post_common
 import nuclide_ids as nid
-
+import pdb
 """ This is the SERPENT plotter. It requires a configuration
     file titled, exactly, "plot_setup.txt". 
     This file must consist of two columns of text arragned as
@@ -157,12 +157,150 @@ def Make_Plots( data , options ):
 
             for key in plot_params[ i ][ "components" ]:
 
-                plot_params[ i ][ "components" ][ key ][ "y_data" ] = \
-                    Get_K_Data( plot_params[ i ][ "components" ][ key ] , data )
+                Get_K_Data( plot_params[ i ][ "components" ],
+                    wc.Get_Base_Name( options[ "host_name" ] ) )
 
-                plot_params[ i ][ "components" ][ key ][ "x_data" ] = \
-                    Get_Time_Range( plot_params[i][ "components" ][ key ],data )
+                Scatter_Plot( plot_params[ i ] , wc.Get_Base_Name( \
+                    options[ "host_name" ] ) )
+
+        elif plot_params[ i ][ "type" ] == "attribute_ADER":
+
+            Prep_Attribute_ADER( plot_params[ i ][ "components" ] , \
+                data[ "burnup_data" ] )
+
+            Scatter_Plot( plot_params[ i ] , wc.Get_Base_Name( \
+                options[ "host_name" ] ) )
+
     return
+
+def Get_K_Data( components, host_name):
+    """This function reads the res.m file and generates the requested time
+    series of criticality values"""
+
+    burn_days_pattern = re.compile(r'BURN_DAYS\s+\(idx, \[1:\s+2\]\)\s+=\s+\[\s+([0-9].[0-9]+E[+,-][0-9]+)')
+
+    ana_keff_pattern = re.compile(r'ANA_KEFF\s+\(idx, \[1:\s+[0-9]\]\)\s+=\s+\[\s+([0-9].[0-9]+E[+,-][0-9]+) ([0-9].[0-9]+)')
+
+    imp_keff_pattern = re.compile(r'IMP_KEFF\s+\(idx, \[1:\s+[0-9]\]\)\s+=\s+\[\s+([0-9].[0-9]+E[+,-][0-9]+) ([0-9].[0-9]+)')
+
+    col_keff_pattern = re.compile(r'COL_KEFF\s+\(idx, \[1:\s+[0-9]\]\)\s+=\s+\[\s+([0-9].[0-9]+E[+,-][0-9]+) ([0-9].[0-9]+)')
+
+    abs_keff_pattern = re.compile(r'ABS_KEFF\s+\(idx, \[1:\s+[0-9]\]\)\s+=\s+\[\s+([0-9].[0-9]+E[+,-][0-9]+) ([0-9].[0-9]+)')
+
+    abs_kinf_pattern = re.compile(r'ABS_KINF\s+\(idx, \[1:\s+[0-9]\]\)\s+=\s+\[\s+([0-9].[0-9]+E[+,-][0-9]+) ([0-9].[0-9]+)')
+
+    crit_data = wc.Read_Input( host_name + ".txt_res.m", "string" )
+   
+    crit_data = [ x.strip(" " ) for x in crit_data ]
+
+# Loop through the res.m file looking for the burn match line. This line may
+# or may not be repeated exactly up to the number of iterations per burnup
+# step as allowed by ADER. Once this line has been found, it is searched for
+# again. If it is found, this instance may or may not be the final instance of
+# the monte-carlo transport sweep for the given burnup step, so check. Once
+# the final instance of a burnup step monte-carlo sweep has been found extract
+# crticality information
+    
+    for key in components:
+        
+       i = 0
+
+       y_data = list()
+
+       y_error = list()
+
+       x_data = list()
+
+       if( components[ key ][ "attribute" ] == "ANA_KEFF"):
+
+           k_pattern = ana_keff_pattern
+
+       elif( components[ key ][ "attribute" ] == "IMP_KEFF" ):
+           
+           k_pattern = imp_keff_pattern 
+
+       elif( components[ key ][ "attribute" ] == "COL_KEFF" ):
+           
+           k_pattern = col_keff_pattern 
+           
+       elif( components[ key ][ "attribute" ] == "ABS_KEFF" ):
+           
+           k_pattern = abs_keff_pattern 
+
+       elif( components[ key ][ "attribute" ] == "ABS_KINF" ):
+           
+           k_pattern = abs_kinf_pattern 
+       
+       while ( i < len( crit_data ) ):
+           
+           line_a = crit_data[ i ]
+           
+           burn_days_match_a = burn_days_pattern.match( line_a )
+           
+           if burn_days_match_a:
+               
+               j = i + 1
+               
+               while( j < len( crit_data ) ):
+                   
+                   line_b = crit_data[ j ]
+
+                   burn_days_match_b = burn_days_pattern.match( line_b )
+
+                   if burn_days_match_b:
+                   
+                       if(burn_days_match_a.group()==burn_days_match_b.group()):
+
+                           continue
+                       
+                       else:
+
+                           j += 1
+
+                   else:
+                       
+                       j += 1
+
+               if( j == len( crit_data ) ):
+
+                   j = i
+
+                   i += 1
+
+                   while( j < len( crit_data ) ):
+                   
+                       line_b = crit_data[ j ]
+                       
+                       j += 1
+
+                       k_match = k_pattern.match( line_b )
+
+                       if k_match:
+
+                           y_data.append( float( k_match.group( 1 ) ) )
+
+                           y_error.append( float( k_match.group( 2 ) ) )
+
+                           x_data.append( float( burn_days_match_a.group( 1 )))
+
+                           i = j
+
+                           j = len( crit_data )
+               else:
+                
+                   i = j
+
+           else:
+               
+               i += 1
+
+       components[ key ][ "y_data" ] = y_data
+
+       components[ key ][ "y_error" ] = y_error 
+
+       components[ key ][ "x_data" ] = x_data
+
+    return 
 
 def Prep_Attribute_Burnup( components , burn_data ):
     """ This function, using the information in params, gathers the data to form
@@ -238,6 +376,71 @@ def Prep_Attribute_Burnup( components , burn_data ):
 
     return
 
+def Prep_Attribute_ADER( components , burn_data ):
+    """ This function, using the information in params, gathers the data to form
+    the y_data for the desired plot as well as the x_data """
+
+    wc.Sep()
+
+    logging.info( "Prep_Attribute_ADER" )
+
+# Read through the elements of the requested plot. Each element is 
+# a data series to be ploted.
+
+    for key in components:
+
+        logging.debug( "member is: " + str( key ) )
+
+# Create an empty vector to store the actual y-axis data in
+
+        y_data = np.zeros( burn_data[ "burn_data" ][ "BU" ].shape[ 0 ] )
+
+# Get the type of the x-axis range, usually time or burnup, and get the range
+# of its values
+
+        span , x_type = Get_X_Data( components[ key ],burn_data[ "burn_data" ] )
+
+# Set the x-axis data
+        
+        components[ key ][ "x_data" ] = \
+            burn_data[ "burn_data" ][ x_type ][ span[ 0 ] : span[ 1 ] ]
+
+# Loop through the parts of each member. A member is a data group whose
+# data will be combined with any other member in this same list to create a
+# single data series to be plotted. Think of this, one member could be U-235
+# another could be Pu-239 and you might be trying to plot fissile atom
+# concentration
+         
+        for item in components[ key ][ "members" ]:
+      
+            logging.debug( "Item is: " + str( item ) )
+
+# Get the list of the materials whose data should be minned for this member
+
+            mat_list = Get_Material_Keys( burn_data[ "burn_data" ] , \
+                components[ key ][ "attribute" ] , \
+                components[ key ][ "members" ][ item ][ "materials" ] )
+           
+            logging.debug( "mat_list is: " + str( mat_list ) )
+
+# Combine all the data which is to used for this series 
+
+            for mat in mat_list:
+       
+                logging.debug( "The array to be added is: " + \
+                    str( np.array( burn_data[ "burn_data" ][mat]) ) )
+ 
+                y_data += np.array(burn_data["burn_data"][mat])[ 0 ]
+                
+                logging.debug( "y_data shape: " + str( y_data.shape ) )
+
+                logging.debug( "np.array shape: " + \
+                    str( np.array( burn_data[ "burn_data" ][mat])[0]))
+
+        components[ key ][ "y_data" ] = y_data[ span[ 0 ] : span[ 1 ] ]
+
+    return
+
 def Prep_Forward_Difference( components ):
     """ This function takes in components ( objects to graph ) and replaces
         their y_data with the forward difference calculation of the derivative.
@@ -280,7 +483,15 @@ def Prep_Equilibrium( components ):
 
     for key in components:
 
-        for i in range( components[ key ][ "y_data" ].shape[ 0 ] - 2 ):
+        if "skip" in components[ key ]:
+
+            skip = components[ key ][ "skip" ]
+
+        else:
+
+            skip = 0
+
+        for i in range( skip , components[ key ][ "y_data" ].shape[ 0 ] - 2 ):
 
             try:
 
@@ -323,9 +534,9 @@ def Prep_Equilibrium( components ):
 
                 break
 
-            if diff_1 > 0.01 and diff_2 > 0.01 and i == \
+            if diff_1 > 0.01 and diff_2 > 0.01: 
 
-                components[ key ][ "y_data" ].shape[ 0 ] - 2:
+                components[ key ][ "y_data" ].shape[ 0 ] - 2
 
                 components[ key ][ "y_data" ] = None
 
@@ -810,9 +1021,18 @@ def Scatter_Plot( params , base_name ):
 
              name = str( key )
 
-        axes1.scatter( params[ "components" ][ key ][ "x_data" ] , \
-            params[ "components" ][ key ][ "y_data" ] , s = size , c = color , \
-            marker = mark , label = name )
+        if "y_error" in params[ "components" ][ key ]:
+
+            axes1.errorbar( params[ "components" ][ key ][ "x_data" ] , \
+                params[ "components" ][ key ][ "y_data" ] , yerr = \
+                params[ "components" ][ key ][ "y_error" ] , \
+                c = color , fmt = mark , label = name )
+
+        else:
+
+            axes1.scatter( params[ "components" ][ key ][ "x_data" ] , \
+                params[ "components" ][ key ][ "y_data" ] , s = size , \
+                c = color , marker = mark , label = name )
 
     if "title" in params:
 

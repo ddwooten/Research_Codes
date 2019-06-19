@@ -1,0 +1,131 @@
+[
+    {
+        "type" : "attribute_burnup",
+        "components" : { 
+            "U" : {
+                "attribute" : "ADENS",
+                "x_type" : "days",
+                "x_range" : [
+                    0.0,
+                    10000
+                    ],
+                "members" : { 
+                    "U" : { 
+                        "element" : "U",
+                        "Z" : 92,
+                        "isotopes" : [
+                            "all"    
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "o",
+                "label" : "U",
+                "color" : "g",
+                "size" : 20
+            },
+            "Li" : {
+                "attribute" : "ADENS",
+                "x_type" : "days",
+                "x_range" : [
+                    0.0,
+                    10000
+                    ],
+                "members" : { 
+                    "Li" : { 
+                        "element" : "Li",
+                        "Z" : 3,
+                        "isotopes" : [
+                            "all"    
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "^",
+                "label" : "Li",
+                "color" : "y",
+                "size" : 20
+            },
+            "Be" : {
+                "attribute" : "ADENS",
+                "x_type" : "days",
+                "x_range" : [
+                    0.0,
+                    10000
+                    ],
+                "members" : { 
+                    "Be" : { 
+                        "element" : "Be",
+                        "Z" : 4,
+                        "isotopes" : [
+                            "all"    
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "s",
+                "label" : "Be",
+                "color" : "r",
+                "size" : 20
+            },
+            "F" : {
+                "attribute" : "ADENS",
+                "x_type" : "days",
+                "x_range" : [
+                    0.0,
+                    10000
+                    ],
+                "members" : { 
+                    "F" : { 
+                        "element" : "F",
+                        "Z" : 9,
+                        "isotopes" : [
+                            "all"    
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "s",
+                "label" : "F",
+                "color" : "c",
+                "size" : 20
+            },
+            "Th" : {
+                "attribute" : "ADENS",
+                "x_type" : "days",
+                "x_range" : [
+                    0.0,
+                    10000
+                    ],
+                "members" : { 
+                    "Th" : { 
+                        "element" : "Th",
+                        "Z" : 90,
+                        "isotopes" : [
+                            "all"    
+                        ],
+                        "materials" : [
+                            "all"
+                        ]
+                    }
+                },
+                "marker" : "v",
+                "label" : "Th",
+                "color" : "b",
+                "size" : 20
+            }
+        },
+        "x_label" : "Days",
+        "y_label" : "atoms/barn*cm",
+        "title" : "Fuel Atom Density in atoms/barn*cc Over Time in days",
+        "legend_loc" : "upper right"
+    }
+]
